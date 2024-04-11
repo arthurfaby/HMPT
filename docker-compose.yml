@@ -1,0 +1,45 @@
+services:
+  backend:
+    container_name: backend_matcha
+    image: backend
+    build: ./backend
+    restart: always
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+    networks:
+      - matcha
+
+  frontend:
+    container_name: frontend_matcha
+    image: frontend
+    build: ./frontend
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    networks:
+      - matcha
+
+  postgres:
+    container_name: postgres_matcha
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    networks:
+      - matcha
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+networks:
+  matcha:
+    driver: bridge
