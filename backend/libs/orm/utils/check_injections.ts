@@ -1,10 +1,7 @@
 /**
  * Validate input to prevent SQL injection
- * @param {string} input 
- * @returns {string}
  */
-const validateInput = (input) => {
-    console.log(typeof input);
+const validateInput = (input: string): string => {
     if (typeof input !== 'string') {
         return input;
     }
@@ -15,4 +12,4 @@ const validateInput = (input) => {
     return input;
 }
 
-module.exports = { validateInput };
+export default validateInput;

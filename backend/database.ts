@@ -1,6 +1,6 @@
-const { Pool } = require('pg');
+import { Pool } from "pg";
 
-const pool = new Pool({
+const pool: Pool = new Pool({
     user: 'postgres',
     password: 'changeme',
     host: 'postgres',
@@ -8,4 +8,4 @@ const pool = new Pool({
     database: 'matcha'
 })
 
-module.exports = {pool};
+export default pool;
