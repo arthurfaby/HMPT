@@ -1,18 +1,19 @@
-import pool from "../../../database";
+import { Fitlers } from "../types/filter_type";
 import validateInput from "../utils/check_injections";
+import query from "./query";
 
-const select = async (tableName: string, columns: string[], filters: any): Promise<any> => {
+/**
+ * 
+ * @param {string} tableName Name of the table to select from
+ * @param {string[]} columns Columns to select from the table
+ * @param {Filters} filters Filters to apply to the query
+ * @throws {Error} if the query fails
+ * @returns {Promise<any>} Returns the result of the query
+ */
+const select = async (tableName: string, columns: string[], filters: Fitlers): Promise<any> => {
     const validatedTableName = validateInput(tableName);
     const validatedColumns = columns.map((field) => validateInput(field)).join(", ");
-    if (filters) {
-        const keys = Object.keys(filters);
-        const values = Object.values(filters);
-        // const validatedFilters = keys.map((field, index) => {
-        //     return `${field} = ${validateInput(values[index])}`;
-        // }).join(" AND ");
-        // return await pool.query(`SELECT ${validatedColumns} FROM ${validatedTableName} WHERE ${validatedFilters}`);
-    }
-    return await pool.query(`SELECT ${validatedColumns} FROM ${validatedTableName}`);
+    return await query(`SELECT ${validatedColumns} FROM ${validatedTableName}`);
 };
 
 export default select;
