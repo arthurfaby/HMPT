@@ -1,4 +1,4 @@
-export type Fitlers = {
+export type Filters = {
     [key: string]: {
         equal: string | number | boolean;
     } | {
