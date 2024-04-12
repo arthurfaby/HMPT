@@ -1,19 +1,18 @@
 import express, { Response, Request } from "express";
-import select from "./libs/orm/queries/select";
+import select from "./libs/orm/queries/select_query";
 import pool from "./database";
+import { User } from "./models/user_model";
 
 const app = express();
   
 app.use(express.urlencoded({ extended: true })) 
 app.use(express.json()) 
-
+ 
 app.get("/", async (req: Request, res: Response) => {
     try {
-        return res.send(await select("users", ["email", "username"], {
-            id: {
-                equal: 1
-            }
-        }));
+        return res.send(await User.select(["email", "username"], {email: {
+            equal: "test"
+        }}));
     
     } catch (error: unknown) {
         if (error instanceof Error) {
