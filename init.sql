@@ -1,5 +1,5 @@
 CREATE TABLE "users"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "email" VARCHAR(255) NOT NULL,
     "username" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
@@ -18,58 +18,44 @@ CREATE TABLE "users"(
         "online" BOOLEAN NOT NULL,
         "last_online_date" DATE NOT NULL
 );
-ALTER TABLE
-    "users" ADD PRIMARY KEY("id");
 CREATE TABLE "notifications"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "content" TEXT NOT NULL,
     "seen" BOOLEAN NOT NULL
 );
-ALTER TABLE
-    "notifications" ADD PRIMARY KEY("id");
 CREATE TABLE "histories"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "visited_id" BIGINT NOT NULL,
     "visitor_id" BIGINT NOT NULL,
     "date" DATE NOT NULL
 );
-ALTER TABLE
-    "histories" ADD PRIMARY KEY("id");
 CREATE TABLE "blocks"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "blocked_id" BIGINT NOT NULL,
     "blocker_id" BIGINT NOT NULL
 );
-ALTER TABLE
-    "blocks" ADD PRIMARY KEY("id");
 CREATE TABLE "reports"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "reported_id" BIGINT NOT NULL,
     "reporter_id" BIGINT NOT NULL
 );
-ALTER TABLE
-    "reports" ADD PRIMARY KEY("id");
 CREATE TABLE "matches"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "liked_id" BIGINT NOT NULL,
     "liker_id" BIGINT NOT NULL,
     "matched" BOOLEAN NOT NULL,
     "chat_id" BIGINT NULL
 );
-ALTER TABLE
-    "matches" ADD PRIMARY KEY("id");
 CREATE TABLE "messages"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "content" TEXT NOT NULL,
     "chat_id" BIGINT NOT NULL,
     "seen" BOOLEAN NOT NULL
 );
-ALTER TABLE
-    "messages" ADD PRIMARY KEY("id");
 CREATE TABLE "preferences"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "age_gap_min" SMALLINT NOT NULL,
     "age_gap_max" SMALLINT NULL,
@@ -79,15 +65,11 @@ CREATE TABLE "preferences"(
         ("sexual_preferenec" IN('')) NULL,
         "location" JSON NOT NULL
 );
-ALTER TABLE
-    "preferences" ADD PRIMARY KEY("id");
 CREATE TABLE "chats"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL PRIMARY KEY,
     "user1_id" BIGINT NOT NULL,
     "user2_id" BIGINT NOT NULL
 );
-ALTER TABLE
-    "chats" ADD PRIMARY KEY("id");
 ALTER TABLE
     "blocks" ADD CONSTRAINT "blocks_blocker_id_foreign" FOREIGN KEY("blocker_id") REFERENCES "users"("id");
 ALTER TABLE
