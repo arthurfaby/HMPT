@@ -1,6 +1,6 @@
-import { Fitlers } from "../types/filter_type";
+import { Filters } from "../types/filter_type";
 import validateInput from "../utils/check_injections";
-import query from "./query";
+import query from "./abstract_query";
 
 /**
  * 
@@ -10,7 +10,7 @@ import query from "./query";
  * @throws {Error} if the query fails
  * @returns {Promise<any>} Returns the result of the query
  */
-const select = async (tableName: string, columns: string[], filters: Fitlers): Promise<any> => {
+const select = async (tableName: string, columns: string[], filters: Filters): Promise<any> => {
     const validatedTableName = validateInput(tableName);
     const validatedColumns = columns.map((field) => validateInput(field)).join(", ");
     return await query(`SELECT ${validatedColumns} FROM ${validatedTableName}`);
