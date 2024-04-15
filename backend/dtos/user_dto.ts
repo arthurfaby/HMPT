@@ -1,4 +1,6 @@
-export type UserDto = {
+import { AbstractDto } from "../libs/orm/dtos/abstract_dto";
+
+export interface UserDto extends AbstractDto {
     id: number;
     email: string;
     username: string;

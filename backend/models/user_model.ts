@@ -5,7 +5,9 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import select from "../libs/orm/queries/select_query";
 import { Filters } from "../libs/orm/types/filter_type";
 
-export class User extends AbstractModel<User> {
+export const USER_TABLE_NAME = "users";
+
+export class User extends AbstractModel<UserDto> {
 
     /**
      * The user's id
@@ -117,7 +119,7 @@ export class User extends AbstractModel<User> {
      * @type {boolean}
      * @public
      */
-    public online: boolean;
+    public online: boolean; 
 
     /**
      * The user's last online date
@@ -128,7 +130,7 @@ export class User extends AbstractModel<User> {
 
 
     public constructor(dto: UserDto) {
-        super()
+        super(dto, USER_TABLE_NAME);
         this.id = dto.id;
         this.email = dto.email;
         this.username = dto.username;
@@ -155,6 +157,6 @@ export class User extends AbstractModel<User> {
     }
 
     public static select(columns: string[], filters: Filters): Promise<User[]> {
-        return select("users", columns, filters);
+        return select(USER_TABLE_NAME, columns, filters);
     }
 }
