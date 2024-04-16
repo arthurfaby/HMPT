@@ -309,13 +309,10 @@ export class User extends AbstractModel<UserDto> {
         this._lastOnlineDate = new Date(dto.last_online_date);
     }
 
-    public static select(columns: string[], filters: Filters): Promise<User[]> {
-        return select(USER_TABLE_NAME, columns, filters);
+    public static select(columns: string[], filters: Filters): Promise<UserDto[]> {
+        return select<UserDto>(USER_TABLE_NAME, columns, filters);
     }
 
-    public create() {
-        return create("users", this.dto);
-    }
 
     public toDto(): UserDto {
         return {
