@@ -1,6 +1,5 @@
-import express, { Response, Request } from "express";
-import select from "./libs/orm/queries/select_query";
-import pool from "./database";
+import express, { Request, Response } from "express";
+import { UserDto } from "./dtos/user_dto";
 import { User } from "./models/user_model";
 
 const app = express();
@@ -25,9 +24,26 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.get("/test", async (req: Request, res: Response) => {
     try {
-        // Create test user
-        const data = await pool.query(`INSERT INTO users (email, username, password) VALUES ('a@a.com', 'test', 'test')`);
-        res.status(200).send(data);
+        const user = new User({
+            email: "email",
+            username: "username",
+            password: "pass",
+            first_name: "first",
+            last_name: "last",
+            gender: "male",
+            biography: "biography",
+            interests: '{"a": "i1", "b":"i2"}',
+            pictures: '{"a": "p1", "b":"p2"}',
+            verified: true,
+            fame_rating: 5,
+            geolocation: {latitude: 12, longitude: 32},
+            accept_location: false,
+            age: 21,
+            online: true,
+            last_online_date: '2024-04-12',
+        } as UserDto)
+        ;
+        res.status(200).send(await user.create());
     } catch (error: unknown) {
         if (error instanceof Error) {
             return res.status(500).send({status: 500, error: error.message})
