@@ -10,8 +10,8 @@ export interface UserDto extends AbstractDto {
     last_name: string;
     gender: Gender;
     biography: string;
-    interests: any;
-    pictures: any;
+    interests: string[];
+    pictures: string[];
     verified: boolean;
     fame_rating: number;
     geolocation: {
