@@ -1,4 +1,5 @@
 import { AbstractDto } from "../libs/orm/dtos/abstract_dto";
+import { Gender } from "../types/gender_type";
 
 export interface UserDto extends AbstractDto {
     id: number;
@@ -7,10 +8,10 @@ export interface UserDto extends AbstractDto {
     password: string;
     first_name: string;
     last_name: string;
-    gender: string;
+    gender: Gender;
     biography: string;
-    interests: string[];
-    pictures: string[];
+    interests: any;
+    pictures: any;
     verified: boolean;
     fame_rating: number;
     geolocation: {
