@@ -1,3 +1,5 @@
+import { AbstractDto } from "../dtos/abstract_dto";
+import { AbstractModel } from "../models/abstract_model";
 import { Filters } from "../types/filter_type";
 import validateInput from "../utils/check_injections";
 import query from "./abstract_query";
@@ -10,10 +12,10 @@ import query from "./abstract_query";
  * @throws {Error} if the query fails
  * @returns {Promise<any>} Returns the result of the query
  */
-const select = async (tableName: string, columns: string[], filters: Filters): Promise<any> => {
+const select = async <T extends AbstractDto>(tableName: string, columns: string[], filters: Filters) => {
     const validatedTableName = validateInput(tableName);
     const validatedColumns = columns.map((field) => validateInput(field)).join(", ");
-    return await query(`SELECT ${validatedColumns} FROM ${validatedTableName}`);
+    return await query<T>(`SELECT ${validatedColumns} FROM ${validatedTableName}`);
 };
 
 export default select;

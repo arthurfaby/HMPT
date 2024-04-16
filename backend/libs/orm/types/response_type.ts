@@ -1,7 +1,4 @@
-export type APIResponse<T> = APIResponseNoError<T> | APIResponseError;
-
-
-export type APIResponseNoError<T> = {
+export type APIResponse<T> = {
     command: string;
     rowCount: number;
     oid: number;
@@ -18,9 +15,4 @@ export type APIResponseNoError<T> = {
         }
     ];
     rowAsArray: boolean;
-}
-
-export type APIResponseError = {
-    status: number;
-    error: string;
 }
