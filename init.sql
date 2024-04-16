@@ -6,7 +6,7 @@ CREATE TABLE "users"(
     "first_name" VARCHAR(255) NOT NULL,
     "last_name" VARCHAR(255) NOT NULL,
     "gender" VARCHAR(255) CHECK
-        ("gender" IN('')) NOT NULL,
+        ("gender" IN('male', 'female', 'other')) NOT NULL,
         "biography" TEXT NOT NULL,
         "interests" JSON NOT NULL,
         "pictures" JSON NOT NULL,
