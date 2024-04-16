@@ -8,8 +8,8 @@ CREATE TABLE "users"(
     "gender" VARCHAR(255) CHECK
         ("gender" IN('male', 'female', 'other')) NOT NULL,
         "biography" TEXT NOT NULL,
-        "interests" JSON NOT NULL,
-        "pictures" JSON NOT NULL,
+        "interests" TEXT[] NOT NULL,
+        "pictures" TEXT[] NOT NULL,
         "verified" BOOLEAN NOT NULL,
         "fame_rating" DECIMAL(8, 2) NOT NULL,
         "geolocation" JSON NOT NULL,
