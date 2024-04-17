@@ -22,7 +22,8 @@ CREATE TABLE "notifications"(
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "content" TEXT NOT NULL,
-    "seen" BOOLEAN NOT NULL
+    "seen" BOOLEAN NOT NULL,
+    "date" DATE NOT NULL
 );
 CREATE TABLE "histories"(
     "id" SERIAL PRIMARY KEY,
@@ -52,7 +53,8 @@ CREATE TABLE "messages"(
     "user_id" BIGINT NOT NULL,
     "content" TEXT NOT NULL,
     "chat_id" BIGINT NOT NULL,
-    "seen" BOOLEAN NOT NULL
+    "seen" BOOLEAN NOT NULL,
+    "date" DATE NOT NULL
 );
 CREATE TABLE "preferences"(
     "id" SERIAL PRIMARY KEY,
@@ -61,8 +63,8 @@ CREATE TABLE "preferences"(
     "age_gap_max" SMALLINT NULL,
     "fame_rating_min" SMALLINT NOT NULL,
     "fame_rating_max" SMALLINT NULL,
-    "sexual_preferenec" VARCHAR(255) CHECK
-        ("sexual_preferenec" IN('')) NULL,
+    "sexual_preference" VARCHAR(255) CHECK
+        ("sexual_preference" IN('heterosexual', 'homosexual', 'bisexual')) NOT NULL DEFAULT "bisexual",
         "location" JSON NOT NULL
 );
 CREATE TABLE "chats"(
