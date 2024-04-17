@@ -1,8 +1,7 @@
 import { AbstractDto } from "../dtos/abstract_dto";
 import query from "../queries/abstract_query";
 import create from "../queries/create_query";
-import select from "../queries/select_query";
-import { Filters } from "../types/filter_type";
+import validateInput from "../utils/check_injections";
 import { getParsedValue } from "../utils/get_parsed_value";
 
 export abstract class AbstractModel<T extends AbstractDto> {
@@ -49,10 +48,13 @@ export abstract class AbstractModel<T extends AbstractDto> {
   }
 
   public async update() {
-    const keys = Object.keys(this._dto).join(", ");
+    const keys = Object.keys(this._dto)
+      .map((key) => validateInput(key))
+      .join(", ");
     const values = Object.values(this._dto)
       .map((value) => {
-        return getParsedValue(value);
+        const validatedValue = validateInput(value);
+        return getParsedValue(validatedValue);
       })
       .join(", ");
     return await query(

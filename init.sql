@@ -64,7 +64,7 @@ CREATE TABLE "preferences"(
     "fame_rating_min" SMALLINT NOT NULL,
     "fame_rating_max" SMALLINT NULL,
     "sexual_preference" VARCHAR(255) CHECK
-        ("sexual_preference" IN('heterosexual', 'homosexual', 'bisexual')) NOT NULL DEFAULT "bisexual",
+        ("sexual_preference" IN('heterosexual', 'homosexual', 'bisexual')) NOT NULL DEFAULT 'bisexual',
         "location" JSON NOT NULL
 );
 CREATE TABLE "chats"(
