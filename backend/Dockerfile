@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install -g nodemon node-ts
+RUN npm install -g nodemon
 
 RUN npm install
 

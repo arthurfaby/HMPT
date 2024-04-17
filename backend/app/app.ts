@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import router from './routes';
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import router from "./routes";
 
 // Create Express server
 const app = express(); // New express instance
@@ -11,9 +11,9 @@ const port = 5000; // Port number
 // Express configuration
 app.use(cors()); // Enable CORS
 app.use(helmet()); // Enable Helmet
-app.use(morgan('dev')); // Enable Morgan
+app.use(morgan("dev")); // Enable Morgan
 app.use(express.json());
-app.use('/', router);
+app.use("/", router);
 
 // Start Express server
 app.listen(port, () => {
