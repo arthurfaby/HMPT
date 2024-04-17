@@ -5,6 +5,7 @@
   "main": "build/app.js",
   "scripts": {
     "build": "tsc",
+
     "dev": "nodemon app/app.ts",
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +19,7 @@
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
+
     "pg": "^8.11.5",
     "prettier": "^3.2.5"
   },
