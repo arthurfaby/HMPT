@@ -9,7 +9,7 @@ nav {
     font-size: 30px;
     font-weight: 700;
   }
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 80px;
 }
