@@ -4,12 +4,12 @@ import "./Navbar.css";
 
 const Navbar = () => {
   return (
-    <>
+    <header>
       <nav>
         <div>
-          <h1 className="nav-logo">
+          <a className="nav-logo" href="/">
             Matcha<span>.</span>
-          </h1>
+          </a>
         </div>
         <ul>
           <li>
@@ -30,7 +30,7 @@ const Navbar = () => {
         </div>
       </nav>
       <div className="under-navbar"></div>
-    </>
+    </header>
   );
 };
 
