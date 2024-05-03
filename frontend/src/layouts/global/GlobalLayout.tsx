@@ -1,16 +1,17 @@
 import Navbar from "./components/navbar/Navbar";
+import {ReactNode} from 'react';
+import Footer from './components/footer/Footer';
 
 type GlobalLayoutProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-const GlobalLayout = ({ children }: GlobalLayoutProps) => {
+export default function GlobalLayout ({ children }: GlobalLayoutProps) {
   return (
-    <div>
+    <>
       <Navbar />
       {children}
-    </div>
+      <Footer />
+    </>
   );
-};
-
-export default GlobalLayout;
+}
