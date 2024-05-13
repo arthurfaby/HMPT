@@ -17,12 +17,14 @@ const Button = ({
   link,
   onClick,
 }: ButtonProps) => {
+  const navigate = useNavigate();
+
   const handleOnClick = () => {
     if (onClick) {
       onClick();
     }
     if (link) {
-      window.location.href = link;
+      navigate(link)
     }
   };
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { COLORS } from "../../../../utils/colors/colors";
 import Button from "../../../../utils/components/button/Button";
 import "./Navbar.css";
+import {Link} from "react-router-dom";
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -73,13 +74,13 @@ const Navbar = () => {
         </div>
         <ul>
           <li>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/about">About</a>
+            <Link to="/about">About</Link>
           </li>
           <li>
-            <a href="/contact">Contact</a>
+            <Link to="/contact">Contact</Link>
           </li>
         </ul>
         <div className="nav-buttons">

@@ -6,20 +6,23 @@ import GlobalLayout from "./layouts/global/GlobalLayout";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
+    element: <GlobalLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+    ]
   },
 ]);
 
 function App() {
   return (
-    <GlobalLayout>
       <RouterProvider router={router} />
-    </GlobalLayout>
   );
 }
 
