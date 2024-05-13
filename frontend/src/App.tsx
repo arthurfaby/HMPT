@@ -31,11 +31,11 @@ function App() {
       Authenticate()
      })
 
-  const checkAuth = (nextState, replace) => {
-  if (status !== AuthStatus.Authenticated) {
-      return <Navigate to="/login" replace />;
-    } 
-  };
+  // const checkAuth = (nextState, replace) => {
+  // if (status !== AuthStatus.Authenticated) {
+  //     return <Navigate to="/login" replace />;
+  //   } 
+  // };
     
 
     return <RouterProvider router={router}/>
