@@ -1,7 +1,6 @@
 services:
   backend:
     container_name: backend_matcha
-    image: backend
     build: ./backend
     restart: always
     ports:
@@ -15,7 +14,6 @@ services:
 
   frontend:
     container_name: frontend_matcha
-    image: frontend
     build: ./frontend
     restart: always
     ports:
