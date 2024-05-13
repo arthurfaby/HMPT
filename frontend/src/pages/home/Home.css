@@ -8,6 +8,8 @@
   align-items: center;
   background-color: var(--secondary-color);
   img {
+    height: 50%;
+    aspect-ratio: 1;
     animation: infinite 1s boomboom;
   }
 }
