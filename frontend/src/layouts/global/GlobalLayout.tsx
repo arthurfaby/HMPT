@@ -1,15 +1,15 @@
-import Navbar from "./components/navbar/Navbar";
-import {ReactNode} from 'react';
-import Footer from './components/footer/Footer';
-import {Outlet} from "react-router-dom";
+import { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
+import { Navbar } from "@/layouts/global/components/navbar";
+import { Footer } from "@/layouts/global/components/footer";
 
-export default function GlobalLayout () {
+export default function GlobalLayout() {
   return (
     <>
       <Navbar />
-        <main>
-            <Outlet />
-        </main>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
