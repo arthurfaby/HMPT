@@ -1,5 +1,4 @@
 .home-page {
-  height: calc(100vh - 80px);
   img {
     animation: infinite 1s boomboom;
   }
