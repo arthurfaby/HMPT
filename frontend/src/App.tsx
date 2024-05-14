@@ -3,6 +3,9 @@ import Register from "./pages/auth/register/register";
 import "./App.css";
 import Home from "./pages/home/Home";
 import GlobalLayout from "./layouts/global/GlobalLayout";
+import AuthGuard from "./pages/auth/authGuard";
+import Login from "./pages/auth/login/login";
+import Profile from "./pages/profile/profile";
 
 const router = createBrowserRouter([
   {
@@ -10,12 +13,26 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <AuthGuard/>,
+        children: [
+          {
+            path: "home",
+            element: <Home/>
+          }
+        ]
       },
       {
         path: "/register",
-        element: <Register />,
+        element: <Register/>,
       },
+      {
+        path:"/login",
+        element:<Login/>
+      },
+      {
+        path:"/profile",
+        element:<Profile/>
+      }
     ]
   },
 ]);

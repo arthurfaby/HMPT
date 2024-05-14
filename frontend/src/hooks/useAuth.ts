@@ -1,7 +1,7 @@
 import User from '../types/user';
 import {useAccountStore} from '../store';
 import { useCallback } from 'react';
-import { getUser } from '../services/api/authApi';
+import { getUser, postLogin } from '../services/api/authApi';
 
 export enum AuthStatus {
     Unknown = 0,
@@ -26,15 +26,19 @@ export function useAuth() {
     }
 
     const Authenticate = useCallback(async () => {
-        const response = await getUser()
-        if (!response.ok) {
-            setAccount(null)
-        }
+        await getUser().then(setAccount)
+        .catch(() => setAccount(null));
+     }, [])
+
+     const login = useCallback(async (username: string, password: string) => {
+        await postLogin({username, password}).then(setAccount)
+        console.log(status)
      }, [])
     
     return {
         account,
         status,
         Authenticate,
+        login,
     };
 }

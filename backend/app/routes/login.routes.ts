@@ -14,7 +14,7 @@ router.post('/', async (req: Request, res: Response) => {
    console.log(password)
    if (password === req.body.password) {
       await db.query('INSERT INTO sessions (user_id, token) VALUES ($1, $2)', [id, req.sessionID]) 
-       res.status(200).send()
+       res.status(200).send('auth')
    }
    else {
         console.log('Unauthorized')

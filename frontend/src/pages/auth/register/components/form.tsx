@@ -1,8 +1,8 @@
-import {useState, FormEvent } from "react";
-// import "./form.css"
+import {useState, FormEvent, useEffect} from "react";
 import postRegister from "../../../../services/api/registerApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import "../../login/styles/loginForm.css";
+import { useAuth, AuthStatus } from "../../../../hooks/useAuth";
 
 export default function Form() {
 
@@ -10,10 +10,13 @@ export default function Form() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    // const [firstName, setFirstName] = useState("");
-    // const [lastName, setLastName] = useState("");
-    // const [gender, setGender] = useState("");
-
+    const {Authenticate, status} = useAuth()
+    useEffect(() => {
+        Authenticate()
+        if (status === AuthStatus.Authenticated) {
+            navigate('/home');
+        }
+    }, [status, navigate]);
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const user = {
