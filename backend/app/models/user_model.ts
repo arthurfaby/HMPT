@@ -291,7 +291,7 @@ export class User extends AbstractModel<UserDto> {
     this._password = dto.password;
     this._firstName = dto.first_name;
     this._lastName = dto.last_name;
-    if (!GENDERS.includes(dto.gender)) {
+    if (dto.gender && !GENDERS.includes(dto.gender)) {
       throw new Error("Invalid gender");
     }
     this._gender = dto.gender as Gender;
@@ -300,7 +300,10 @@ export class User extends AbstractModel<UserDto> {
     this._pictures = dto.pictures;
     this._verified = dto.verified;
     this._fameRating = dto.fame_rating;
-    if (!(dto.geolocation.latitude && dto.geolocation.longitude)) {
+    if (
+      dto.geolocation &&
+      !(dto.geolocation.latitude && dto.geolocation.longitude)
+    ) {
       throw new Error("Invalid geolocation");
     }
     this._geolocation = dto.geolocation as Location;
@@ -316,7 +319,7 @@ export class User extends AbstractModel<UserDto> {
     if (filters) {
       const stringFilters: string = getStringFilters(filters);
       apiResponse = await query<UserDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`,
       );
     } else {
       apiResponse = await query<UserDto>(`SELECT * FROM ${validatedTableName}`);
