@@ -7,7 +7,7 @@ export interface UserDto extends AbstractDto {
   password: string;
   first_name: string;
   last_name: string;
-  gender: Gender;
+  gender?: Gender;
   biography: string;
   interests: string[];
   pictures: string[];

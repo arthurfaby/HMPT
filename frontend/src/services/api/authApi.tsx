@@ -17,3 +17,7 @@ export async function getUser(): Promise<string> {
     .get("http://localhost:5000/me", { credentials: "include" })
     .text();
 }
+
+export async function postLogout() {
+  await ky.post("http://localhost:5000/logout", { credentials: "include" });
+}

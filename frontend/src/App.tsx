@@ -7,7 +7,7 @@ import AuthGuard from "./pages/auth/authGuard";
 import Login from "./pages/auth/login/login";
 import Profile from "./pages/profile/profile";
 import { ThemeProvider } from "@/services/theme/theme";
-import { Matches } from "@/pages/matches/matches";
+import { Logout } from "@/pages/auth/logout/logout";
 
 const router = createBrowserRouter([
   {
@@ -17,12 +17,12 @@ const router = createBrowserRouter([
         element: <AuthGuard />,
         children: [
           {
-            path: "/matches",
-            element: <Matches />,
-          },
-          {
             path: "/profile",
             element: <Profile />,
+          },
+          {
+            path: "/logout",
+            element: <Logout />,
           },
         ],
       },
