@@ -1,14 +1,23 @@
-import {useState, FormEvent } from "react";
-// import "./form.css"
+import {useState, FormEvent, useEffect} from "react";
 import postRegister from "../../../../services/api/registerApi";
+import { useNavigate} from "react-router-dom";
+import "../../login/styles/loginForm.css";
+import { useAuth, AuthStatus } from "../../../../hooks/useAuth";
 
 export default function Form() {
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const navigate = useNavigate();
+    const {Authenticate, status} = useAuth()
+    useEffect(() => {
+        Authenticate()
+        if (status === AuthStatus.Authenticated) {
+            navigate('/home');
+        }
+    }, [status, navigate]);
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const user = {
             username,
@@ -16,7 +25,12 @@ export default function Form() {
             password
         }
         console.log("user :", user)
-        postRegister(user)
+        const response = await postRegister(user)
+        if (response.ok)
+        {
+            console.log("response :", response)
+            navigate("/login")
+        }
     }
 
     const onChangeUsername = (event: FormEvent<HTMLInputElement>) => {
@@ -32,11 +46,20 @@ export default function Form() {
     }
 
     return (
+    <div className="wrapper">
         <form onSubmit={handleSubmit}>
-            <input type="text" name="username" value={username} onChange={onChangeUsername}/>
-            <input type="email" name="email" value={email} onChange={onChangeEmail}/>
-            <input type="password" name="password" value={password} onChange={onChangePassword}/>
-            <input type="submit"/>
+            <h1>Register</h1>
+            <div className="input-box">
+                <input type="text" name="username" placeholder='username' value={username} onChange={onChangeUsername}/>
+            </div>
+            <div className="input-box">
+                <input type="email" name="email" placeholder="email" value={email} onChange={onChangeEmail}/>
+            </div>
+            <div className="input-box">
+                <input type="password" name="password" placeholder="password" value={password} onChange={onChangePassword}/>
+            </div>
+            <input type="submit" className="btn"/>
         </form>
+    </div>
     );
 }

@@ -3,20 +3,20 @@ CREATE TABLE "users"(
     "email" VARCHAR(255) NOT NULL,
     "username" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
-    "first_name" VARCHAR(255) NOT NULL,
-    "last_name" VARCHAR(255) NOT NULL,
+    "first_name" VARCHAR(255),
+    "last_name" VARCHAR(255),
     "gender" VARCHAR(255) CHECK
-        ("gender" IN('male', 'female', 'other')) NOT NULL,
-        "biography" TEXT NOT NULL,
-        "interests" TEXT[] NOT NULL,
-        "pictures" TEXT[] NOT NULL,
-        "verified" BOOLEAN NOT NULL,
-        "fame_rating" DECIMAL(8, 2) NOT NULL,
-        "geolocation" JSON NOT NULL,
-        "accept_location" BOOLEAN NOT NULL,
-        "age" INTEGER NOT NULL,
-        "online" BOOLEAN NOT NULL,
-        "last_online_date" DATE NOT NULL
+        ("gender" IN('male', 'female', 'other')),
+        "biography" VARCHAR(255),
+        "interests" VARCHAR(255),
+        "pictures" VARCHAR(255),
+        "verified" BOOLEAN,
+        "fame_rating" DECIMAL(8, 2),
+        "geolocation" JSON,
+        "accept_location" BOOLEAN,
+        "age" INTEGER,
+        "online" BOOLEAN,
+        "last_online_date" DATE 
 );
 CREATE TABLE "notifications"(
     "id" SERIAL PRIMARY KEY,
@@ -72,6 +72,12 @@ CREATE TABLE "chats"(
     "user1_id" BIGINT NOT NULL,
     "user2_id" BIGINT NOT NULL
 );
+
+CREATE TABLE "sessions"(
+    "id" SERIAL PRIMARY KEY,
+    "user_id" BIGINT NOT NULL,
+    "token" VARCHAR(255) NOT NULL
+);
 ALTER TABLE
     "blocks" ADD CONSTRAINT "blocks_blocker_id_foreign" FOREIGN KEY("blocker_id") REFERENCES "users"("id");
 ALTER TABLE
@@ -102,3 +108,6 @@ ALTER TABLE
     "matches" ADD CONSTRAINT "matches_liked_id_foreign" FOREIGN KEY("liked_id") REFERENCES "users"("id");
 ALTER TABLE
     "histories" ADD CONSTRAINT "histories_visitor_id_foreign" FOREIGN KEY("visitor_id") REFERENCES "users"("id");
+
+ALTER TABLE
+    "sessions" ADD CONSTRAINT "sessions_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "users"("id");
