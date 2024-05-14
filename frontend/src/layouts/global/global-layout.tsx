@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { Navbar } from "@/layouts/global/components/navbar";
 import { Footer } from "@/layouts/global/components/footer";
