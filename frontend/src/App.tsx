@@ -7,34 +7,38 @@ import AuthGuard from "./pages/auth/authGuard";
 import Login from "./pages/auth/login/login";
 import Profile from "./pages/profile/profile";
 import { ThemeProvider } from "@/services/theme/theme";
+import { Matches } from "@/pages/matches/matches";
 
 const router = createBrowserRouter([
   {
     element: <GlobalLayout />,
     children: [
       {
-        path: "/",
-        element: <AuthGuard/>,
+        element: <AuthGuard />,
         children: [
           {
-            path: "home",
-            element: <Home/>,
-          }
-        ]
+            path: "/matches",
+            element: <Matches />,
+          },
+          {
+            path: "/profile",
+            element: <Profile />,
+          },
+        ],
+      },
+      {
+        path: "/",
+        element: <Home />,
       },
       {
         path: "/register",
-        element: <Register/>,
+        element: <Register />,
       },
       {
-        path:"/login",
-        element:<Login/>
+        path: "/login",
+        element: <Login />,
       },
-      {
-        path:"/profile",
-        element:<Profile/>
-      }
-    ]
+    ],
   },
 ]);
 

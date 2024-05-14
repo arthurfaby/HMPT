@@ -51,7 +51,6 @@ export function Navbar() {
           </Sheet>
         </div>
       </header>
-      <div className="h-[62px]"></div>
     </>
   );
 }
