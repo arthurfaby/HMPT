@@ -1,4 +1,3 @@
-import User from '../types/user';
 import {useAccountStore} from '../store';
 import { useCallback } from 'react';
 import { getUser, postLogin } from '../services/api/authApi';
@@ -28,12 +27,11 @@ export function useAuth() {
     const Authenticate = useCallback(async () => {
         await getUser().then(setAccount)
         .catch(() => setAccount(null));
-     }, [])
+     }, [setAccount])
 
      const login = useCallback(async (username: string, password: string) => {
-        await postLogin({username, password}).then(setAccount)
-        console.log(status)
-     }, [])
+        await postLogin({username, password}).then(setAccount).catch( () => {setAccount(null)})
+     }, [setAccount])
     
     return {
         account,

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren } from "react";
 import { AuthStatus, useAuth } from "../../hooks/useAuth";
 import { Navigate, Outlet } from "react-router-dom";
 

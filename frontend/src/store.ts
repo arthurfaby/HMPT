@@ -1,6 +1,5 @@
 import {create} from 'zustand';
 import {combine, persist} from 'zustand/middleware';
-import User from './types/user';
 
  export const useAccountStore = create(
     persist(

@@ -11,12 +11,13 @@ export default function Form() {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const {Authenticate, status} = useAuth()
+    console.log("prout")
     useEffect(() => {
         Authenticate()
         if (status === AuthStatus.Authenticated) {
             navigate('/home');
         }
-    }, [status, navigate]);
+    }, [status, navigate, Authenticate]);
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const user = {

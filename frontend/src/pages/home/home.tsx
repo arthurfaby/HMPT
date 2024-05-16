@@ -9,7 +9,8 @@ const Home = () => {
         Please create an account or log in to access the app.
       </h2>
     </div>
-  );
-};
+     
+)
+} 
 
 export default Home;

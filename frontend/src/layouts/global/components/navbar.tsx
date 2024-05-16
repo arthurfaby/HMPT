@@ -2,8 +2,12 @@ import { Button } from "@/components/ui/button";
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
+import { useState } from "react";
+import Login from "@/pages/auth/login/login";
 
 export function Navbar() {
+
+
   return (
     <>
       <header className="flex fixed items-center w-full justify-between px-4 py-3 bg-white shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
@@ -17,12 +21,8 @@ export function Navbar() {
           >
             Sign Up
           </Link>
-          <Link
-            className="hidden sm:inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-            to="/login"
-          >
-            Sign In
-          </Link>
+          <Login
+          />
           <ToggleTheme />
           <Sheet>
             <SheetTrigger asChild>
@@ -39,19 +39,15 @@ export function Navbar() {
                 >
                   Sign Up
                 </Link>
-                <Link
-                  className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-                  to="/login"
-                >
-                  Sign In
-                </Link>
+                <Login
+                />
                 <ToggleTheme />
               </div>
             </SheetContent>
           </Sheet>
         </div>
       </header>
-      <div className="h-[62px]"></div>
+      <div className="h-[64px]"></div>
     </>
   );
 }
