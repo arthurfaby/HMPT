@@ -23,7 +23,7 @@ export default function LoginForm() {
   return (
     <div className="wrapper">
       <form onSubmit={handleSubmit}>
-        <h1>Login</h1>
+        <h1>Se connecter</h1>
         <div className="input-box">
           <input
             type="text"
@@ -44,12 +44,12 @@ export default function LoginForm() {
         </div>
         <div>
           <button type="submit" className="btn">
-            login
+            Se connecter
           </button>
         </div>
         <div className="link-register">
           <p>
-            Don't have an account ?<Link to="/register"> Register</Link>{" "}
+            Pas encore de compte ?<Link to="/register">Créer un compte</Link>{" "}
           </p>
         </div>
       </form>
