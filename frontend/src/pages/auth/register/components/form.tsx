@@ -2,7 +2,7 @@ import { useState, FormEvent, useEffect } from "react";
 import postRegister from "../../../../services/api/registerApi";
 import { useNavigate } from "react-router-dom";
 import "../../login/styles/loginForm.css";
-import { useAuth, AuthStatus } from "../../../../hooks/useAuth";
+import { useAuth, AuthStatus } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 export default function Form() {
