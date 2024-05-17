@@ -29,7 +29,7 @@
       --destructive-foreground: 210 40% 98%;
 
       --success: 120 39% 54%;
-      --success-foreground: 120 39% 54%;
+      --success-foreground: 210 40% 98%;
 
       --border: 214.3 31.8% 91.4%;
       --input: 214.3 31.8% 91.4%;
@@ -64,7 +64,7 @@
       --destructive-foreground: 210 40% 98%;
 
       --success: 120 39% 54%;
-      --success-foreground: 120 39% 54%;
+      --success-foreground: 210 40% 98%;
 
       --border: 217.2 32.6% 17.5%;
       --input: 217.2 32.6% 17.5%;
@@ -78,6 +78,7 @@
     }
     body {
       @apply bg-background text-foreground;
+      overflow-x: hidden;
     }
   }
 
