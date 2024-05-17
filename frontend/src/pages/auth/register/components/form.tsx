@@ -29,7 +29,7 @@ export default function Form() {
     if (response.ok) {
       navigate("/login");
       toast.success(
-        "Your account is created. Please log in to access the app.",
+        "Votre compte a bien été créé. Connectew-vous pour accéder à l'application.",
       );
     }
   };
@@ -49,7 +49,7 @@ export default function Form() {
   return (
     <div className="wrapper">
       <form onSubmit={handleSubmit}>
-        <h1>Register</h1>
+        <h1>Créer un compte</h1>
         <div className="input-box">
           <input
             type="text"
@@ -77,7 +77,7 @@ export default function Form() {
             onChange={onChangePassword}
           />
         </div>
-        <input type="submit" className="btn" />
+        <input type="submit" className="btn" value="Créer un compte" />
       </form>
     </div>
   );
