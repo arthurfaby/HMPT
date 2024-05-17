@@ -9,5 +9,13 @@ export function FullHeightContainer({
   children,
   className,
 }: FullHeightContainerProps) {
-  return <div className={"pt-16 min-h-screen " + className}>{children}</div>;
+  const containerStyle = {
+    minHeight: "calc(100vh - 64px - 52px)",
+  };
+
+  return (
+    <div style={containerStyle} className={className}>
+      {children}
+    </div>
+  );
 }
