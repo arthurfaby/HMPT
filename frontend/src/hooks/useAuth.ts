@@ -33,13 +33,13 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(async () => {
-    toast.success("You are now logged out.");
+    toast.success("Vous êtes bien déconnecté.");
     setAccount(null);
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {
     await postLogin({ username, password }).then(setAccount);
-    toast.success("You are now logged in.");
+    toast.success("Vous êtes bien connecté.");
   }, []);
 
   return {
