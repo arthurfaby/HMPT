@@ -24,24 +24,17 @@ export default function Register() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Sign in</Button>
+                <Button variant="outline">Register</Button>
             </DialogTrigger>
             <DialogContent>
                 <Input type="text" placeholder="login" name="username" value={username} onChange={(event) => setUsername(event.currentTarget.value)} className=""/> 
-                <Input type="email" placeholder="email" name="username" value={username} onChange={(event) => setEmail(event.currentTarget.value)} className=""/> 
+                <Input type="email" placeholder="email" name="email" value={email} onChange={(event) => setEmail(event.currentTarget.value)} className=""/> 
                 <Input type="password" placeholder="password" name="password" value={password} onChange={(event) => setPassword(event.currentTarget.value)}/>
             <DialogClose asChild>
                 <Button type="button" onClick={() => handleSubmit(username, email, password)}>
-                    login 
+                    Register
                 </Button>
             </DialogClose>
-            <p> tu n'as pas de compte frero ?{" "}
-                <DialogClose asChild>
-                    <Link type="button" to="/register">
-                        register
-                    </Link>
-                </DialogClose>
-            </p>
             </DialogContent>
         </Dialog>
     );
