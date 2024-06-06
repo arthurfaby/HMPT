@@ -1,4 +1,4 @@
-import ky from 'ky'
+import ky from "ky";
 
 export default async function postRegister(username: string, email: string, password: string): Promise<string>{
 

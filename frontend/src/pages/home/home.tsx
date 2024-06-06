@@ -1,23 +1,27 @@
 import heart from "../../assets/heart.webp";
 import "./home.css";
-import { AuthStatus, useAuth} from "../../hooks/useAuth"
-import { Navigate } from "react-router-dom";
+import { FullHeightContainer } from "@/components/utils/full-height-container";
+import { AuthStatus, useAuth } from "@/hooks/useAuth";
+import { Matches } from "@/pages/matches/matches";
 
 const Home = () => {
   const { status } = useAuth();
 
   if (status === AuthStatus.Authenticated) {
-    return <Navigate to="/profile" />;
+    return <Matches />;
   }
   return (
-    <div className="home-page flex h-screen flex-col items-center justify-center  w-full gap-8 bg-secondary">
-      <img src={heart} alt="home" className="h-1/2 aspect-square" />
-      <h2 className="text-secondary-foreground text-center text-4xl font-bold">
+    <FullHeightContainer className="home-page flex w-full flex-col items-center  justify-center gap-8 bg-secondary">
+      <img
+        src={heart}
+        alt="home"
+        className="aspect-square h-1/4 max-h-[300px]"
+      />
+      <h2 className="text-center text-4xl font-bold text-secondary-foreground">
         Créer un compte ou connectez-vous pour accéder à Matcha.
       </h2>
-    </div>
-     
-)
-} 
+    </FullHeightContainer>
+  );
+};
 
 export default Home;

@@ -35,7 +35,7 @@ services:
       - matcha
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./postgres:/var/lib/postgresql/data
+      - ./postgres:/data/postgres
 
 networks:
   matcha:

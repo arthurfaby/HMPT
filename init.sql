@@ -1,4 +1,4 @@
-CREATE TABLE "users"(
+CREATE TABLE IF NOT EXISTS "users"(
     "id" SERIAL PRIMARY KEY,
     "email" VARCHAR(255) NOT NULL,
     "username" VARCHAR(255) NOT NULL,
@@ -18,37 +18,37 @@ CREATE TABLE "users"(
         "online" BOOLEAN,
         "last_online_date" DATE 
 );
-CREATE TABLE "notifications"(
+CREATE TABLE IF NOT EXISTS "notifications"(
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "content" TEXT NOT NULL,
     "seen" BOOLEAN NOT NULL,
     "date" DATE NOT NULL
 );
-CREATE TABLE "histories"(
+CREATE TABLE IF NOT EXISTS "histories"(
     "id" SERIAL PRIMARY KEY,
     "visited_id" BIGINT NOT NULL,
     "visitor_id" BIGINT NOT NULL,
     "date" DATE NOT NULL
 );
-CREATE TABLE "blocks"(
+CREATE TABLE IF NOT EXISTS "blocks"(
     "id" SERIAL PRIMARY KEY,
     "blocked_id" BIGINT NOT NULL,
     "blocker_id" BIGINT NOT NULL
 );
-CREATE TABLE "reports"(
+CREATE TABLE IF NOT EXISTS "reports"(
     "id" SERIAL PRIMARY KEY,
     "reported_id" BIGINT NOT NULL,
     "reporter_id" BIGINT NOT NULL
 );
-CREATE TABLE "matches"(
+CREATE TABLE IF NOT EXISTS "matches"(
     "id" SERIAL PRIMARY KEY,
     "liked_id" BIGINT NOT NULL,
     "liker_id" BIGINT NOT NULL,
     "matched" BOOLEAN NOT NULL,
     "chat_id" BIGINT NULL
 );
-CREATE TABLE "messages"(
+CREATE TABLE IF NOT EXISTS "messages"(
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "content" TEXT NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE "messages"(
     "seen" BOOLEAN NOT NULL,
     "date" DATE NOT NULL
 );
-CREATE TABLE "preferences"(
+CREATE TABLE IF NOT EXISTS "preferences"(
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "age_gap_min" SMALLINT NOT NULL,
@@ -67,13 +67,13 @@ CREATE TABLE "preferences"(
         ("sexual_preference" IN('heterosexual', 'homosexual', 'bisexual')) NOT NULL DEFAULT 'bisexual',
         "location" JSON NOT NULL
 );
-CREATE TABLE "chats"(
+CREATE TABLE IF NOT EXISTS "chats"(
     "id" SERIAL PRIMARY KEY,
     "user1_id" BIGINT NOT NULL,
     "user2_id" BIGINT NOT NULL
 );
 
-CREATE TABLE "sessions"(
+CREATE TABLE IF NOT EXISTS "sessions"(
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "token" VARCHAR(255) NOT NULL
