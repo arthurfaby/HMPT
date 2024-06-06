@@ -1,7 +1,6 @@
-import User from "../types/user";
-import { useAccountStore } from "../store";
+import { useAccountStore } from "@/store";
 import { useCallback } from "react";
-import { getUser, postLogin } from "../services/api/authApi";
+import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
 
 export enum AuthStatus {
@@ -12,7 +11,7 @@ export enum AuthStatus {
 
 export function useAuth() {
   const { account, setAccount } = useAccountStore();
-  let status = AuthStatus.Unknown;
+  let status: AuthStatus;
 
   switch (account) {
     case null:

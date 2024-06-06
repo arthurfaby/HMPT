@@ -1,9 +1,7 @@
 import { useState, FormEvent, useEffect } from "react";
-import { getUser, postLogin } from "../../../../services/api/authApi";
-import User from "../../../../types/user";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/loginForm.css";
-import { AuthStatus, useAuth } from "../../../../hooks/useAuth";
+import { AuthStatus, useAuth } from "@/hooks/useAuth";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");

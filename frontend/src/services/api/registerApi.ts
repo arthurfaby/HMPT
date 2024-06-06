@@ -1,7 +1,5 @@
-import ky from 'ky'
+import ky from "ky";
 
-export default async function postRegister(user: any): Promise<Response>{
-
-    return await ky.post('http://localhost:5000/register', {json: user})
-
+export default async function postRegister(user: any): Promise<Response> {
+  return ky.post("http://localhost:5000/register", { json: user });
 }
