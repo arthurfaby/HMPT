@@ -3,7 +3,6 @@ import postRegister from "../../../../services/api/registerApi";
 import { useNavigate } from "react-router-dom";
 import "../../login/styles/loginForm.css";
 import { useAuth, AuthStatus } from "../../../../hooks/useAuth";
-import { toast } from "sonner";
 
 export default function Form() {
 
@@ -12,7 +11,6 @@ export default function Form() {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const {Authenticate, status} = useAuth()
-    console.log("prout")
     useEffect(() => {
         Authenticate()
         if (status === AuthStatus.Authenticated) {
@@ -26,15 +24,13 @@ export default function Form() {
             email,
             password
         }
-        console.log("user :", user)
-        const response = await postRegister(user)
-        if (response.ok)
-        {
-            console.log("response :", response)
-            navigate("/login")
-        }
+        // const response = await postRegister(user)
+        // if (response.ok)
+        // {
+        //     console.log("response :", response)
+        //     navigate("/login")
+        // }
     }
-  };
 
   const onChangeUsername = (event: FormEvent<HTMLInputElement>) => {
     setUsername(event.currentTarget.value);

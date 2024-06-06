@@ -1,7 +1,7 @@
 import ky from 'ky'
 
-export default async function postRegister(user: any): Promise<Response>{
+export default async function postRegister(username: string, email: string, password: string): Promise<string>{
 
-    return await ky.post('http://localhost:5000/register', {json: user})
+    return (await ky.post('http://localhost:5000/register', {json: {username, email, password}})).text()
 
 }

@@ -3,6 +3,7 @@ import { useAccountStore } from "../store";
 import { useCallback } from "react";
 import { getUser, postLogin } from "../services/api/authApi";
 import { toast } from "sonner";
+import postRegister from "@/services/api/registerApi";
 
 export enum AuthStatus {
   Unknown = 0,
@@ -42,11 +43,16 @@ export function useAuth() {
     toast.success("You are now logged in.");
   }, []);
 
+  const register = useCallback(async (username: string, email: string, password: string) => {
+    await postRegister(username, email, password).then(setAccount);
+  }, [])
+
   return {
     account,
     status,
     Authenticate,
     login,
     logout,
+    register
   };
 }
