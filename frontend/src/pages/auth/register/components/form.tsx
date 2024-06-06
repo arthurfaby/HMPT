@@ -3,33 +3,34 @@ import postRegister from "../../../../services/api/registerApi";
 import { useNavigate } from "react-router-dom";
 import "../../login/styles/loginForm.css";
 import { useAuth, AuthStatus } from "../../../../hooks/useAuth";
+import { toast } from "sonner";
 
 export default function Form() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { Authenticate, status } = useAuth();
 
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    const {Authenticate, status} = useAuth()
-    useEffect(() => {
-        Authenticate()
-        if (status === AuthStatus.Authenticated) {
-            navigate('/home');
-        }
-    }, [status, navigate, Authenticate]);
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const user = {
-            username,
-            email,
-            password
-        }
-        // const response = await postRegister(user)
-        // if (response.ok)
-        // {
-        //     console.log("response :", response)
-        //     navigate("/login")
-        // }
+  useEffect(() => {
+    Authenticate();
+    if (status === AuthStatus.Authenticated) {
+      navigate("/");
+    }
+  }, [status, navigate]);
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const user = {
+      username,
+      email,
+      password,
+    };
+    const response = await postRegister(username, email, password);
+    if (response) {
+      navigate("/login");
+      toast.success(
+        "Votre compte a bien été créé. Connectew-vous pour accéder à l'application.",
+      );
     }
 
   const onChangeUsername = (event: FormEvent<HTMLInputElement>) => {
@@ -47,7 +48,7 @@ export default function Form() {
   return (
     <div className="wrapper">
       <form onSubmit={handleSubmit}>
-        <h1>Register</h1>
+        <h1>Créer un compte</h1>
         <div className="input-box">
           <input
             type="text"
@@ -75,8 +76,9 @@ export default function Form() {
             onChange={onChangePassword}
           />
         </div>
-        <input type="submit" className="btn" />
+        <input type="submit" className="btn" value="Créer un compte" />
       </form>
     </div>
   );
+}
 }

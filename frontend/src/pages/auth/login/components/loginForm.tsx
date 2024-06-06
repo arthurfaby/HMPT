@@ -7,28 +7,54 @@ type Props = {
     className: string
 }
 
-export default function LoginForm({className}: Props) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    const {status, login, Authenticate} = useAuth()
-    console.log(status)
-    useEffect(() => {
-        Authenticate()
-        if (status === AuthStatus.Authenticated) {
-            navigate('/home');
-        }
-    }, [status, navigate]);
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        login(username, password)
+export default function LoginForm() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { status, login, Authenticate } = useAuth();
+  useEffect(() => {
+    Authenticate();
+    if (status === AuthStatus.Authenticated) {
+      navigate("/");
     }
-    return (
-            <form onSubmit={handleSubmit} className={"flex flex-col gap-5 p-4 " + className }>
-                <h1 className="text-center">Login</h1>
-                    <Input type="text" placeholder="login" name="username" value={username} onChange={(event) => setUsername(event.currentTarget.value)} className=""/> 
-                    <Input type="password" placeholder="password" name="password" value={password} onChange={(event) => setPassword(event.currentTarget.value)}/>
-                    <button type="submit" className="btn">login</button>
-            </form>
-        );
+  }, [status, navigate]);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    login(username, password);
+  };
+  return (
+    <div className="wrapper">
+      <form onSubmit={handleSubmit}>
+        <h1>Se connecter</h1>
+        <div className="input-box">
+          <input
+            type="text"
+            placeholder="login"
+            name="username"
+            value={username}
+            onChange={(event) => setUsername(event.currentTarget.value)}
+          />
+        </div>
+        <div className="input-box">
+          <input
+            type="password"
+            placeholder="password"
+            name="password"
+            value={password}
+            onChange={(event) => setPassword(event.currentTarget.value)}
+          />
+        </div>
+        <div>
+          <button type="submit" className="btn">
+            Se connecter
+          </button>
+        </div>
+        <div className="link-register">
+          <p>
+            Pas encore de compte ?<Link to="/register">Créer un compte</Link>{" "}
+          </p>
+        </div>
+      </form>
+    </div>
+  );
 }

@@ -13,10 +13,10 @@ export function Logout() {
         logout();
       })
       .catch(() => {
-        toast.error("You are not logged in.");
+        toast.error("Vous n'êtes pas connecté.");
         logout();
       });
   }, []);
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/" />;
 }

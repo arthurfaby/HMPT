@@ -6,21 +6,22 @@ import {
     DialogClose,
 }from "@/components/ui/dialog"
 import "./styles/loginForm.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/useAuth";
+import { AuthStatus, useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 
 
 export default function Login() {
 
-    const {login } = useAuth()
+    const {login, status} = useAuth()
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = (username: string, password: string) => {
-        login(username, password)
+       login(username, password)
     }
     return (
         <Dialog>
