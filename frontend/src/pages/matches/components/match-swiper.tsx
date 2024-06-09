@@ -102,6 +102,14 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
 
   const handleReport = () => {};
 
+  if (users.length === 0) {
+    return (
+      <span className="text-xl font-bold text-primary">
+        Aucun utilisateur à afficher.
+      </span>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
