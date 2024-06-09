@@ -49,7 +49,7 @@ export function MatchCard({
             <span>{nextUser.biography.substring(0, 25) + "..."}</span>
             <div className="flex flex-wrap gap-1">
               {nextUser.interests.map((interest) => {
-                return <Badge>{interest}</Badge>;
+                return <Badge key={nextUser.id + interest}>{interest}</Badge>;
               })}
             </div>
           </AspectRatio>
@@ -78,7 +78,7 @@ export function MatchCard({
           <span>{user.biography.substring(0, 25) + "..."}</span>
           <div className="flex flex-wrap gap-1">
             {user.interests.map((interest) => {
-              return <Badge>{interest}</Badge>;
+              return <Badge key={user.id + interest}>{interest}</Badge>;
             })}
           </div>
         </AspectRatio>
