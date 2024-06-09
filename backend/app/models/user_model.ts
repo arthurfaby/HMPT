@@ -5,10 +5,15 @@ import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
 import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
-import { GENDERS, Gender } from "../types/gender_type";
+import { Gender, GENDERS } from "../types/gender_type";
 import { Location } from "../types/geolocation_type";
 
 export const USER_TABLE_NAME = "users";
+
+type UserDtoArrayAsString = Omit<UserDto, "interests" | "pictures"> & {
+  interests: string;
+  pictures: string;
+};
 
 export class User extends AbstractModel<UserDto> {
   /**
@@ -315,17 +320,25 @@ export class User extends AbstractModel<UserDto> {
 
   public static async select(filters?: Filters): Promise<User[]> {
     const validatedTableName: string = validateInput(USER_TABLE_NAME);
-    let apiResponse: APIResponse<UserDto>;
+    let apiResponse: APIResponse<UserDtoArrayAsString>;
     if (filters) {
       const stringFilters: string = getStringFilters(filters);
-      apiResponse = await query<UserDto>(
+      apiResponse = await query<UserDtoArrayAsString>(
         `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`,
       );
     } else {
-      apiResponse = await query<UserDto>(`SELECT * FROM ${validatedTableName}`);
+      apiResponse = await query<UserDtoArrayAsString>(
+        `SELECT * FROM ${validatedTableName}`,
+      );
     }
-    const dtos: UserDto[] = apiResponse.rows;
-    const users: User[] = dtos.map((dto) => new User(dto));
-    return users;
+    const dtosString: UserDtoArrayAsString[] = apiResponse.rows;
+    const dtos: UserDto[] = dtosString.map((dtoString) => {
+      return {
+        ...dtoString,
+        interests: JSON.parse(dtoString.interests),
+        pictures: JSON.parse(dtoString.pictures),
+      };
+    });
+    return dtos.map((dto) => new User(dto));
   }
 }
