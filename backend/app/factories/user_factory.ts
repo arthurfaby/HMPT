@@ -34,11 +34,14 @@ class UserFactory {
     }
 
     return {
-      username: overrides?.username || faker.internet.userName(),
+      username:
+        overrides?.username || faker.internet.userName().replace("'", ""),
       email: overrides?.email || faker.internet.email(),
       password: overrides?.password || faker.internet.password(),
-      first_name: overrides?.first_name || faker.person.firstName(),
-      last_name: overrides?.last_name || faker.person.lastName(),
+      first_name:
+        overrides?.first_name || faker.person.firstName().replace("'", ""),
+      last_name:
+        overrides?.last_name || faker.person.lastName().replace("'", ""),
       age: overrides?.age || faker.number.int({ min: 18, max: 99 }),
       biography:
         overrides?.biography || faker.lorem.words(15).substring(0, 512),
