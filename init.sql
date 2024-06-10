@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS "users"(
     "last_name" VARCHAR(255),
     "gender" VARCHAR(255) CHECK
         ("gender" IN('male', 'female', 'other')),
-        "biography" VARCHAR(255),
-        "interests" VARCHAR(255),
-        "pictures" VARCHAR(255),
+        "biography" VARCHAR(512),
+        "interests" TEXT,
+        "pictures" TEXT,
         "verified" BOOLEAN,
         "fame_rating" DECIMAL(8, 2),
         "geolocation" JSON,
