@@ -1,13 +1,12 @@
 import { Router, Request, Response } from "express";
-import db from "../database";
 import { User } from "../models/user_model";
 import { Session } from "../models/session_model";
 import { SessionDto } from "../dtos/session_dto";
+import bcrypt from "bcryptjs";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-  //const result = await db.query('SELECT username FROM users')
   const users = await User.select({
     username: {
       equal: req.body.username,
@@ -18,7 +17,8 @@ router.post("/", async (req: Request, res: Response) => {
     return;
   }
   const { password, id } = users[0];
-  if (password === req.body.password) {
+  const compare = await bcrypt.compare(req.body.password, password);
+  if (compare) {
     const session = new Session({
       user_id: id,
       token: req.sessionID,
