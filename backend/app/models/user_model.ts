@@ -324,11 +324,11 @@ export class User extends AbstractModel<UserDto> {
     if (filters) {
       const stringFilters: string = getStringFilters(filters);
       apiResponse = await query<UserDtoArrayAsString>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`,
+        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
       );
     } else {
       apiResponse = await query<UserDtoArrayAsString>(
-        `SELECT * FROM ${validatedTableName}`,
+        `SELECT * FROM ${validatedTableName}`
       );
     }
     const dtosString: UserDtoArrayAsString[] = apiResponse.rows;
