@@ -6,6 +6,7 @@ import auth from "../middleware/authentication";
 import logout from "./logout.route";
 import factory_user from "./factories/user.route";
 import users from "./users.route";
+import matches from "./matches/index";
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use("/login", login);
 router.use("/logout", auth, logout);
 router.use("/factories", factory_user);
 router.use("/users", users);
+router.use("/matches", auth, matches);
 
 export default router;
