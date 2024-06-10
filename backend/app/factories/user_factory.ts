@@ -40,7 +40,8 @@ class UserFactory {
       first_name: overrides?.first_name || faker.person.firstName(),
       last_name: overrides?.last_name || faker.person.lastName(),
       age: overrides?.age || faker.number.int({ min: 18, max: 99 }),
-      biography: overrides?.biography || faker.lorem.words(15),
+      biography:
+        overrides?.biography || faker.lorem.words(15).substring(0, 512),
       fame_rating:
         overrides?.fame_rating ||
         faker.number.float({ min: 0, max: 5, fractionDigits: 2 }),
