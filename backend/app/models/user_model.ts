@@ -10,7 +10,7 @@ import { Location } from "../types/geolocation_type";
 
 export const USER_TABLE_NAME = "users";
 
-type UserDtoArrayAsString = Omit<UserDto, "interests" | "pictures"> & {
+export type UserDtoArrayAsString = Omit<UserDto, "interests" | "pictures"> & {
   interests: string;
   pictures: string;
 };
