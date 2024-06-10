@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Flag, Heart, X } from "lucide-react";
 import { UserDto } from "@/dtos/user_dto";
@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { animateValue } from "@/utils/animateValue";
 import {
   Tooltip,
   TooltipContent,
@@ -23,30 +22,13 @@ type MatchSwiperProps = {
   users: UserDto[];
 };
 
-const MAX_TRANSLATE_VALUE = 400;
+type SwipeState = "like" | "dislike";
 
 export function MatchSwiper({ users }: MatchSwiperProps) {
   const [activeUser, setActiveUser] = useState(0);
-  const [translateValue, setTranslateValue] = useState(0);
-  const [opacity, setOpacity] = useState(1);
   const [canSwipe, setCanSwipe] = useState(true);
 
-  useEffect(() => {
-    setTranslateValue(0);
-  }, [activeUser]);
-
-  useEffect(() => {
-    if (translateValue === 0) {
-      setOpacity(1);
-      return;
-    }
-    setOpacity(
-      (MAX_TRANSLATE_VALUE - Math.abs(translateValue)) / MAX_TRANSLATE_VALUE -
-        0.1,
-    );
-  }, [translateValue]);
-
-  const handleSwipeRight = () => {
+  const handleSwipe = (swipeState: SwipeState) => {
     if (!canSwipe) {
       toast.error("Veuillez attendre avant de swipe à nouveau.", {
         position: "top-center",
@@ -54,54 +36,16 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
       return;
     }
     setCanSwipe(false);
-    animateValue(
-      0,
-      MAX_TRANSLATE_VALUE,
-      (value) => {
-        setTranslateValue(value);
-      },
-      () => {
-        if (users[activeUser + 1]) {
-          setActiveUser(activeUser + 1);
-        } else {
-          setActiveUser(0);
-        }
-        setCanSwipe(true);
-      },
-      300,
-      [0.07, 0.86, 0.43, 0.98],
-    );
-  };
-
-  const handleSwipeLeft = () => {
-    if (!canSwipe) {
-      toast.error("Veuillez attendre avant de swipe à nouveau.", {
-        position: "top-center",
-      });
-      return;
+    //TODO: Add logic to swipe
+    if (users[activeUser + 1]) {
+      setActiveUser(activeUser + 1);
+    } else {
+      setActiveUser(0);
     }
-    setCanSwipe(false);
-    animateValue(
-      0,
-      MAX_TRANSLATE_VALUE,
-      (value) => {
-        setTranslateValue(-value);
-      },
-      () => {
-        if (users[activeUser - 1]) {
-          setActiveUser(activeUser - 1);
-        } else {
-          setActiveUser(users.length - 1);
-        }
-        setCanSwipe(true);
-      },
-      300,
-      [0.07, 0.86, 0.43, 0.98],
-    );
+    setCanSwipe(true);
   };
 
   const handleReport = () => {};
-
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">
@@ -114,8 +58,6 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
         <MatchCard
-          translateValue={translateValue}
-          opacity={opacity}
           user={users[activeUser]}
           nextUser={
             activeUser != users.length - 1 ? users[activeUser + 1] : users[0]
@@ -128,7 +70,9 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
             <TooltipTrigger asChild>
               <Button
                 size="icon"
-                onClick={handleSwipeLeft}
+                onClick={() => {
+                  handleSwipe("dislike");
+                }}
                 variant="destructive"
               >
                 <X />
@@ -174,7 +118,13 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="icon" onClick={handleSwipeRight} variant="success">
+              <Button
+                size="icon"
+                onClick={() => {
+                  handleSwipe("like");
+                }}
+                variant="success"
+              >
                 <Heart />
               </Button>
             </TooltipTrigger>

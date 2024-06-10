@@ -7,16 +7,9 @@ import { Badge } from "@/components/ui/badge";
 export type MatchCardProps = {
   user: UserDto;
   nextUser?: UserDto;
-  translateValue: number;
-  opacity: number;
 };
 
-export function MatchCard({
-  user,
-  nextUser,
-  translateValue,
-  opacity,
-}: MatchCardProps) {
+export function MatchCard({ user, nextUser }: MatchCardProps) {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleOpenProfile = () => {
@@ -32,7 +25,6 @@ export function MatchCard({
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            position: translateValue !== 0 ? "relative" : "absolute",
           }}
           onClick={handleOpenProfile}
           className="absolute min-w-72 cursor-pointer rounded-2xl p-4 transition-all"
@@ -61,10 +53,7 @@ export function MatchCard({
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          transform: `translateX(${translateValue}px)`,
-          position: translateValue === 0 ? "relative" : "absolute",
-          opacity: opacity,
-          transition: translateValue !== 0 ? "all ease .3s" : "",
+          position: "relative",
         }}
         onClick={handleOpenProfile}
         className="top-0 min-w-72 cursor-pointer rounded-2xl p-4 "
