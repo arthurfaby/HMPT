@@ -1,6 +1,6 @@
 import { UserDto } from "@/dtos/user_dto";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MatchProfile } from "@/pages/matches/components/match-profile";
 import { Badge } from "@/components/ui/badge";
 
