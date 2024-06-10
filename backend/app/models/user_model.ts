@@ -335,8 +335,8 @@ export class User extends AbstractModel<UserDto> {
     const dtos: UserDto[] = dtosString.map((dtoString) => {
       return {
         ...dtoString,
-        interests: JSON.parse(dtoString.interests),
-        pictures: JSON.parse(dtoString.pictures),
+        interests: dtoString.interests ? JSON.parse(dtoString.interests) : [],
+        pictures: dtoString.pictures ? JSON.parse(dtoString.pictures) : [],
       };
     });
     return dtos.map((dto) => new User(dto));
