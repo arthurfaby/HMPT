@@ -4,9 +4,9 @@ import { ChatDto } from "@/dtos/chat_dto";
 import { MessageDto } from "@/dtos/message_dto";
 import { UserDto } from "@/dtos/user_dto";
 import { useAuth } from "@/hooks/useAuth";
-import { kyGET } from "@/utils/ky/handlers";
+import { kyGET, kyPOST } from "@/utils/ky/handlers";
 import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Message } from "./components/message";
@@ -24,6 +24,7 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [chatData, setChatData] = useState<ChatData | null>(null);
   const [loading, setLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -51,12 +52,44 @@ export default function Chat() {
       }
       setChatData(chatData);
       setLoading(false);
+      scrollBottom();
     };
 
     fetchChatData();
   }, []);
 
-  const sendMessage = async () => {};
+  useEffect(() => {
+    scrollBottom();
+  }, [chatData]);
+
+  const scrollBottom = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!chatData) {
+      return;
+    }
+
+    const messageData = await kyPOST<
+      MessageDto | { error: string },
+      {
+        message: string;
+      }
+    >(`message/${chatData.chat.id}`, { message }, logout);
+    if (!messageData || (messageData && "error" in messageData)) {
+      toast.error(
+        `Impossible de récuperer le chat avec l'utilisateur ${userId}.`,
+      );
+      navigate("/");
+      return;
+    }
+    const chatDataCopy = { ...chatData };
+    chatDataCopy.messages.push(messageData);
+    setChatData(chatDataCopy);
+  };
 
   return (
     <FullHeightContainer
@@ -74,10 +107,14 @@ export default function Chat() {
               Chat avec {chatData?.user.first_name} !
             </div>
           </div>
-          <div className="mx-auto flex h-[80%] w-full max-w-3xl flex-col justify-end gap-2 overflow-y-auto  p-4">
-            {chatData?.messages.map((message) => {
+          <div
+            ref={containerRef}
+            className="scroll mx-auto flex h-[80%] w-full max-w-3xl flex-col gap-2 overflow-y-auto  p-4"
+          >
+            {chatData?.messages.map((message, index) => {
               return (
                 <Message
+                  seen={index === chatData.messages.length - 1 && message.seen}
                   key={message.id}
                   isMe={message.user_id != parseInt(userId!)}
                 >
@@ -93,7 +130,9 @@ export default function Chat() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <Button>Envoyer</Button>
+            <Button disabled={message.length === 0} onClick={sendMessage}>
+              Envoyer
+            </Button>
           </div>
         </div>
       )}
