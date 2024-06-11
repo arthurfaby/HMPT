@@ -18,10 +18,10 @@ export type UserDtoArrayAsString = Omit<UserDto, "interests" | "pictures"> & {
 export class User extends AbstractModel<UserDto> {
   /**
    * The user's id
-   * @type {number}
+   * @type {number | undefined}
    * @private
    */
-  private _id: number;
+  private _id?: number;
 
   /**
    * The user's email
@@ -135,7 +135,7 @@ export class User extends AbstractModel<UserDto> {
    */
   private _lastOnlineDate: Date;
 
-  public get id(): number {
+  public get id(): number | undefined {
     return this._id;
   }
 

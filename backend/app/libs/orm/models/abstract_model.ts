@@ -1,6 +1,7 @@
 import { AbstractDto } from "../dtos/abstract_dto";
 import query from "../queries/abstract_query";
 import create from "../queries/create_query";
+import { APIResponse } from "../types/response_type";
 import validateInput from "../utils/check_injections";
 import { getParsedValue } from "../utils/get_parsed_value";
 
@@ -26,6 +27,10 @@ export abstract class AbstractModel<T extends AbstractDto> {
     return this._dto;
   }
 
+  public get id(): number | undefined {
+    return this._dto.id;
+  }
+
   /**
    * @constructor
    * @param {T} dto The data transfer object
@@ -37,8 +42,8 @@ export abstract class AbstractModel<T extends AbstractDto> {
     this.tableName = tableName;
   }
 
-  public create() {
-    return create(this.tableName, this._dto);
+  public create(): Promise<APIResponse<typeof this._dto>> {
+    return create<typeof this._dto>(this.tableName, this._dto);
   }
 
   public async delete() {

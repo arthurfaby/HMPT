@@ -24,13 +24,6 @@ export class Match extends AbstractModel<MatchDto> {
   private _likerId: number;
 
   /**
-   * The match status
-   * @type {boolean}
-   * @private
-   */
-  private _match: boolean;
-
-  /**
    * The chat id
    * @type {number}
    * @private
@@ -55,15 +48,6 @@ export class Match extends AbstractModel<MatchDto> {
     this._likerId = value;
   }
 
-  public get match(): boolean {
-    return this._match;
-  }
-
-  public set match(value: boolean) {
-    this._dto.match = value;
-    this._match = value;
-  }
-
   public get chatId(): number | undefined {
     return this._chatId;
   }
@@ -77,7 +61,6 @@ export class Match extends AbstractModel<MatchDto> {
     super(dto, MATCH_TABLE_NAME);
     this._likedId = dto.liked_id;
     this._likerId = dto.liker_id;
-    this._match = dto.match;
     this._chatId = dto.chat_id;
   }
 

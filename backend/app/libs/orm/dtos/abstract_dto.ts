@@ -1,3 +1,3 @@
 export interface AbstractDto {
-  id: number;
+  id?: number;
 }
