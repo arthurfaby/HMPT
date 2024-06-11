@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import Register from "./pages/auth/register/register";
 import "./App.css";
 import Home from "./pages/home/home";
@@ -9,6 +13,8 @@ import Profile from "./pages/profile/profile";
 import { ThemeProvider } from "@/services/theme/theme";
 import { Logout } from "@/pages/auth/logout/logout";
 import { Matches } from "./pages/matches/matches";
+import path from "path";
+import Chat from "./pages/chat/chat";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +35,14 @@ const router = createBrowserRouter([
             path: "/matches",
             element: <Matches />,
           },
+          {
+            path: "/chat/:userId",
+            element: <Chat />,
+          },
+          {
+            path: "*",
+            element: <Navigate to={"/matches"} />,
+          },
         ],
       },
       {
@@ -38,15 +52,19 @@ const router = createBrowserRouter([
             path: "/",
             element: <Home />,
           },
+          {
+            path: "/register",
+            element: <Register />,
+          },
+          {
+            path: "/login",
+            element: <Login />,
+          },
+          {
+            path: "*",
+            element: <Navigate to={"/"} />,
+          },
         ],
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
       },
     ],
   },
