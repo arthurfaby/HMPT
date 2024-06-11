@@ -14,7 +14,7 @@ const create = async <T extends AbstractDto>(tableName: string, dto: T) => {
       return getParsedValue(validatedValue);
     })
     .join(", ");
-  return await query(
+  return await query<T>(
     `INSERT INTO ${validatedTableName} (${parsedKeys}) VALUES (${parsedValues});`
   );
 };
