@@ -15,7 +15,7 @@ type ChatData = {
   messages: MessageDto[];
 };
 
-router.get("/:userId", async (req: Request, res: Response) => {
+router.get("/chatData/:userId", async (req: Request, res: Response) => {
   const authUser = await getAuthenticatedUser(req.sessionID);
   if (!authUser || authUser.id == null) {
     return res.status(401).send({

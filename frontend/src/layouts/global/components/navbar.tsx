@@ -5,12 +5,34 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
+import { MessageCircleHeart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { kyGET } from "@/utils/ky/handlers";
 
 export function Navbar() {
-  const { status } = useAuth();
+  const [chatUserIds, setChatUserIds] = useState<
+    { userId: number; firstName: string }[]
+  >([]);
+
+  const { logout, status } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchChatUserIds = async () => {
+      const chatUserIdsData = await kyGET<
+        { userId: number; firstName: string }[] | { error: string }
+      >("chat/chatUserIds", logout);
+      if (!chatUserIdsData || (chatUserIdsData && "error" in chatUserIdsData)) {
+        return;
+      }
+      setChatUserIds(chatUserIdsData);
+    };
+
+    fetchChatUserIds();
+  }, [status]);
 
   return (
     <>
@@ -43,6 +65,35 @@ export function Navbar() {
             </>
           )}
           <ToggleTheme />
+          {status === AuthStatus.Authenticated && (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="icon" variant="ghost">
+                  <MessageCircleHeart className="h-6 w-6" />
+                  <span className="sr-only">Bouton pour ouvrir le menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                {chatUserIds.map((chatUserId) => {
+                  return (
+                    <SheetClose asChild>
+                      <Button
+                        onClick={() => {
+                          navigate(`/chat/${chatUserId.userId}`);
+                          // Must have this to refresh the page
+                          navigate(0);
+                        }}
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
+                        Chat avec {chatUserId.firstName}
+                      </Button>
+                    </SheetClose>
+                  );
+                })}
+              </SheetContent>
+            </Sheet>
+          )}
           <Sheet>
             <SheetTrigger asChild>
               <Button className="sm:hidden" size="icon" variant="ghost">

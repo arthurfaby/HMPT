@@ -38,7 +38,7 @@ export default function Chat() {
 
     const fetchChatData = async () => {
       const chatData = await kyGET<ChatData | { error: string }>(
-        `chat/${userId}`,
+        `chat/chatData/${userId}`,
         logout,
       );
       if (!chatData || (chatData && "error" in chatData)) {
