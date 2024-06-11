@@ -2,13 +2,16 @@ import { FullHeightContainer } from "@/components/utils/full-height-container";
 import { UserDto } from "@/dtos/user_dto";
 import { MatchSwiper } from "@/pages/matches/components/match-swiper";
 import { useEffect, useState } from "react";
-import { getUsersToMatch } from "@/services/api/users/getUsers";
+import { kyGET } from "@/utils/ky/handlers";
+import { useAuth } from "@/hooks/useAuth";
+
 export function Matches() {
   const [users, setUsers] = useState<UserDto[]>([]);
+  const { logout } = useAuth();
 
   useEffect(() => {
-    getUsersToMatch().then((users) => {
-      setUsers(users);
+    kyGET<UserDto[]>("matches/usersToMatch", logout).then((users) => {
+      setUsers(users ?? []);
     });
   }, []);
 

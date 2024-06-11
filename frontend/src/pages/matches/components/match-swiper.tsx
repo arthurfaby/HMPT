@@ -17,6 +17,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { kyPOST } from "@/utils/ky/handlers";
+import { useAuth } from "@/hooks/useAuth";
+import { MatchDto } from "@/dtos/match_dto";
 
 type MatchSwiperProps = {
   users: UserDto[];
@@ -27,8 +30,26 @@ type SwipeState = "like" | "dislike";
 export function MatchSwiper({ users }: MatchSwiperProps) {
   const [activeUser, setActiveUser] = useState(0);
   const [canSwipe, setCanSwipe] = useState(true);
+  const { logout } = useAuth();
 
-  const handleSwipe = (swipeState: SwipeState) => {
+  const fetchMatch = async (
+    swipeState: SwipeState,
+  ): Promise<MatchDto | { error: string }> => {
+    if (swipeState === "like") {
+      const match = await kyPOST<MatchDto, {}>(
+        `matches/likeUser/${users[activeUser].id}`,
+        {},
+        logout,
+      );
+      if (!match) {
+        return { error: "Erreur lors du like de l'utilisateur" };
+      }
+      return match;
+    }
+    return { error: "Dislike non implenté" };
+  };
+
+  const handleSwipe = async (swipeState: SwipeState) => {
     if (!canSwipe) {
       toast.error("Veuillez attendre avant de swipe à nouveau.", {
         position: "top-center",
@@ -37,12 +58,36 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     }
     setCanSwipe(false);
     //TODO: Add logic to swipe
-    if (users[activeUser + 1]) {
-      setActiveUser(activeUser + 1);
+    const data = await fetchMatch(swipeState);
+    if ("error" in data) {
+      toast.error(data.error, {
+        position: "top-center",
+      });
+      setCanSwipe(true);
+      return;
     } else {
-      setActiveUser(0);
+      // If chat_id is present, it means a chat has been created
+      // So the user has been matched
+      if (data.chat_id) {
+        toast.success("ITS A MATCH !", {
+          position: "top-center",
+        });
+      } else {
+        toast.success("Utilisateur liké", {
+          position: "top-center",
+        });
+      }
+
+      // Remove the user from the list
+      users.splice(activeUser, 1);
+
+      if (users[activeUser]) {
+        setActiveUser(activeUser);
+      } else {
+        setActiveUser(0);
+      }
+      setCanSwipe(true);
     }
-    setCanSwipe(true);
   };
 
   const handleReport = () => {};
