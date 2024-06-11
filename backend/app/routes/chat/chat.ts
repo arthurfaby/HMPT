@@ -49,7 +49,7 @@ router.get("/:userId", async (req: Request, res: Response) => {
     });
   }
 
-  const chat = (
+  const chat1 = (
     await Chat.select({
       user1_id: {
         equal: authUser.id,
@@ -59,6 +59,19 @@ router.get("/:userId", async (req: Request, res: Response) => {
       },
     })
   )[0];
+
+  const chat2 = (
+    await Chat.select({
+      user1_id: {
+        equal: parseInt(userId),
+      },
+      user2_id: {
+        equal: authUser.id,
+      },
+    })
+  )[0];
+
+  const chat = chat1 || chat2;
 
   if (!chat || chat.id == null) {
     return res.status(404).send({
@@ -71,6 +84,13 @@ router.get("/:userId", async (req: Request, res: Response) => {
       equal: chat.id,
     },
   });
+
+  for (const message of messages) {
+    if (message.seen === false && message.userId != authUser.id) {
+      message.seen = true;
+      await message.update();
+    }
+  }
 
   const chatData: ChatData = {
     user: user.dto,
