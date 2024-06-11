@@ -7,6 +7,7 @@ import logout from "./logout.route";
 import factory_user from "./factories/user.route";
 import users from "./users.route";
 import matches from "./matches/index";
+import chat from "./chat/index";
 
 const router = Router();
 
@@ -15,7 +16,8 @@ router.use("/me", auth, me);
 router.use("/login", login);
 router.use("/logout", auth, logout);
 router.use("/factories", factory_user);
-router.use("/users", users);
+router.use("/users", auth, users);
+router.use("/chat", auth, chat);
 router.use("/matches", auth, matches);
 
 export default router;
