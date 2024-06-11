@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import query from "../../libs/orm/queries/abstract_query";
-import { UserDto } from "../../dtos/user_dto";
 import { UserDtoArrayAsString } from "../../models/user_model";
 import { parseUserQueryResponse } from "../../utils/parsing/parseUserQueryResponse";
 
@@ -9,7 +8,6 @@ const router = Router();
 
 router.get("/usersToMatch", async (req: Request, res: Response) => {
   const authUser = await getAuthenticatedUser(req.sessionID);
-  console.log(req.sessionID);
   if (!authUser) {
     return res.status(401).send({
       error: "Unauthorized",
