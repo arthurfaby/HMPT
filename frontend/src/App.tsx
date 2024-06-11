@@ -3,11 +3,12 @@ import Register from "./pages/auth/register/register";
 import "./App.css";
 import Home from "./pages/home/home";
 import GlobalLayout from "./layouts/global/global-layout";
-import AuthGuard from "./pages/auth/authGuard";
+import { AuthGuard, UnAuthGuard } from "./pages/auth/authGuards";
 import Login from "./pages/auth/login/login";
 import Profile from "./pages/profile/profile";
 import { ThemeProvider } from "@/services/theme/theme";
 import { Logout } from "@/pages/auth/logout/logout";
+import { Matches } from "./pages/matches/matches";
 
 const router = createBrowserRouter([
   {
@@ -24,11 +25,20 @@ const router = createBrowserRouter([
             path: "/logout",
             element: <Logout />,
           },
+          {
+            path: "/matches",
+            element: <Matches />,
+          },
         ],
       },
       {
-        path: "/",
-        element: <Home />,
+        element: <UnAuthGuard />,
+        children: [
+          {
+            path: "/",
+            element: <Home />,
+          },
+        ],
       },
       {
         path: "/register",
