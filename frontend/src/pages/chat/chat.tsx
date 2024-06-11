@@ -5,9 +5,8 @@ import { MessageDto } from "@/dtos/message_dto";
 import { UserDto } from "@/dtos/user_dto";
 import { useAuth } from "@/hooks/useAuth";
 import { kyGET, kyPOST } from "@/utils/ky/handlers";
-import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Message } from "./components/message";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,6 @@ type ChatData = {
 
 // Route : /chat/:userId
 export default function Chat() {
-  const [messages, setMessages] = useState<MessageDto[]>([]);
   const [message, setMessage] = useState("");
   const [chatData, setChatData] = useState<ChatData | null>(null);
   const [loading, setLoading] = useState(true);
