@@ -6,7 +6,7 @@ export type MessageProps = {
 
 export function Message({ children, isMe, seen }: MessageProps) {
   return (
-    <div className="rounded-md p-2">
+    <div className="rounded-md">
       {isMe ? (
         <div className="float-end flex flex-col items-end">
           <div className=" w-fit max-w-80 rounded-3xl rounded-br-sm bg-primary p-3 text-primary-foreground">
