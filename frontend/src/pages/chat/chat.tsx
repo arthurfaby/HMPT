@@ -107,7 +107,7 @@ export default function Chat() {
           </div>
           <div
             ref={containerRef}
-            className="scroll mx-auto flex h-[80%] w-full max-w-3xl flex-col gap-2 overflow-y-auto  p-4"
+            className="scroll mx-auto flex h-[80%] w-full max-w-3xl flex-col gap-1 overflow-y-auto  p-4"
           >
             {chatData?.messages.map((message, index) => {
               return (
