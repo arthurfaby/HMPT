@@ -1,4 +1,4 @@
-import { useAccountStore } from "@/store";
+import { useAccountStore } from "@/stores/account-store";
 import { useCallback } from "react";
 import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
