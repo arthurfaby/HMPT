@@ -11,6 +11,7 @@ import { AuthStatus, useAuth } from "@/hooks/useAuth";
 import { MessageCircleHeart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { kyGET } from "@/utils/ky/handlers";
+import { useMatchStore } from "@/stores/matches-store";
 
 export function Navbar() {
   const [chatUserIds, setChatUserIds] = useState<
@@ -18,6 +19,7 @@ export function Navbar() {
   >([]);
 
   const { logout, status } = useAuth();
+  const { matches } = useMatchStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export function Navbar() {
     };
 
     fetchChatUserIds();
-  }, [status]);
+  }, [status, matches]);
 
   return (
     <>
