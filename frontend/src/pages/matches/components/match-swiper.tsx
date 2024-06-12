@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { kyPOST } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
 import { MatchDto } from "@/dtos/match_dto";
+import { useMatchStore } from "@/stores/matches-store";
 
 type MatchSwiperProps = {
   users: UserDto[];
@@ -30,6 +31,7 @@ type SwipeState = "like" | "dislike";
 export function MatchSwiper({ users }: MatchSwiperProps) {
   const [activeUser, setActiveUser] = useState(0);
   const [canSwipe, setCanSwipe] = useState(true);
+  const { addMatch } = useMatchStore();
   const { logout } = useAuth();
 
   const fetchMatch = async (
@@ -72,6 +74,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         toast.success("ITS A MATCH !", {
           position: "top-center",
         });
+        addMatch();
       } else {
         toast.success("Utilisateur liké", {
           position: "top-center",
