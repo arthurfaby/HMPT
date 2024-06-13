@@ -3,7 +3,6 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import query from "../libs/orm/queries/abstract_query";
 import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 import { Gender, GENDERS } from "../types/gender_type";
 import { Location } from "../types/geolocation_type";
@@ -319,16 +318,16 @@ export class User extends AbstractModel<UserDto> {
   }
 
   public static async select(filters?: Filters): Promise<User[]> {
-    const validatedTableName: string = validateInput(USER_TABLE_NAME);
     let apiResponse: APIResponse<UserDtoArrayAsString>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
+      const [stringFilters, values] = getStringFilters(filters);
       apiResponse = await query<UserDtoArrayAsString>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${USER_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
       apiResponse = await query<UserDtoArrayAsString>(
-        `SELECT * FROM ${validatedTableName}`
+        `SELECT * FROM ${USER_TABLE_NAME}`
       );
     }
     const dtosString: UserDtoArrayAsString[] = apiResponse.rows;

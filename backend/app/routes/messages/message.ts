@@ -5,7 +5,6 @@ import query from "../../libs/orm/queries/abstract_query";
 import { Message } from "../../models/message_model";
 import { Chat } from "../../models/chat_model";
 import { io } from "../../app";
-import validateInput from "../../libs/orm/utils/check_injections";
 
 const router = Router();
 
@@ -69,7 +68,7 @@ router.post("/:chatId", async (req: Request, res: Response) => {
         equal: false,
       },
       content: {
-        equal: validateInput(messageContent),
+        equal: messageContent,
       },
     })
   )[0];

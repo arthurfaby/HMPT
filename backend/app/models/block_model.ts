@@ -3,7 +3,6 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import query from "../libs/orm/queries/abstract_query";
 import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 
 export const BLOCK_TABLE_NAME = "blocks";
@@ -48,17 +47,15 @@ export class Block extends AbstractModel<BlockDto> {
   }
 
   public static async select(filters?: Filters): Promise<Block[]> {
-    const validatedTableName: string = validateInput(BLOCK_TABLE_NAME);
     let apiResponse: APIResponse<BlockDto>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
+      const [stringFilters, values] = getStringFilters(filters);
       apiResponse = await query<BlockDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${BLOCK_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
-      apiResponse = await query<BlockDto>(
-        `SELECT * FROM ${validatedTableName}`
-      );
+      apiResponse = await query<BlockDto>(`SELECT * FROM ${BLOCK_TABLE_NAME}`);
     }
     const dtos: BlockDto[] = apiResponse.rows;
     const models: Block[] = dtos.map((dto) => new Block(dto));

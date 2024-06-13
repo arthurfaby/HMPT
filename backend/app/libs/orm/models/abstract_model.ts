@@ -2,7 +2,6 @@ import { AbstractDto } from "../dtos/abstract_dto";
 import query from "../queries/abstract_query";
 import create from "../queries/create_query";
 import { APIResponse } from "../types/response_type";
-import validateInput from "../utils/check_injections";
 import { getParsedValue } from "../utils/get_parsed_value";
 
 export abstract class AbstractModel<T extends AbstractDto> {
@@ -47,23 +46,20 @@ export abstract class AbstractModel<T extends AbstractDto> {
   }
 
   public async delete() {
-    return await query(
-      `DELETE FROM ${this.tableName} WHERE id = ${this._dto.id}`
-    );
+    return await query("DELETE FROM $1 WHERE id = $2", [
+      this.tableName,
+      this._dto.id,
+    ]);
   }
 
   public async update() {
-    const keys = Object.keys(this._dto)
-      .map((key) => validateInput(key))
-      .join(", ");
-    const values = Object.values(this._dto)
-      .map((value) => {
-        const validatedValue = validateInput(value);
-        return getParsedValue(validatedValue);
-      })
-      .join(", ");
+    const keys = Object.keys(this._dto).join(", ");
+    const values = Object.values(this._dto);
+    const valuesString = values.map((_, i) => `$${i + 1}`).join(", ");
+    const idString = `$${values.length + 1}`;
     return await query(
-      `UPDATE ${this.tableName} SET (${keys}) = (${values}) WHERE id = ${this._dto.id}`
+      `UPDATE ${this.tableName} SET (${keys}) = (${valuesString}) WHERE id = ${idString}`,
+      [...values, this._dto.id]
     );
   }
 }

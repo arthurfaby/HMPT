@@ -4,7 +4,6 @@ import { Session } from "../models/session_model";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-  console.log(req.sessionID);
   const sessions = await Session.select({
     token: {
       equal: req.sessionID,

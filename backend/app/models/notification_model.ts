@@ -3,7 +3,6 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import query from "../libs/orm/queries/abstract_query";
 import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 
 export const NOTIFICATION_TABLE_NAME = "notifications";
@@ -82,16 +81,16 @@ export class Notification extends AbstractModel<NotificationDto> {
   }
 
   public static async select(filters?: Filters): Promise<Notification[]> {
-    const validatedTableName: string = validateInput(NOTIFICATION_TABLE_NAME);
     let apiResponse: APIResponse<NotificationDto>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
+      const [stringFilters, values] = getStringFilters(filters);
       apiResponse = await query<NotificationDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${NOTIFICATION_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
       apiResponse = await query<NotificationDto>(
-        `SELECT * FROM ${validatedTableName}`
+        `SELECT * FROM ${NOTIFICATION_TABLE_NAME}`
       );
     }
     const dtos: NotificationDto[] = apiResponse.rows;

@@ -3,7 +3,6 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import query from "../libs/orm/queries/abstract_query";
 import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 
 export const MESSAGE_TABLE_NAME = "messages";
@@ -76,7 +75,7 @@ export class Message extends AbstractModel<MessageDto> {
   }
 
   public set date(value: Date) {
-    this._dto.date = value.toISOString().split("T")[0];
+    this._dto.date = value.toISOString();
     this._date = value;
   }
 
@@ -99,19 +98,30 @@ export class Message extends AbstractModel<MessageDto> {
   }
 
   public static async select(filters?: Filters): Promise<Message[]> {
-    const validatedTableName: string = validateInput(MESSAGE_TABLE_NAME);
     let apiResponse: APIResponse<MessageDto>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
+      const [stringFilters, values] = getStringFilters(filters);
       apiResponse = await query<MessageDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${MESSAGE_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
       apiResponse = await query<MessageDto>(
-        `SELECT * FROM ${validatedTableName}`
+        `SELECT * FROM ${MESSAGE_TABLE_NAME}`
       );
     }
     const dtos: MessageDto[] = apiResponse.rows;
+    dtos.forEach((dto) => {
+      if (typeof dto.id === "string") {
+        dto.id = parseInt(dto.id);
+      }
+      if (typeof dto.user_id === "string") {
+        dto.user_id = parseInt(dto.user_id);
+      }
+      if (typeof dto.chat_id === "string") {
+        dto.chat_id = parseInt(dto.chat_id);
+      }
+    });
     const models: Message[] = dtos.map((dto) => new Message(dto));
     return models;
   }

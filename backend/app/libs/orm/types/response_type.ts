@@ -1,9 +1,9 @@
 export type APIResponse<T> = {
   command: string;
   rowCount: number;
-  oid: number;
+  oid?: number;
   rows: T[];
-  fields: [
+  fields?: [
     {
       name: string;
       tableID: number;
@@ -14,5 +14,5 @@ export type APIResponse<T> = {
       format: string;
     },
   ];
-  rowAsArray: boolean;
+  rowAsArray?: boolean;
 };
