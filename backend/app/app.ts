@@ -8,7 +8,6 @@ import { User } from "./models/user_model";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { initIO } from "./sockets/init";
-import handleErrorMiddleware from "./middleware/error";
 
 // Create Express server
 const app = express(); // New express instance
