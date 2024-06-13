@@ -78,7 +78,7 @@ export function Navbar() {
               <SheetContent side="right">
                 {chatUserIds.map((chatUserId) => {
                   return (
-                    <SheetClose asChild>
+                    <SheetClose asChild key={chatUserId.userId}>
                       <Button
                         onClick={() => {
                           navigate(`/chat/${chatUserId.userId}`);

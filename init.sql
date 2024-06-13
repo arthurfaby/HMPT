@@ -51,13 +51,13 @@ CREATE TABLE IF NOT EXISTS "matches" (
     "id" SERIAL PRIMARY KEY,
     "liked_id" BIGINT NOT NULL,
     "liker_id" BIGINT NOT NULL,
-    "chat_id" BIGINT NULL,
+    "chat_id" BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS "dislikes" (
     "id" SERIAL PRIMARY KEY,
     "disliked_id" BIGINT NOT NULL,
-    "disliker_id" BIGINT NOT NULL,
+    "disliker_id" BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "messages" (
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS "messages" (
     "content" TEXT NOT NULL,
     "chat_id" BIGINT NOT NULL,
     "seen" BOOLEAN NOT NULL,
-    "date" DATE NOT NULL
+    "date" VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "preferences" (

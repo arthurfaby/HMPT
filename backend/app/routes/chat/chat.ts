@@ -92,6 +92,8 @@ router.get("/chatData/:userId", async (req: Request, res: Response) => {
     }
   }
 
+  messages.sort((m1, m2) => m1.date.getTime() - m2.date.getTime());
+
   const chatData: ChatData = {
     user: user.dto,
     chat: chat.dto,

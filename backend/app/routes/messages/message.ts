@@ -4,6 +4,8 @@ import { ChatDto } from "../../dtos/chat_dto";
 import query from "../../libs/orm/queries/abstract_query";
 import { Message } from "../../models/message_model";
 import { Chat } from "../../models/chat_model";
+import { io } from "../../app";
+import validateInput from "../../libs/orm/utils/check_injections";
 
 const router = Router();
 
@@ -52,8 +54,33 @@ router.post("/:chatId", async (req: Request, res: Response) => {
   });
 
   await message.create();
+  const messageWithId = (
+    await Message.select({
+      chat_id: {
+        equal: chatId,
+      },
+      user_id: {
+        equal: authUser.id,
+      },
+      date: {
+        equal: message.date.toISOString(),
+      },
+      seen: {
+        equal: false,
+      },
+      content: {
+        equal: validateInput(messageContent),
+      },
+    })
+  )[0];
+  if (!messageWithId || !messageWithId.id) {
+    return res.status(500).send({
+      error: "Internal server error",
+    });
+  }
+  io.to(`chat-${chatId}`).emit("message", messageWithId.dto);
 
-  return res.status(200).send(message.dto);
+  return res.status(200).send(messageWithId.dto);
 });
 
 export default router;

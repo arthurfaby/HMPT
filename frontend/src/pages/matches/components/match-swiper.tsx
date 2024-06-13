@@ -113,74 +113,47 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         />
       </div>
       <div className="flex w-full justify-around">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                onClick={() => {
-                  handleSwipe("dislike");
-                }}
-                variant="destructive"
-              >
-                <X />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Ne pas liker {users[activeUser].first_name}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="icon" onClick={handleReport} variant="outline">
-                    <Flag className="h-5 w-5" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="rounded-lg">
-                  <DialogTitle>
-                    Confirmez-vous que {users[activeUser].first_name} est un
-                    faux compte ?
-                  </DialogTitle>
-                  <div className="flex gap-2">
-                    <DialogClose asChild>
-                      <Button variant="secondary" className="grow">
-                        Annuler
-                      </Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button className="grow">Confirmer</Button>
-                    </DialogClose>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </TooltipTrigger>
-            <TooltipContent>
-              Signaler {users[activeUser].first_name} comme faux compte
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                onClick={() => {
-                  handleSwipe("like");
-                }}
-                variant="success"
-              >
-                <Heart />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Liker {users[activeUser].first_name}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          size="icon"
+          onClick={() => {
+            handleSwipe("dislike");
+          }}
+          variant="destructive"
+        >
+          <X />
+        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="icon" onClick={handleReport} variant="outline">
+              <Flag className="h-5 w-5" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="rounded-lg">
+            <DialogTitle>
+              Confirmez-vous que {users[activeUser].first_name} est un faux
+              compte ?
+            </DialogTitle>
+            <div className="flex gap-2">
+              <DialogClose asChild>
+                <Button variant="secondary" className="grow">
+                  Annuler
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button className="grow">Confirmer</Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Button
+          size="icon"
+          onClick={() => {
+            handleSwipe("like");
+          }}
+          variant="success"
+        >
+          <Heart />
+        </Button>
       </div>
     </div>
   );
