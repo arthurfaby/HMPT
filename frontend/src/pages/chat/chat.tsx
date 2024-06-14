@@ -42,6 +42,27 @@ export default function Chat() {
           return;
         }
         setMessages((prevMessages) => [...prevMessages, messageDto]);
+        if (messageDto.user_id == parseInt(userId!)) {
+          setTimeout(() => {
+            socket.emit("seen", messageDto);
+          }, 100);
+        }
+      }
+    },
+    [chat, messages],
+  );
+
+  const handleSeen = useCallback(
+    (messageDto: MessageDto) => {
+      if (chat && chat.id == messageDto.chat_id) {
+        setMessages((prevMessages) =>
+          prevMessages.map((m) => {
+            if (m.id == messageDto.id) {
+              return { ...m, seen: true };
+            }
+            return m;
+          }),
+        );
       }
     },
     [chat, messages],
@@ -50,24 +71,12 @@ export default function Chat() {
   useEffect(() => {
     if (chat) {
       socket.on("message", handleMessage);
+      socket.on("seen", handleSeen);
     }
-
-    // socket.on("seen", (message: MessageDto) => {
-    //   if (chatData?.chat.id == message.chat_id) {
-    //     const chatDataCopy = { ...chatData };
-    //     chatDataCopy.messages = chatDataCopy.messages.map((m) => {
-    //       if (m.id === message.id) {
-    //         return message;
-    //       }
-    //       return m;
-    //     });
-    //     setChatData(chatDataCopy);
-    //   }
-    // });
 
     return () => {
       socket.off("message", handleMessage);
-      // socket.off("seen");
+      socket.off("seen");
     };
   }, [chat]);
 
@@ -162,7 +171,7 @@ export default function Chat() {
               );
             })}
           </div>
-          <div className="mx-auto flex w-full max-w-3xl items-center  gap-2 overflow-y-auto  p-4">
+          <div className="mx-auto flex w-full max-w-3xl items-center gap-2  p-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault();

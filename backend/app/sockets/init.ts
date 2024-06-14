@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 import { io } from "../app";
 import getAuthenticatedUser from "../utils/auth/getAuthenticatedUser";
 import { initChatRooms } from "./rooms/chat";
+import { eventMessages } from "./events/messages";
 
 export function initIO() {
   io.on("connection", async (socket: Socket) => {
@@ -16,5 +17,6 @@ export function initIO() {
     }
 
     initChatRooms(socket, user);
+    eventMessages(socket);
   });
 }

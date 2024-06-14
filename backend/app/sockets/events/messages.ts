@@ -14,6 +14,7 @@ export function eventMessages(socket: Socket) {
     });
     messages[0].seen = true;
     await messages[0].update();
+
     socket.to(`chat-${messages[0].chatId}`).emit("seen", messages[0].dto);
   });
 }

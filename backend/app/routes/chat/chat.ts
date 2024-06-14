@@ -6,6 +6,7 @@ import { UserDto } from "../../dtos/user_dto";
 import { User } from "../../models/user_model";
 import { Chat } from "../../models/chat_model";
 import { Message } from "../../models/message_model";
+import { io } from "../../app";
 
 const router = Router();
 
@@ -89,6 +90,7 @@ router.get("/chatData/:userId", async (req: Request, res: Response) => {
     if (message.seen === false && message.userId != authUser.id) {
       message.seen = true;
       await message.update();
+      io.to(`chat-${chat.id}`).emit("seen", message.dto);
     }
   }
 
