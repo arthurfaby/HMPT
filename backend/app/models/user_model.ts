@@ -6,7 +6,7 @@ import { APIResponse } from "../libs/orm/types/response_type";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 import { Gender, GENDERS } from "../types/gender_type";
 import { Location } from "../types/geolocation_type";
-import  bcrypt from "bcryptjs" 
+import bcrypt from "bcryptjs";
 
 export const USER_TABLE_NAME = "users";
 
@@ -288,10 +288,9 @@ export class User extends AbstractModel<UserDto> {
     this._lastOnlineDate = value;
   }
 
-  public async hash(){
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password, salt)
-    this.update()
+  public async hash() {
+    this.password = await bcrypt.hash(this.password, 10);
+    this.update();
   }
 
   public constructor(dto: UserDto) {
@@ -321,7 +320,9 @@ export class User extends AbstractModel<UserDto> {
     this._acceptLocation = dto.accept_location ?? false;
     this._age = dto.age ?? 0;
     this._online = dto.online ?? false;
-    this._lastOnlineDate = dto.last_online_date ? new Date(dto.last_online_date) : new Date();
+    this._lastOnlineDate = dto.last_online_date
+      ? new Date(dto.last_online_date)
+      : new Date();
   }
 
   public static async select(filters?: Filters): Promise<User[]> {

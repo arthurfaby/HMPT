@@ -10,7 +10,7 @@ export function AuthGuard(props: PropsWithChildren) {
   }
 
   if (status === AuthStatus.Guest) {
-    return <Navigate to="/login" replace={true}></Navigate>;
+    return <Navigate to="/" replace={true}></Navigate>;
   }
   return <Outlet />;
 }
