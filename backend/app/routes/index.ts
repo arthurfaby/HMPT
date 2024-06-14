@@ -9,6 +9,7 @@ import users from "./users.route";
 import matches from "./matches/index";
 import chat from "./chat/index";
 import message from "./messages/index";
+import mail from "./mail.route";
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use("/register", registerRouter);
 router.use("/me", auth, me);
 router.use("/login", login);
 router.use("/logout", auth, logout);
+router.use("/mail", mail);
 router.use("/factories", factory_user);
 router.use("/users", auth, users);
 router.use("/chat", auth, chat);

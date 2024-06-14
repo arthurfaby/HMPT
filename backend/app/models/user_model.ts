@@ -6,6 +6,7 @@ import { APIResponse } from "../libs/orm/types/response_type";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 import { Gender, GENDERS } from "../types/gender_type";
 import { Location } from "../types/geolocation_type";
+import  bcrypt from "bcryptjs" 
 
 export const USER_TABLE_NAME = "users";
 
@@ -287,6 +288,12 @@ export class User extends AbstractModel<UserDto> {
     this._lastOnlineDate = value;
   }
 
+  public async hash(){
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt)
+    this.update()
+  }
+
   public constructor(dto: UserDto) {
     super(dto, USER_TABLE_NAME);
     this._id = dto.id;
@@ -299,11 +306,11 @@ export class User extends AbstractModel<UserDto> {
       throw new Error("Invalid gender");
     }
     this._gender = dto.gender as Gender;
-    this._biography = dto.biography;
-    this._interests = dto.interests;
-    this._pictures = dto.pictures;
-    this._verified = dto.verified;
-    this._fameRating = dto.fame_rating;
+    this._biography = dto.biography ?? "";
+    this._interests = dto.interests ?? [];
+    this._pictures = dto.pictures ?? [];
+    this._verified = dto.verified ?? false;
+    this._fameRating = dto.fame_rating ?? 0;
     if (
       dto.geolocation &&
       !(dto.geolocation.latitude && dto.geolocation.longitude)
@@ -311,10 +318,10 @@ export class User extends AbstractModel<UserDto> {
       throw new Error("Invalid geolocation");
     }
     this._geolocation = dto.geolocation as Location;
-    this._acceptLocation = dto.accept_location;
-    this._age = dto.age;
-    this._online = dto.online;
-    this._lastOnlineDate = new Date(dto.last_online_date);
+    this._acceptLocation = dto.accept_location ?? false;
+    this._age = dto.age ?? 0;
+    this._online = dto.online ?? false;
+    this._lastOnlineDate = dto.last_online_date ? new Date(dto.last_online_date) : new Date();
   }
 
   public static async select(filters?: Filters): Promise<User[]> {

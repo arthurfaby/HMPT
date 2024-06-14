@@ -25,15 +25,6 @@ export default function Form() {
       email,
       password,
     };
-    const response = await postRegister(user);
-    if (response.ok) {
-      navigate("/login");
-      toast.success(
-        "Votre compte a bien été créé. Connectew-vous pour accéder à l'application.",
-      );
-    }
-  };
-
   const onChangeUsername = (event: FormEvent<HTMLInputElement>) => {
     setUsername(event.currentTarget.value);
   };
@@ -81,4 +72,5 @@ export default function Form() {
       </form>
     </div>
   );
+}
 }
