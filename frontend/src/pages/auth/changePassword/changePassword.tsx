@@ -4,21 +4,35 @@ import { FullHeightContainer } from "@/components/utils/full-height-container";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { changePassword } from "@/services/api/passwordApi";
+import { Navigate, useNavigate } from "react-router-dom";
+import  Home from "../../home/home";
 
 export default function ChangePassword() {
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const navigate = useNavigate()
 
-    const handleSubmit = (newPassword: string, oldPassword: string) => {
+    const handleSubmit = async (newPassword: string, oldPassword: string) => {
         if(newPassword == oldPassword){
             const token = window.location.href.split('/').pop()
-            if(token)
-                changePassword(newPassword, token)
+            if(!token) {
+                toast.error('erreur de token') 
+                navigate("/")
+                return 
+            }
+            const response = await changePassword(newPassword, token)
+            if (response.ok){
+                toast.success('le mot de passe a été changé')
+            }
+            else{
+                toast.error('erreur serveur')
+            } 
+            console.log("prout")
+            navigate("/")
         }
-        else{
-            toast.error('mots de passe différent')
+        else {
+            toast.error('les mots de passes sont differents')
         }
-        
     }
 
     return ( 
