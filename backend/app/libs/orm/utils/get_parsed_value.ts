@@ -7,7 +7,7 @@ export const getParsedValue = (parsedValue: any): string => {
       return `'${parsedValue.toISOString().split("T")[0]}'`;
     }
     if (Array.isArray(parsedValue)) {
-      return `'{"${parsedValue.join('", "')}"}'`;
+      return `'["${parsedValue.join('", "')}"]'`;
     }
     const objectKeys = Object.keys(parsedValue);
     const objectValues = Object.values(parsedValue);

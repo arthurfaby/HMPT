@@ -5,7 +5,7 @@ import { Session } from "../models/session_model";
 export default async function auth(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   const session = await Session.select({
     token: {
@@ -15,6 +15,6 @@ export default async function auth(
   if (session.length !== 0) {
     next();
   } else {
-    res.status(401).send("Unauthorized");
+    res.status(401).send({ error: "Unauthorized" });
   }
 }

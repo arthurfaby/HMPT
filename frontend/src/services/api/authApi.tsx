@@ -1,11 +1,12 @@
 import ky from "ky";
+import {apiUrl} from '@/config/apiUrl';
 
 export async function postLogin(user: {
   username: string;
   password: string;
 }): Promise<string> {
   return (
-    await ky.post("http://localhost:5000/login", {
+    await ky.post(`${apiUrl}/login`, {
       credentials: "include",
       json: user,
     })
@@ -14,10 +15,10 @@ export async function postLogin(user: {
 
 export async function getUser(): Promise<string> {
   return await ky
-    .get("http://localhost:5000/me", { credentials: "include" })
+    .get(`${apiUrl}/me`, { credentials: "include" })
     .text();
 }
 
 export async function postLogout() {
-  await ky.post("http://localhost:5000/logout", { credentials: "include" });
+  await ky.post(`${apiUrl}/logout`, { credentials: "include" });
 }

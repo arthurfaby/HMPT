@@ -5,7 +5,6 @@ import {
   SexualPreference,
 } from "../types/sexual_preference_type";
 import { Location } from "../types/geolocation_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { APIResponse } from "../libs/orm/types/response_type";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 import query from "../libs/orm/queries/abstract_query";
@@ -145,16 +144,16 @@ export class Preference extends AbstractModel<PreferenceDto> {
   }
 
   public static async select(filters?: Filters): Promise<Preference[]> {
-    const validatedTableName: string = validateInput(PREFERENCE_TABLE_NAME);
     let apiResponse: APIResponse<PreferenceDto>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
+      const [stringFilters, values] = getStringFilters(filters);
       apiResponse = await query<PreferenceDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${PREFERENCE_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
       apiResponse = await query<PreferenceDto>(
-        `SELECT * FROM ${validatedTableName}`
+        `SELECT * FROM ${PREFERENCE_TABLE_NAME}`
       );
     }
     const dtos: PreferenceDto[] = apiResponse.rows;

@@ -1,6 +1,6 @@
 import { UserDto } from "@/dtos/user_dto";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
@@ -134,7 +134,11 @@ export function MatchProfile({
             <span className="text-xl font-bold">Centre d'intérêts</span>
             <div className="flex flex-wrap gap-2">
               {user.interests.map((interest) => {
-                return <Badge variant="outline">{interest}</Badge>;
+                return (
+                  <Badge key={user.id + interest} variant="outline">
+                    {interest}
+                  </Badge>
+                );
               })}
             </div>
           </div>
