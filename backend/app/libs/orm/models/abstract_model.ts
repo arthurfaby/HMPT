@@ -53,6 +53,9 @@ export abstract class AbstractModel<T extends AbstractDto> {
       .join(", ");
     const values = Object.values(this._dto)
       .map((value) => {
+        if (value == null) {
+          return "NULL"
+        }
         const validatedValue = validateInput(value);
         return getParsedValue(validatedValue);
       })

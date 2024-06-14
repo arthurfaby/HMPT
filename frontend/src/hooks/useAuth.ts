@@ -2,6 +2,7 @@ import { useAccountStore } from "@/store";
 import { useCallback } from "react";
 import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
+import postRegister from "@/services/api/registerApi";
 
 export enum AuthStatus {
   Unknown = 0,
@@ -36,10 +37,27 @@ export function useAuth() {
     setAccount(null);
   }, []);
 
-  const login = useCallback(async (username: string, password: string) => {
-    await postLogin({ username, password }).then(setAccount);
-    toast.success("Vous êtes bien connecté.");
+  const login = useCallback(async (username: string, password: string): Promise<Boolean> => {
+    try {
+      const response = await postLogin({ username, password })
+      if (response) 
+      {
+        toast.success("Vous êtes bien connecté.");
+        setAccount(response);
+        return true;
+      }
+    }
+    catch (error) {
+      toast.error("identifiants ou mot de passe incorrects.");
+      setAccount(null);
+      return false;
+    }
+    return false;
   }, []);
+
+  const register = useCallback(async (username: string, email: string, password: string, firstName: string, lastName: string) => {
+    await postRegister(username, email, password, firstName, lastName).then(setAccount);
+  }, [])
 
   return {
     account,
@@ -47,5 +65,6 @@ export function useAuth() {
     Authenticate,
     login,
     logout,
+    register
   };
 }

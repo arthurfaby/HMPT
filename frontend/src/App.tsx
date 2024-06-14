@@ -8,6 +8,7 @@ import Login from "./pages/auth/login/login";
 import Profile from "./pages/profile/profile";
 import { ThemeProvider } from "@/services/theme/theme";
 import { Logout } from "@/pages/auth/logout/logout";
+import ChangePassword from "./pages/auth/changePassword/changePassword";
 
 const router = createBrowserRouter([
   {
@@ -31,12 +32,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
+        path: "/forget_password/:id",
+        element: <ChangePassword />
       },
     ],
   },

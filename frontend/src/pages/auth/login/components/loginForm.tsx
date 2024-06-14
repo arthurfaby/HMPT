@@ -1,7 +1,11 @@
 import { useState, FormEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/loginForm.css";
-import { AuthStatus, useAuth } from "@/hooks/useAuth";
+import { AuthStatus, useAuth } from "../../../../hooks/useAuth";
+import { Input } from "@/components/ui/input";
+
+type Props = {
+    className: string
+}
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
