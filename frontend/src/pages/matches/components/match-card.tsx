@@ -1,22 +1,15 @@
 import { UserDto } from "@/dtos/user_dto";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MatchProfile } from "@/pages/matches/components/match-profile";
 import { Badge } from "@/components/ui/badge";
 
 export type MatchCardProps = {
   user: UserDto;
   nextUser?: UserDto;
-  translateValue: number;
-  opacity: number;
 };
 
-export function MatchCard({
-  user,
-  nextUser,
-  translateValue,
-  opacity,
-}: MatchCardProps) {
+export function MatchCard({ user, nextUser }: MatchCardProps) {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleOpenProfile = () => {
@@ -32,7 +25,6 @@ export function MatchCard({
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            position: translateValue !== 0 ? "relative" : "absolute",
           }}
           onClick={handleOpenProfile}
           className="absolute min-w-72 cursor-pointer rounded-2xl p-4 transition-all"
@@ -49,7 +41,7 @@ export function MatchCard({
             <span>{nextUser.biography.substring(0, 25) + "..."}</span>
             <div className="flex flex-wrap gap-1">
               {nextUser.interests.map((interest) => {
-                return <Badge>{interest}</Badge>;
+                return <Badge key={nextUser.id + interest}>{interest}</Badge>;
               })}
             </div>
           </AspectRatio>
@@ -61,10 +53,7 @@ export function MatchCard({
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          transform: `translateX(${translateValue}px)`,
-          position: translateValue === 0 ? "relative" : "absolute",
-          opacity: opacity,
-          transition: translateValue !== 0 ? "all ease .3s" : "",
+          position: "relative",
         }}
         onClick={handleOpenProfile}
         className="top-0 min-w-72 cursor-pointer rounded-2xl p-4 "
@@ -78,7 +67,7 @@ export function MatchCard({
           <span>{user.biography.substring(0, 25) + "..."}</span>
           <div className="flex flex-wrap gap-1">
             {user.interests.map((interest) => {
-              return <Badge>{interest}</Badge>;
+              return <Badge key={user.id + interest}>{interest}</Badge>;
             })}
           </div>
         </AspectRatio>

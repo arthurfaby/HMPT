@@ -1,4 +1,4 @@
-import { useAccountStore } from "@/store";
+import { useAccountStore } from "@/stores/account-store";
 import { useCallback } from "react";
 import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
@@ -33,31 +33,42 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(async () => {
-    toast.success("Vous êtes bien déconnecté.");
     setAccount(null);
   }, []);
 
-  const login = useCallback(async (username: string, password: string): Promise<Boolean> => {
-    try {
-      const response = await postLogin({ username, password })
-      if (response) 
-      {
-        toast.success("Vous êtes bien connecté.");
-        setAccount(response);
-        return true;
+  const login = useCallback(
+    async (username: string, password: string): Promise<Boolean> => {
+      try {
+        const response = await postLogin({ username, password });
+        if (response) {
+          toast.success("Vous êtes bien connecté.");
+          setAccount(response);
+          return true;
+        }
+      } catch (error) {
+        toast.error("identifiants ou mot de passe incorrects.");
+        setAccount(null);
+        return false;
       }
-    }
-    catch (error) {
-      toast.error("identifiants ou mot de passe incorrects.");
-      setAccount(null);
       return false;
-    }
-    return false;
-  }, []);
+    },
+    [],
+  );
 
-  const register = useCallback(async (username: string, email: string, password: string, firstName: string, lastName: string) => {
-    await postRegister(username, email, password, firstName, lastName).then(setAccount);
-  }, [])
+  const register = useCallback(
+    async (
+      username: string,
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+    ) => {
+      await postRegister(username, email, password, firstName, lastName).then(
+        setAccount,
+      );
+    },
+    [],
+  );
 
   return {
     account,
@@ -65,6 +76,6 @@ export function useAuth() {
     Authenticate,
     login,
     logout,
-    register
+    register,
   };
 }

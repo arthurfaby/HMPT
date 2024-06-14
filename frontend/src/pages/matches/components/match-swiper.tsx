@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Flag, Heart, X } from "lucide-react";
 import { UserDto } from "@/dtos/user_dto";
@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { animateValue } from "@/utils/animateValue";
 import {
   Tooltip,
   TooltipContent,
@@ -18,62 +17,41 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { kyPOST } from "@/utils/ky/handlers";
+import { useAuth } from "@/hooks/useAuth";
+import { MatchDto } from "@/dtos/match_dto";
+import { useMatchStore } from "@/stores/matches-store";
 
 type MatchSwiperProps = {
   users: UserDto[];
 };
 
-const MAX_TRANSLATE_VALUE = 400;
+type SwipeState = "like" | "dislike";
 
 export function MatchSwiper({ users }: MatchSwiperProps) {
   const [activeUser, setActiveUser] = useState(0);
-  const [translateValue, setTranslateValue] = useState(0);
-  const [opacity, setOpacity] = useState(1);
   const [canSwipe, setCanSwipe] = useState(true);
+  const { addMatch } = useMatchStore();
+  const { logout } = useAuth();
 
-  useEffect(() => {
-    setTranslateValue(0);
-  }, [activeUser]);
-
-  useEffect(() => {
-    if (translateValue === 0) {
-      setOpacity(1);
-      return;
+  const fetchMatch = async (
+    swipeState: SwipeState,
+  ): Promise<MatchDto | { error: string }> => {
+    if (swipeState === "like") {
+      const match = await kyPOST<MatchDto, {}>(
+        `matches/likeUser/${users[activeUser].id}`,
+        {},
+        logout,
+      );
+      if (!match) {
+        return { error: "Erreur lors du like de l'utilisateur" };
+      }
+      return match;
     }
-    setOpacity(
-      (MAX_TRANSLATE_VALUE - Math.abs(translateValue)) / MAX_TRANSLATE_VALUE -
-        0.1,
-    );
-  }, [translateValue]);
-
-  const handleSwipeRight = () => {
-    if (!canSwipe) {
-      toast.error("Veuillez attendre avant de swipe à nouveau.", {
-        position: "top-center",
-      });
-      return;
-    }
-    setCanSwipe(false);
-    animateValue(
-      0,
-      MAX_TRANSLATE_VALUE,
-      (value) => {
-        setTranslateValue(value);
-      },
-      () => {
-        if (users[activeUser + 1]) {
-          setActiveUser(activeUser + 1);
-        } else {
-          setActiveUser(0);
-        }
-        setCanSwipe(true);
-      },
-      300,
-      [0.07, 0.86, 0.43, 0.98],
-    );
+    return { error: "Dislike non implenté" };
   };
 
-  const handleSwipeLeft = () => {
+  const handleSwipe = async (swipeState: SwipeState) => {
     if (!canSwipe) {
       toast.error("Veuillez attendre avant de swipe à nouveau.", {
         position: "top-center",
@@ -81,33 +59,53 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
       return;
     }
     setCanSwipe(false);
-    animateValue(
-      0,
-      MAX_TRANSLATE_VALUE,
-      (value) => {
-        setTranslateValue(-value);
-      },
-      () => {
-        if (users[activeUser - 1]) {
-          setActiveUser(activeUser - 1);
-        } else {
-          setActiveUser(users.length - 1);
-        }
-        setCanSwipe(true);
-      },
-      300,
-      [0.07, 0.86, 0.43, 0.98],
-    );
+    //TODO: Add logic to swipe
+    const data = await fetchMatch(swipeState);
+    if ("error" in data) {
+      toast.error(data.error, {
+        position: "top-center",
+      });
+      setCanSwipe(true);
+      return;
+    } else {
+      // If chat_id is present, it means a chat has been created
+      // So the user has been matched
+      if (data.chat_id) {
+        toast.success("ITS A MATCH !", {
+          position: "top-center",
+        });
+        addMatch();
+      } else {
+        toast.success("Utilisateur liké", {
+          position: "top-center",
+        });
+      }
+
+      // Remove the user from the list
+      users.splice(activeUser, 1);
+
+      if (users[activeUser]) {
+        setActiveUser(activeUser);
+      } else {
+        setActiveUser(0);
+      }
+      setCanSwipe(true);
+    }
   };
 
   const handleReport = () => {};
+  if (users.length === 0) {
+    return (
+      <span className="text-xl font-bold text-primary">
+        Aucun utilisateur à afficher.
+      </span>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
         <MatchCard
-          translateValue={translateValue}
-          opacity={opacity}
           user={users[activeUser]}
           nextUser={
             activeUser != users.length - 1 ? users[activeUser + 1] : users[0]
@@ -115,66 +113,47 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         />
       </div>
       <div className="flex w-full justify-around">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                onClick={handleSwipeLeft}
-                variant="destructive"
-              >
-                <X />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Ne pas liker {users[activeUser].first_name}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="icon" onClick={handleReport} variant="outline">
-                    <Flag className="h-5 w-5" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="rounded-lg">
-                  <DialogTitle>
-                    Confirmez-vous que {users[activeUser].first_name} est un
-                    faux compte ?
-                  </DialogTitle>
-                  <div className="flex gap-2">
-                    <DialogClose asChild>
-                      <Button variant="secondary" className="grow">
-                        Annuler
-                      </Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button className="grow">Confirmer</Button>
-                    </DialogClose>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </TooltipTrigger>
-            <TooltipContent>
-              Signaler {users[activeUser].first_name} comme faux compte
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button size="icon" onClick={handleSwipeRight} variant="success">
-                <Heart />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Liker {users[activeUser].first_name}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          size="icon"
+          onClick={() => {
+            handleSwipe("dislike");
+          }}
+          variant="destructive"
+        >
+          <X />
+        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="icon" onClick={handleReport} variant="outline">
+              <Flag className="h-5 w-5" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="rounded-lg">
+            <DialogTitle>
+              Confirmez-vous que {users[activeUser].first_name} est un faux
+              compte ?
+            </DialogTitle>
+            <div className="flex gap-2">
+              <DialogClose asChild>
+                <Button variant="secondary" className="grow">
+                  Annuler
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button className="grow">Confirmer</Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Button
+          size="icon"
+          onClick={() => {
+            handleSwipe("like");
+          }}
+          variant="success"
+        >
+          <Heart />
+        </Button>
       </div>
     </div>
   );

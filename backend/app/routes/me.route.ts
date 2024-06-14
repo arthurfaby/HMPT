@@ -1,20 +1,13 @@
 import { Router, Request, Response } from "express";
-import { Session } from "../models/session_model";
-import { User } from "../models/user_model";
+import getAuthenticatedUser from "../utils/auth/getAuthenticatedUser";
 
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-  const session = (
-    await Session.select({ token: { equal: req.sessionID } })
-  )[0];
-  const user = (
-    await User.select({
-      id: {
-        equal: session.userId,
-      },
-    })
-  )[0];
+  const user = await getAuthenticatedUser(req.sessionID);
+  if (!user) {
+    return res.status(401).send({ error: "Unauthorized" });
+  }
   return res.status(200).send(user.dto);
 });
 

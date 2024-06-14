@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.28",
     "morgan": "^1.10.0",
+    "socket.io": "^4.7.5",
     "nodemailer": "^6.9.13",
     "pg": "^8.11.5"
   },

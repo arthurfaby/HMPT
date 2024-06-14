@@ -1,7 +1,7 @@
-import {UserDto} from '../dtos/user_dto';
-import {faker} from '@faker-js/faker';
-import {Gender} from '../types/gender_type';
-import {User} from '../models/user_model';
+import { UserDto } from "../dtos/user_dto";
+import { faker } from "@faker-js/faker";
+import { Gender } from "../types/gender_type";
+import { User } from "../models/user_model";
 
 /**
  * UserFactory
@@ -17,30 +17,37 @@ import {User} from '../models/user_model';
  */
 class UserFactory {
   private async _generateUser(overrides?: Partial<UserDto>): Promise<UserDto> {
-    const n1 = faker.number.float({min: 0, max: 1})
-    const randomGender: Gender = n1 > 0.33 ? faker.person.sex() as Gender : 'other';
+    const n1 = faker.number.float({ min: 0, max: 1 });
+    const randomGender: Gender =
+      n1 > 0.33 ? (faker.person.sex() as Gender) : "other";
 
-    const n2 = faker.number.int({min: 1, max: 5})
+    const n2 = faker.number.int({ min: 1, max: 5 });
     const pictures: string[] = [];
     for (let i = 0; i < n2; i++) {
       pictures.push(faker.image.url());
     }
 
-    const n3 = faker.number.int({min: 2, max: 8})
+    const n3 = faker.number.int({ min: 2, max: 8 });
     const interests: string[] = [];
     for (let i = 0; i < n3; i++) {
       interests.push(faker.lorem.words(1));
     }
 
     return {
-      username: overrides?.username || faker.internet.userName(),
+      username:
+        overrides?.username || faker.internet.userName().replace("'", ""),
       email: overrides?.email || faker.internet.email(),
       password: overrides?.password || faker.internet.password(),
-      first_name: overrides?.first_name || faker.person.firstName(),
-      last_name: overrides?.last_name || faker.person.lastName(),
-      age: overrides?.age || faker.number.int({min: 18, max: 99}),
-      biography: overrides?.biography || faker.lorem.words(15),
-      fame_rating: overrides?.fame_rating || faker.number.float({min: 0, max: 5, fractionDigits: 2}),
+      first_name:
+        overrides?.first_name || faker.person.firstName().replace("'", ""),
+      last_name:
+        overrides?.last_name || faker.person.lastName().replace("'", ""),
+      age: overrides?.age || faker.number.int({ min: 18, max: 99 }),
+      biography:
+        overrides?.biography || faker.lorem.words(15).substring(0, 512),
+      fame_rating:
+        overrides?.fame_rating ||
+        faker.number.float({ min: 0, max: 5, fractionDigits: 2 }),
       gender: overrides?.gender || randomGender,
       accept_location: overrides?.accept_location || faker.datatype.boolean(),
       online: overrides?.online || faker.datatype.boolean(),
@@ -51,7 +58,9 @@ class UserFactory {
         longitude: faker.location.longitude(),
       },
       interests: overrides?.interests || interests,
-      last_online_date: overrides?.last_online_date || faker.date.past().toISOString().split('T')[0],
+      last_online_date:
+        overrides?.last_online_date ||
+        faker.date.past().toISOString().split("T")[0],
     } as UserDto;
   }
 
@@ -71,7 +80,4 @@ class UserFactory {
   }
 }
 
-
-
 export default new UserFactory();
-

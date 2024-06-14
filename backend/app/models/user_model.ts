@@ -3,18 +3,22 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import query from "../libs/orm/queries/abstract_query";
 import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
-import { GENDERS, Gender } from "../types/gender_type";
+import { Gender, GENDERS } from "../types/gender_type";
 import { Location } from "../types/geolocation_type";
-import  bcrypt from "bcryptjs" 
+import bcrypt from "bcryptjs";
 
 export const USER_TABLE_NAME = "users";
+
+export type UserDtoArrayAsString = Omit<UserDto, "interests" | "pictures"> & {
+  interests: string;
+  pictures: string;
+};
 
 export class User extends AbstractModel<UserDto> {
   /**
    * The user's id
-   * @type {number}
+   * @type {number | undefined}
    * @private
    */
   private _id?: number;
@@ -284,10 +288,9 @@ export class User extends AbstractModel<UserDto> {
     this._lastOnlineDate = value;
   }
 
-  public async hash(){
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password, salt)
-    this.update()
+  public async hash() {
+    this.password = await bcrypt.hash(this.password, 10);
+    this.update();
   }
 
   public constructor(dto: UserDto) {
@@ -317,22 +320,32 @@ export class User extends AbstractModel<UserDto> {
     this._acceptLocation = dto.accept_location ?? false;
     this._age = dto.age ?? 0;
     this._online = dto.online ?? false;
-    this._lastOnlineDate = dto.last_online_date ? new Date(dto.last_online_date) : new Date();
+    this._lastOnlineDate = dto.last_online_date
+      ? new Date(dto.last_online_date)
+      : new Date();
   }
 
   public static async select(filters?: Filters): Promise<User[]> {
-    const validatedTableName: string = validateInput(USER_TABLE_NAME);
-    let apiResponse: APIResponse<UserDto>;
+    let apiResponse: APIResponse<UserDtoArrayAsString>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
-      apiResponse = await query<UserDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`,
+      const [stringFilters, values] = getStringFilters(filters);
+      apiResponse = await query<UserDtoArrayAsString>(
+        `SELECT * FROM ${USER_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
-      apiResponse = await query<UserDto>(`SELECT * FROM ${validatedTableName}`);
+      apiResponse = await query<UserDtoArrayAsString>(
+        `SELECT * FROM ${USER_TABLE_NAME}`
+      );
     }
-    const dtos: UserDto[] = apiResponse.rows;
-    const users: User[] = dtos.map((dto) => new User(dto));
-    return users;
+    const dtosString: UserDtoArrayAsString[] = apiResponse.rows;
+    const dtos: UserDto[] = dtosString.map((dtoString) => {
+      return {
+        ...dtoString,
+        interests: dtoString.interests ? JSON.parse(dtoString.interests) : [],
+        pictures: dtoString.pictures ? JSON.parse(dtoString.pictures) : [],
+      };
+    });
+    return dtos.map((dto) => new User(dto));
   }
 }

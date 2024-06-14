@@ -4,9 +4,12 @@ import me from "./me.route";
 import login from "./login.route";
 import auth from "../middleware/authentication";
 import logout from "./logout.route";
-import mail from "./mail.route"
-import factory_user from './factories/user.route';
-
+import factory_user from "./factories/user.route";
+import users from "./users.route";
+import matches from "./matches/index";
+import chat from "./chat/index";
+import message from "./messages/index";
+import mail from "./mail.route";
 
 const router = Router();
 
@@ -14,6 +17,11 @@ router.use("/register", registerRouter);
 router.use("/me", auth, me);
 router.use("/login", login);
 router.use("/logout", auth, logout);
-router.use("/mail", mail )
+router.use("/mail", mail);
 router.use("/factories", factory_user);
+router.use("/users", auth, users);
+router.use("/chat", auth, chat);
+router.use("/message", auth, message);
+router.use("/matches", auth, matches);
+
 export default router;

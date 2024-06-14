@@ -3,7 +3,6 @@ import { AbstractModel } from "../libs/orm/models/abstract_model";
 import query from "../libs/orm/queries/abstract_query";
 import { Filters } from "../libs/orm/types/filter_type";
 import { APIResponse } from "../libs/orm/types/response_type";
-import validateInput from "../libs/orm/utils/check_injections";
 import { getStringFilters } from "../libs/orm/utils/get_string_filters";
 
 export const HISTORY_TABLE_NAME = "histories";
@@ -65,16 +64,16 @@ export class History extends AbstractModel<HistoryDto> {
   }
 
   public static async select(filters?: Filters): Promise<History[]> {
-    const validatedTableName: string = validateInput(HISTORY_TABLE_NAME);
     let apiResponse: APIResponse<HistoryDto>;
     if (filters) {
-      const stringFilters: string = getStringFilters(filters);
+      const [stringFilters, values] = getStringFilters(filters);
       apiResponse = await query<HistoryDto>(
-        `SELECT * FROM ${validatedTableName} WHERE ${stringFilters}`
+        `SELECT * FROM ${HISTORY_TABLE_NAME} WHERE ${stringFilters}`,
+        values
       );
     } else {
       apiResponse = await query<HistoryDto>(
-        `SELECT * FROM ${validatedTableName}`
+        `SELECT * FROM ${HISTORY_TABLE_NAME}`
       );
     }
     const dtos: HistoryDto[] = apiResponse.rows;
