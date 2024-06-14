@@ -10,10 +10,12 @@ import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
 import Login from "@/pages/auth/login/login";
 import Register from "@/pages/auth/register/register";
+import { useState } from "react";
 
 export function Navbar() {
 
   const { status } = useAuth()
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
 
   return (
     <>
@@ -31,8 +33,8 @@ export function Navbar() {
             </Link>
           ) : (
             <>
-              <Register/>
-              <Login/>
+              <Register />
+              <Login openDialog={openDialog} setOpenDialog={setOpenDialog}/>
             </>
           )}
           <ToggleTheme />
@@ -79,7 +81,6 @@ export function Navbar() {
           </Sheet>
         </div>
       </header>
-      <div className="h-[64px]"></div>
       <div className="h-[64px]"></div>
     </>
   );

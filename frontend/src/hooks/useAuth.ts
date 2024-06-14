@@ -55,8 +55,8 @@ export function useAuth() {
     return false;
   }, []);
 
-  const register = useCallback(async (username: string, email: string, password: string) => {
-    await postRegister(username, email, password).then(setAccount);
+  const register = useCallback(async (username: string, email: string, password: string, firstName: string, lastName: string) => {
+    await postRegister(username, email, password, firstName, lastName).then(setAccount);
   }, [])
 
   return {

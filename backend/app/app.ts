@@ -5,6 +5,8 @@ import morgan from "morgan";
 import router from "./routes";
 import Session from "express-session";
 import { User } from "./models/user_model";
+import nodemailer from "nodemailer";
+
 // Create Express server
 const app = express(); // New express instance
 const port = 5000; // Port number
@@ -28,6 +30,8 @@ app.use(
     },
   }),
 );
+
+
 
 declare module "express-session" {
   interface SessionData {

@@ -8,17 +8,17 @@ export interface UserDto extends AbstractDto {
   first_name: string;
   last_name: string;
   gender?: Gender;
-  biography: string;
-  interests: string[];
-  pictures: string[];
-  verified: boolean;
-  fame_rating: number;
-  geolocation: {
+  biography?: string;
+  interests?: string[];
+  pictures?: string[];
+  verified?: boolean;
+  fame_rating?: number;
+  geolocation?: {
     latitude: number;
     longitude: number;
   };
-  accept_location: boolean;
-  age: number;
-  online: boolean;
-  last_online_date: string;
+  accept_location?: boolean;
+  age?: number;
+  online?: boolean;
+  last_online_date?: string;
 }
