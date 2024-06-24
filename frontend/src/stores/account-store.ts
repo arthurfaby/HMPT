@@ -9,7 +9,7 @@ export const useAccountStore = create(
         account: null as undefined | null | User,
       },
       (set) => ({
-        setAccount: (account: User | null) => set({ account }),
+        setAccount: (account: User | null | undefined) => set({ account }),
       }),
     ),
     { name: "account" },

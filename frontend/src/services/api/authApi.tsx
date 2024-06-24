@@ -6,7 +6,6 @@ export async function postLogin(user: {
   username: string;
   password: string;
 }): Promise<User | null> {
-  console.log("prout")
   try {
         return await ky.post(`${apiUrl}/login`, {
             credentials: "include",
@@ -14,7 +13,6 @@ export async function postLogin(user: {
           }).json();
   }
   catch(error){
-    console.log(error)
     return null
   }
 }

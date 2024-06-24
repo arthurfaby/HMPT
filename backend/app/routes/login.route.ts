@@ -26,7 +26,7 @@ router.post("/", async (req: Request, res: Response) => {
       token: req.sessionID,
     } as SessionDto);
     await session.create();
-    res.status(200).send(users[0]);
+    res.status(200).send(users[0].dto);
   } else {
     res.status(401).send("Unauthorized");
   }

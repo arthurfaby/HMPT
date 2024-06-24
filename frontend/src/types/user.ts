@@ -9,7 +9,7 @@ export default interface User {
     biography: string | null;
     interests: string[] | [];
     profil_picture: string | null;
-    pictures: string[] | [];
+    pictures: string[];
     verified: boolean | null;
     geolocation: {
         x: number,
