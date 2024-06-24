@@ -1,9 +1,6 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
-import { parseUserQueryResponse } from "../../utils/parsing/parseUserQueryResponse";
 import { Match } from "../../models/match_model";
-import { MatchDto } from "../../dtos/match_dto";
-import { ChatDto } from "../../dtos/chat_dto";
 import { Chat } from "../../models/chat_model";
 
 const router = Router();

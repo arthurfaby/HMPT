@@ -67,6 +67,7 @@ class UserFactory {
   public async createOne(overrides?: Partial<UserDto>): Promise<User> {
     const userToCreate = await this._generateUser(overrides);
     const user = new User(userToCreate);
+    await user.hash();
     await user.create();
     return user;
   }

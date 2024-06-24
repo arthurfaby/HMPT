@@ -340,10 +340,16 @@ export class User extends AbstractModel<UserDto> {
     }
     const dtosString: UserDtoArrayAsString[] = apiResponse.rows;
     const dtos: UserDto[] = dtosString.map((dtoString) => {
+      const interestsAsArray = dtoString.interests
+        ? dtoString.interests.replace(/{/g, "[").replace(/}/g, "]")
+        : "[]";
+      const picturesAsArray = dtoString.pictures
+        ? dtoString.pictures.replace(/{/g, "[").replace(/}/g, "]")
+        : "[]";
       return {
         ...dtoString,
-        interests: dtoString.interests ? JSON.parse(dtoString.interests) : [],
-        pictures: dtoString.pictures ? JSON.parse(dtoString.pictures) : [],
+        interests: JSON.parse(interestsAsArray),
+        pictures: JSON.parse(picturesAsArray),
       };
     });
     return dtos.map((dto) => new User(dto));
