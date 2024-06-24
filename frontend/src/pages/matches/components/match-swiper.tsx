@@ -143,7 +143,6 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     }
   };
 
-  const handleReport = () => {};
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">
@@ -174,7 +173,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         </Button>
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="icon" onClick={handleReport} variant="outline">
+            <Button size="icon" variant="outline">
               <Flag className="h-5 w-5" />
             </Button>
           </DialogTrigger>

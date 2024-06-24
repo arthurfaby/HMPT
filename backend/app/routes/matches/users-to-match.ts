@@ -3,6 +3,7 @@ import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import query from "../../libs/orm/queries/abstract_query";
 import { UserDtoArrayAsString } from "../../models/user_model";
 import { parseUserQueryResponse } from "../../utils/parsing/parseUserQueryResponse";
+import { matchesAlgorithm } from "../../utils/matches_algo";
 
 const router = Router();
 
@@ -45,7 +46,8 @@ router.get("/usersToMatch", async (req: Request, res: Response) => {
   `);
 
   const userDtos = parseUserQueryResponse(queryResponse);
-  return res.json(userDtos);
+  const sortedUserDtos = matchesAlgorithm(authUser, userDtos);
+  return res.json(sortedUserDtos);
 });
 
 export default router;

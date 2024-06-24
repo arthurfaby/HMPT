@@ -1,17 +1,14 @@
 import { UserDto } from "@/dtos/user_dto";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Loader,
-  MapPin,
-} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { getGenderTaxo } from "@/utils/taxonomy";
+import { useAuth } from "@/hooks/useAuth";
+import { formatDistance } from "@/utils/formatDistance";
+import { kyGET } from "@/utils/ky/handlers";
 
 export type MatchProfileProps = {
   user: UserDto;
@@ -26,6 +23,33 @@ export function MatchProfile({
 }: MatchProfileProps) {
   const [fullImage, setFullImage] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
+  const { logout } = useAuth();
+  const [distanceMeters, setDistanceMeters] = useState(-1);
+  const [distanceString, setDistanceString] = useState("Loading...");
+
+  const getDistance = async () => {
+    const response = await kyGET<{ distance: number }>(
+      `users/distance/${user.id}`,
+      logout,
+    );
+    if (response) {
+      setDistanceMeters(response.distance);
+    } else {
+      setDistanceString("Erreur lors du chargement de la distance");
+    }
+  };
+
+  useEffect(() => {
+    getDistance();
+  }, [user]);
+
+  useEffect(() => {
+    if (distanceMeters === -1) {
+      setDistanceString("Loading...");
+    } else {
+      setDistanceString(formatDistance(distanceMeters));
+    }
+  }, [distanceMeters]);
 
   const handleNextImage = () => {
     setImageIndex(imageIndex + 1);
@@ -120,7 +144,7 @@ export function MatchProfile({
             <div className="flex flex-col">
               <div className="flex gap-2">
                 <MapPin size={20} />
-                <h1>//TODO: Calculer la distance</h1>
+                <h1>{distanceString}</h1>
               </div>
             </div>
           </div>
