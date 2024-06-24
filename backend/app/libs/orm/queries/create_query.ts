@@ -11,7 +11,6 @@ const create = async <T extends AbstractDto>(tableName: string, dto: T) => {
     { length: nValues },
     (_, i) => `$${i + 1}`
   ).join(", ");
-
   return await query<T>(
     `INSERT INTO ${tableName} (${parsedKeys}) VALUES (${valuesVariables});`,
     values

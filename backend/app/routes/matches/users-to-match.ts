@@ -25,6 +25,18 @@ router.get("/usersToMatch", async (req: Request, res: Response) => {
               liker_id = ${authUser.id}
       )
       AND u.id NOT IN (
+          SELECT disliked_id
+          FROM dislikes
+          WHERE
+              disliker_id = ${authUser.id}
+      )
+      AND u.id NOT IN (
+          SELECT reported_id
+          FROM reports
+          WHERE
+              reporter_id = ${authUser.id}
+      )
+      AND u.id NOT IN (
           SELECT blocked_id
           FROM blocks
           WHERE
