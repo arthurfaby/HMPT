@@ -105,12 +105,13 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
-        <MatchCard
+        {/* <MatchCard
           user={users[activeUser]}
           nextUser={
             activeUser != users.length - 1 ? users[activeUser + 1] : users[0]
           }
-        />
+        /> */}
+        prout
       </div>
       <div className="flex w-full justify-around">
         <Button

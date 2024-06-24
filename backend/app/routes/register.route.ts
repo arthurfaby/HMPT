@@ -12,12 +12,11 @@ router.post("/", async (req: Request, res: Response) => {
     first_name: req.body.firstName,
     last_name: req.body.lastname
   }
-  console.log(userDto)
   try {
     const user = new User(userDto)
     await user.hash()
     await user.create()
-    res.status(200).send("user created")
+    res.status(200).send(user)
   }
   catch (error){
     console.error(error)

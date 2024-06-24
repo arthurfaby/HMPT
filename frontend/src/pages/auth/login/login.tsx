@@ -26,6 +26,7 @@ export default function Login({openDialog, setOpenDialog}: props) {
 
     const handleSubmit = async (username: string, password: string) => {
        if (await login(username, password))
+            console.log(status)
             setOpenDialog(false)
     }
 
