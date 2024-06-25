@@ -1,16 +1,9 @@
 import { Router, Request, Response } from "express";
-import { User } from "../models/user_model";
-import getAuthenticatedUser from "../utils/auth/getAuthenticatedUser";
-import { getGPSDistance } from "../utils/getGPSDistance";
+import { User } from "../../models/user_model";
+import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
+import { getGPSDistance } from "../../utils/getGPSDistance";
 
 const router = Router();
-
-router.get("/", async (req: Request, res: Response) => {
-  const users = await User.select();
-  const usersDto = users.map((user) => user.dto);
-  return res.json(usersDto);
-});
-
 router.get("/distance/:id", async (req: Request, res: Response) => {
   const authUser = await getAuthenticatedUser(req.sessionID);
   if (!authUser) {

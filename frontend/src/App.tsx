@@ -13,6 +13,9 @@ import { Logout } from "@/pages/auth/logout/logout";
 import { Matches } from "./pages/matches/matches";
 import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
+import { useEffect, useState } from "react";
+import { kyPOST } from "./utils/ky/handlers";
+import { useAuth } from "./hooks/useAuth";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +68,27 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [initStatus, setInitStatus] = useState(false);
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    const updateOnlineStatus = async (status: boolean) => {
+      await kyPOST<{}, { online: boolean }>(
+        "users/online",
+        { online: status },
+        logout,
+      );
+    };
+    if (!initStatus) {
+      updateOnlineStatus(true);
+
+      window.addEventListener("beforeunload", (e) => {
+        updateOnlineStatus(false);
+      });
+      setInitStatus(true);
+    }
+  });
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="matcha-theme">
       <RouterProvider router={router} />
