@@ -5,7 +5,7 @@ import login from "./login.route";
 import auth from "../middleware/authentication";
 import logout from "./logout.route";
 import factory_user from "./factories/user.route";
-import users from "./users.route";
+import users from "./users/index";
 import matches from "./matches/index";
 import chat from "./chat/index";
 import message from "./messages/index";
