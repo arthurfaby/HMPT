@@ -9,6 +9,5 @@ export interface PreferenceDto extends AbstractDto {
   fame_rating_min: number;
   fame_rating_max?: number;
   sexual_preference: SexualPreference;
-  // @TODO change any to Location preference type
-  location: any;
+  distance: number;
 }

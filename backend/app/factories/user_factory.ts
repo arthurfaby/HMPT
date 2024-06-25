@@ -2,6 +2,9 @@ import { UserDto } from "../dtos/user_dto";
 import { faker } from "@faker-js/faker";
 import { Gender } from "../types/gender_type";
 import { User } from "../models/user_model";
+import { PreferenceDto } from "../dtos/preference_dto";
+import { SexualPreference } from "../types/sexual_preference_type";
+import { Preference } from "../models/preference_model";
 
 /**
  * UserFactory
@@ -17,9 +20,7 @@ import { User } from "../models/user_model";
  */
 class UserFactory {
   private async _generateUser(overrides?: Partial<UserDto>): Promise<UserDto> {
-    const n1 = faker.number.float({ min: 0, max: 1 });
-    const randomGender: Gender =
-      n1 > 0.33 ? (faker.person.sex() as Gender) : "other";
+    const randomGender: Gender = faker.person.sex() as Gender;
 
     const n2 = faker.number.int({ min: 1, max: 5 });
     const pictures: string[] = [];
@@ -64,11 +65,56 @@ class UserFactory {
     } as UserDto;
   }
 
+  public async generatePreferences(user: User): Promise<void> {
+    const userWithId = await User.select({
+      email: {
+        equal: user.email,
+      },
+    });
+    if (userWithId.length === 0) return;
+    const user_id = userWithId[0].id;
+    if (!user_id) return;
+    const age_gap_min = faker.number.int({ min: 18, max: 95 });
+    const age_gap_max = faker.number.int({ min: age_gap_min, max: 99 });
+    const fame_rating_min = faker.number.float({
+      min: 0,
+      max: 4.5,
+      fractionDigits: 2,
+    });
+    const fame_rating_max = faker.number.float({
+      min: fame_rating_min,
+      max: 5,
+      fractionDigits: 2,
+    });
+    const sexual_preferences: SexualPreference[] = [
+      "heterosexual",
+      "homosexual",
+      "bisexual",
+    ];
+    const sexual_preference: SexualPreference =
+      sexual_preferences[faker.number.int({ min: 0, max: 2 })];
+
+    const preferenceDto: PreferenceDto = {
+      age_gap_min,
+      age_gap_max,
+      fame_rating_min,
+      fame_rating_max,
+      user_id,
+      sexual_preference,
+      distance: faker.number.int({ min: 1, max: 20000000 }),
+    };
+    const preference = new Preference(preferenceDto);
+    await preference.create();
+  }
+
   public async createOne(overrides?: Partial<UserDto>): Promise<User> {
     const userToCreate = await this._generateUser(overrides);
     const user = new User(userToCreate);
     await user.hash();
     await user.create();
+    console.log("[FACTORY] User created");
+    await this.generatePreferences(user);
+    console.log("[FACTORY] Preferences created");
     return user;
   }
 
