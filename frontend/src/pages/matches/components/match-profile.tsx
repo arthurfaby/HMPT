@@ -86,10 +86,12 @@ export function MatchProfile({
             alt="Profile picture"
           />
           {user.online ? (
-            <Badge variant="success">En ligne</Badge>
+            <Badge variant="success" className="absolute">
+              En ligne
+            </Badge>
           ) : (
-            <Badge variant="destructive">
-              Hors ligne depuis le : {user.last_online_date}
+            <Badge variant="destructive" className="absolute">
+              Hors ligne depuis le : {user.last_online_date.split("T")[0]}
             </Badge>
           )}
           {fullImage ? (
@@ -141,10 +143,19 @@ export function MatchProfile({
                 <span>({getGenderTaxo(user.gender)})</span>
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex justify-between">
               <div className="flex gap-2">
                 <MapPin size={20} />
-                <h1>{distanceString}</h1>
+                <span>{distanceString}</span>
+              </div>
+              <div>
+                {user.fame_rating > 4 ? (
+                  <Badge variant="success">{user.fame_rating} / 5</Badge>
+                ) : user.fame_rating > 2.5 ? (
+                  <Badge variant="warning">{user.fame_rating} / 5</Badge>
+                ) : (
+                  <Badge variant="destructive">{user.fame_rating} / 5</Badge>
+                )}
               </div>
             </div>
           </div>
