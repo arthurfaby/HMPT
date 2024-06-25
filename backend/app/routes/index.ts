@@ -10,6 +10,7 @@ import matches from "./matches/index";
 import chat from "./chat/index";
 import message from "./messages/index";
 import mail from "./mail.route";
+import report from "./report/index";
 
 const router = Router();
 
@@ -23,5 +24,6 @@ router.use("/users", auth, users);
 router.use("/chat", auth, chat);
 router.use("/message", auth, message);
 router.use("/matches", auth, matches);
+router.use("/report", auth, report);
 
 export default router;

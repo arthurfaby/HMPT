@@ -10,17 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { kyPOST } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
 import { MatchDto } from "@/dtos/match_dto";
 import { useMatchStore } from "@/stores/matches-store";
+import { ReportDto } from "@/dtos/report_dto";
 
 type MatchSwiperProps = {
   users: UserDto[];
@@ -34,10 +29,43 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
   const { addMatch } = useMatchStore();
   const { logout } = useAuth();
 
+  const reportUser = async () => {
+    if (!canSwipe) {
+      toast.error("Veuillez attendre avant de swipe à nouveau.", {
+        position: "top-center",
+      });
+      return;
+    }
+    setCanSwipe(false);
+    const report = await kyPOST<ReportDto, {}>(
+      `report/${users[activeUser].id}`,
+      {},
+      logout,
+    );
+    if (!report) {
+      toast.error("Erreur lors du signalement de l'utilisateur", {
+        position: "top-center",
+      });
+      setCanSwipe(true);
+    } else {
+      users.splice(activeUser, 1);
+      if (users[activeUser]) {
+        setActiveUser(activeUser);
+      } else {
+        setActiveUser(0);
+      }
+      setCanSwipe(true);
+      toast.success("Utilisateur signalé", {
+        position: "top-center",
+      });
+    }
+  };
+
   const fetchMatch = async (
     swipeState: SwipeState,
   ): Promise<MatchDto | { error: string }> => {
     if (swipeState === "like") {
+      // Like
       const match = await kyPOST<MatchDto, {}>(
         `matches/likeUser/${users[activeUser].id}`,
         {},
@@ -47,11 +75,24 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         return { error: "Erreur lors du like de l'utilisateur" };
       }
       return match;
+    } else {
+      // Dislike
+      const match = await kyPOST<MatchDto, {}>(
+        `matches/dislikeUser/${users[activeUser].id}`,
+        {},
+        logout,
+      );
+      if (!match) {
+        return { error: "Erreur lors du dislike de l'utilisateur" };
+      }
+      return match;
     }
-    return { error: "Dislike non implenté" };
   };
 
-  const handleSwipe = async (swipeState: SwipeState) => {
+  const handleSwipe = async (
+    swipeState: SwipeState,
+    printToast: boolean = true,
+  ) => {
     if (!canSwipe) {
       toast.error("Veuillez attendre avant de swipe à nouveau.", {
         position: "top-center",
@@ -71,19 +112,28 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
       // If chat_id is present, it means a chat has been created
       // So the user has been matched
       if (data.chat_id) {
-        toast.success("ITS A MATCH !", {
-          position: "top-center",
-        });
+        if (printToast) {
+          toast.success("ITS A MATCH !", {
+            position: "top-center",
+          });
+        }
         addMatch();
+      } else if (swipeState === "like") {
+        if (printToast) {
+          toast.success("Utilisateur liké", {
+            position: "top-center",
+          });
+        }
       } else {
-        toast.success("Utilisateur liké", {
-          position: "top-center",
-        });
+        if (printToast) {
+          toast.success("Utilisateur disliké", {
+            position: "top-center",
+          });
+        }
       }
 
       // Remove the user from the list
       users.splice(activeUser, 1);
-
       if (users[activeUser]) {
         setActiveUser(activeUser);
       } else {
@@ -93,7 +143,6 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     }
   };
 
-  const handleReport = () => {};
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">
@@ -124,7 +173,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         </Button>
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="icon" onClick={handleReport} variant="outline">
+            <Button size="icon" variant="outline">
               <Flag className="h-5 w-5" />
             </Button>
           </DialogTrigger>
@@ -140,7 +189,9 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
                 </Button>
               </DialogClose>
               <DialogClose asChild>
-                <Button className="grow">Confirmer</Button>
+                <Button className="grow" onClick={reportUser}>
+                  Confirmer
+                </Button>
               </DialogClose>
             </div>
           </DialogContent>

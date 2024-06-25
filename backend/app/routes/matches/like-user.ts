@@ -1,9 +1,6 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
-import { parseUserQueryResponse } from "../../utils/parsing/parseUserQueryResponse";
 import { Match } from "../../models/match_model";
-import { MatchDto } from "../../dtos/match_dto";
-import { ChatDto } from "../../dtos/chat_dto";
 import { Chat } from "../../models/chat_model";
 
 const router = Router();
@@ -55,27 +52,45 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
 
   // If the other user has already liked the current user, create a chat because they are a match
   if (existingMatchAsLiked.length > 0) {
-    const chat = new Chat({
-      user1_id: authUser.id,
-      user2_id: parseInt(userToLikeId),
-    });
-    await chat.create();
-    const createdChats = await Chat.select({
-      user1_id: { equal: authUser.id },
-      user2_id: { equal: parseInt(userToLikeId) },
-    });
-    const createdChat = createdChats[0];
-    if (createdChat?.id) {
-      existingMatchAsLiked[0].chatId = createdChat.id;
-      match.chatId = createdChat.id;
+    const existingChat =
+      (
+        await Chat.select({
+          user1_id: { equal: authUser.id },
+          user2_id: { equal: parseInt(userToLikeId) },
+        })
+      )[0] ||
+      (
+        await Chat.select({
+          user1_id: { equal: parseInt(userToLikeId) },
+          user2_id: { equal: authUser.id },
+        })
+      )[0];
+
+    if (existingChat.id) {
+      match.chatId = existingChat.id;
+      existingMatchAsLiked[0].chatId = existingChat.id;
     } else {
-      return res.status(500).send({
-        error: "Error while creating chat.",
+      const chat = new Chat({
+        user1_id: authUser.id,
+        user2_id: parseInt(userToLikeId),
       });
+      await chat.create();
+      const createdChats = await Chat.select({
+        user1_id: { equal: authUser.id },
+        user2_id: { equal: parseInt(userToLikeId) },
+      });
+      const createdChat = createdChats[0];
+      if (createdChat?.id) {
+        existingMatchAsLiked[0].chatId = createdChat.id;
+        match.chatId = createdChat.id;
+      } else {
+        return res.status(500).send({
+          error: "Error while creating chat.",
+        });
+      }
     }
     existingMatchAsLiked[0].update();
   }
-
   match.create();
   return res.json(match.dto);
 });

@@ -46,8 +46,7 @@ export abstract class AbstractModel<T extends AbstractDto> {
   }
 
   public async delete() {
-    return await query("DELETE FROM $1 WHERE id = $2", [
-      this.tableName,
+    return await query(`DELETE FROM ${this.tableName} WHERE id = $1`, [
       this._dto.id,
     ]);
   }

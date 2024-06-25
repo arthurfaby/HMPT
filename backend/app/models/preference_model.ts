@@ -56,12 +56,11 @@ export class Preference extends AbstractModel<PreferenceDto> {
   private _sexualPreference: SexualPreference;
 
   /**
-   * The location.
-   * @type {any}
+   * The distance (in meters).
+   * @type {number}
    * @private
    */
-  // @TODO change any to Location preference type
-  private _location: any;
+  private _distance: number;
 
   public get userId(): number {
     return this._userId;
@@ -117,13 +116,13 @@ export class Preference extends AbstractModel<PreferenceDto> {
     this._sexualPreference = value;
   }
 
-  public get location(): Location {
-    return this._location;
+  public get distance(): number {
+    return this._distance;
   }
 
-  public set location(value: Location) {
-    this._dto.location = value;
-    this._location = value;
+  public set distance(value: number) {
+    this._dto.distance = value;
+    this._distance = value;
   }
 
   public constructor(dto: PreferenceDto) {
@@ -139,8 +138,7 @@ export class Preference extends AbstractModel<PreferenceDto> {
       );
     }
     this._sexualPreference = dto.sexual_preference;
-    // @TODO add test for location type
-    this._location = dto.location;
+    this._distance = dto.distance;
   }
 
   public static async select(filters?: Filters): Promise<Preference[]> {

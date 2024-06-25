@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "first_name" VARCHAR(255),
     "last_name" VARCHAR(255),
     "gender" VARCHAR(255) CHECK (
-        "gender" IN ('male', 'female', 'other')
+        "gender" IN ('male', 'female')
     ),
     "biography" VARCHAR(512),
     "interests" TEXT,
@@ -74,8 +74,8 @@ CREATE TABLE IF NOT EXISTS "preferences" (
     "user_id" BIGINT NOT NULL,
     "age_gap_min" SMALLINT NOT NULL,
     "age_gap_max" SMALLINT NULL,
-    "fame_rating_min" SMALLINT NOT NULL,
-    "fame_rating_max" SMALLINT NULL,
+    "fame_rating_min" DECIMAL NOT NULL,
+    "fame_rating_max" DECIMAL NULL,
     "sexual_preference" VARCHAR(255) CHECK (
         "sexual_preference" IN (
             'heterosexual',
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS "preferences" (
             'bisexual'
         )
     ) NOT NULL DEFAULT 'bisexual',
-    "location" JSON NOT NULL
+    "distance" BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "chats" (

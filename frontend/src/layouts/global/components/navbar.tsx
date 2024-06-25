@@ -5,25 +5,50 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
-import { MessageCircleHeart } from "lucide-react";
+import { MessageCircleHeart, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { kyGET } from "@/utils/ky/handlers";
+import { kyGET, kyPOST } from "@/utils/ky/handlers";
 import { useMatchStore } from "@/stores/matches-store";
 import Login from "@/pages/auth/login/login";
 import Register from "@/pages/auth/register/register";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export function Navbar() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [chatUserIds, setChatUserIds] = useState<
     { userId: number; firstName: string }[]
   >([]);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const { logout, status } = useAuth();
   const { matches } = useMatchStore();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const handleUnlike = async (userId: number) => {
+    const response = await kyPOST(`matches/cancel/${userId}`, {}, logout);
+    if (response) {
+      setChatUserIds((chatUserIds) => {
+        return chatUserIds.filter((chatUserId) => chatUserId.userId !== userId);
+      });
+      setSheetOpen(false);
+      if (pathname.includes("chat")) {
+        navigate("/");
+      }
+    } else {
+      toast.error("Error disliking user");
+    }
+  };
 
   useEffect(() => {
     const fetchChatUserIds = async () => {
@@ -36,7 +61,7 @@ export function Navbar() {
       setChatUserIds(chatUserIdsData);
     };
 
-    fetchChatUserIds();
+    setTimeout(() => fetchChatUserIds(), 200);
   }, [status, matches]);
 
   return (
@@ -61,7 +86,7 @@ export function Navbar() {
           )}
           <ToggleTheme />
           {status === AuthStatus.Authenticated && (
-            <Sheet>
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger asChild>
                 <Button size="icon" variant="ghost">
                   <MessageCircleHeart className="h-6 w-6" />
@@ -69,23 +94,61 @@ export function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                {chatUserIds.map((chatUserId) => {
-                  return (
-                    <SheetClose asChild key={chatUserId.userId}>
-                      <Button
-                        onClick={() => {
-                          navigate(`/chat/${chatUserId.userId}`);
-                          // Must have this to refresh the page
-                          navigate(0);
-                        }}
-                        variant="outline"
-                        className="w-full justify-start"
-                      >
-                        Chat avec {chatUserId.firstName}
-                      </Button>
-                    </SheetClose>
-                  );
-                })}
+                <div className="flex flex-col gap-2 p-4">
+                  {chatUserIds.length === 0 && (
+                    <span className="text-gray-900 dark:text-gray-50">
+                      Aucun chat à afficher.
+                    </span>
+                  )}
+                  {chatUserIds.map((chatUserId) => {
+                    return (
+                      <div className="flex" key={chatUserId.userId}>
+                        <SheetClose asChild>
+                          <Button
+                            onClick={() => {
+                              navigate(`/chat/${chatUserId.userId}`);
+                              // Must have this to refresh the page
+                              navigate(0);
+                            }}
+                            variant="outline"
+                            className="w-full justify-between"
+                          >
+                            Chat avec {chatUserId.firstName}
+                          </Button>
+                        </SheetClose>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size={"icon"} variant={"outline"}>
+                              <X />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="rounded-lg">
+                            <DialogTitle>
+                              Voulez-vous disliker {chatUserId.firstName} ?
+                            </DialogTitle>
+                            <div className="flex gap-2">
+                              <DialogClose asChild>
+                                <Button variant="secondary" className="grow">
+                                  Annuler
+                                </Button>
+                              </DialogClose>
+                              <DialogClose asChild>
+                                <Button
+                                  className="grow"
+                                  onClick={() =>
+                                    handleUnlike(chatUserId.userId)
+                                  }
+                                >
+                                  Confirmer
+                                </Button>
+                              </DialogClose>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    );
+                  })}
+                </div>
               </SheetContent>
             </Sheet>
           )}

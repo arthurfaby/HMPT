@@ -7,14 +7,16 @@ export function parseUserQueryResponse(
 ): UserDto[] {
   const userDtosAsString: UserDtoArrayAsString[] = queryResponse.rows;
   const userDtos: UserDto[] = userDtosAsString.map((userDtoAsString) => {
+    const interestsAsArray = userDtoAsString.interests
+      ? userDtoAsString.interests.replace(/{/g, "[").replace(/}/g, "]")
+      : "[]";
+    const picturesAsArray = userDtoAsString.pictures
+      ? userDtoAsString.pictures.replace(/{/g, "[").replace(/}/g, "]")
+      : "[]";
     return {
       ...userDtoAsString,
-      interests: userDtoAsString.interests
-        ? JSON.parse(userDtoAsString.interests)
-        : [],
-      pictures: userDtoAsString.pictures
-        ? JSON.parse(userDtoAsString.pictures)
-        : [],
+      interests: JSON.parse(interestsAsArray),
+      pictures: JSON.parse(picturesAsArray),
     };
   });
   return userDtos;
