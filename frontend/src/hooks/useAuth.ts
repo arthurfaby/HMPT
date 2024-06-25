@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
 import postRegister from "@/services/api/registerApi";
+import { kyPOST } from "@/utils/ky/handlers";
 
 export enum AuthStatus {
   Unknown = 0,
@@ -34,6 +35,11 @@ export function useAuth() {
 
   const logout = useCallback(async () => {
     setAccount(null);
+    await kyPOST<{}, { online: boolean }>(
+      "users/online",
+      { online: false },
+      () => setAccount(null),
+    );
   }, []);
 
   const login = useCallback(
@@ -43,6 +49,11 @@ export function useAuth() {
         if (response) {
           toast.success("Vous êtes bien connecté.");
           setAccount(response);
+          await kyPOST<{}, { online: boolean }>(
+            "users/online",
+            { online: true },
+            () => setAccount(null),
+          );
           return true;
         }
       } catch (error) {
