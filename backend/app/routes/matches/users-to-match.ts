@@ -87,6 +87,7 @@ router.get("/usersToMatch", async (req: Request, res: Response) => {
       preference.fameRatingMax,
     ]
   );
+  console.log(queryResponse);
   const userDtos = parseUserQueryResponse(queryResponse);
   const userDtosInDistance = userDtos.filter((userDto) => {
     if (!authUser.geolocation || !userDto.geolocation) return false;

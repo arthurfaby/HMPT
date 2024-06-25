@@ -146,7 +146,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">
-        Aucun utilisateur à afficher.
+        Aucun utilisateur ne correspond à vos critères.
       </span>
     );
   }

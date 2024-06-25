@@ -13,7 +13,7 @@ import { Logout } from "@/pages/auth/logout/logout";
 import { Matches } from "./pages/matches/matches";
 import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { kyPOST } from "./utils/ky/handlers";
 import { useAuth } from "./hooks/useAuth";
 
@@ -68,6 +68,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [initStatus, setInitStatus] = useState(false);
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -78,12 +79,14 @@ function App() {
         logout,
       );
     };
+    if (!initStatus) {
+      updateOnlineStatus(true);
 
-    updateOnlineStatus(true);
-
-    window.addEventListener("beforeunload", (e) => {
-      updateOnlineStatus(false);
-    });
+      window.addEventListener("beforeunload", (e) => {
+        updateOnlineStatus(false);
+      });
+      setInitStatus(true);
+    }
   });
 
   return (

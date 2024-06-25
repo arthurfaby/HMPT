@@ -35,11 +35,6 @@ export function useAuth() {
 
   const logout = useCallback(async () => {
     setAccount(null);
-    await kyPOST<{}, { online: boolean }>(
-      "users/online",
-      { online: false },
-      () => setAccount(null),
-    );
   }, []);
 
   const login = useCallback(
