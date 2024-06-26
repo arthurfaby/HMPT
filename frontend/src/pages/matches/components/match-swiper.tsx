@@ -16,6 +16,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { MatchDto } from "@/dtos/match_dto";
 import { useMatchStore } from "@/stores/matches-store";
 import { ReportDto } from "@/dtos/report_dto";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type MatchSwiperProps = {
   users: UserDto[];
@@ -171,31 +177,17 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         >
           <X />
         </Button>
-        <Dialog>
-          <DialogTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button size="icon" variant="outline">
               <Flag className="h-5 w-5" />
             </Button>
-          </DialogTrigger>
-          <DialogContent className="rounded-lg">
-            <DialogTitle>
-              Confirmez-vous que {users[activeUser].first_name} est un faux
-              compte ?
-            </DialogTitle>
-            <div className="flex gap-2">
-              <DialogClose asChild>
-                <Button variant="secondary" className="grow">
-                  Annuler
-                </Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button className="grow" onClick={reportUser}>
-                  Confirmer
-                </Button>
-              </DialogClose>
-            </div>
-          </DialogContent>
-        </Dialog>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={reportUser}>Signaler</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Button
           size="icon"
           onClick={() => {
