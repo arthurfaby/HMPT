@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
+  useNavigate,
 } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/home/home";
@@ -14,8 +15,20 @@ import { Matches } from "./pages/matches/matches";
 import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
 import { useEffect, useState } from "react";
-import { kyPOST } from "./utils/ky/handlers";
-import { useAuth } from "./hooks/useAuth";
+import { kyGET, kyPOST } from "./utils/ky/handlers";
+import { AuthStatus, useAuth } from "./hooks/useAuth";
+import { Location } from "./types/geolocation_type";
+
+type IPGeolocationApiResponse = {
+  IPv4: string;
+  city: string;
+  country_code: string;
+  country_name: string;
+  latitude: number;
+  longitude: number;
+  postal: string;
+  state: string;
+};
 
 const router = createBrowserRouter([
   {
@@ -69,9 +82,44 @@ const router = createBrowserRouter([
 
 function App() {
   const [initStatus, setInitStatus] = useState(false);
-  const { logout } = useAuth();
+  const [initGeolocation, setInitGeolocation] = useState(false);
+  const { status, logout } = useAuth();
 
   useEffect(() => {
+    if (status !== AuthStatus.Authenticated) return;
+
+    const listenGeolocationChange = async () => {
+      const accessResult = await navigator.permissions.query({
+        name: "geolocation",
+      });
+      accessResult.onchange = getAndPutGeolocation;
+    };
+
+    const getAndPutGeolocation = async () => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          await kyPOST<{ geolocation: Location }, Location>(
+            "users/geolocation",
+            { latitude, longitude },
+            logout,
+          );
+        },
+        async () => {
+          const response = await fetch("https://geolocation-db.com/json/");
+          const geolocation =
+            (await response.json()) as IPGeolocationApiResponse;
+          const { latitude, longitude } = geolocation;
+          await kyPOST<{ geolocation: Location }, Location>(
+            "users/geolocation",
+            { latitude, longitude },
+            logout,
+          );
+        },
+      );
+    };
+
     const updateOnlineStatus = async (status: boolean) => {
       await kyPOST<{}, { online: boolean }>(
         "users/online",
@@ -79,9 +127,15 @@ function App() {
         logout,
       );
     };
+
+    if (!initGeolocation) {
+      listenGeolocationChange();
+      getAndPutGeolocation();
+      setInitGeolocation(true);
+    }
+
     if (!initStatus) {
       updateOnlineStatus(true);
-
       window.addEventListener("beforeunload", (e) => {
         updateOnlineStatus(false);
       });

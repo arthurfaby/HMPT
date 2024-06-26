@@ -66,7 +66,7 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
         })
       )[0];
 
-    if (existingChat.id) {
+    if (existingChat && existingChat.id) {
       match.chatId = existingChat.id;
       existingMatchAsLiked[0].chatId = existingChat.id;
     } else {

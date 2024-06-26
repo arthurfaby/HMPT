@@ -29,10 +29,8 @@ export function Navbar() {
     { userId: number; firstName: string }[]
   >([]);
   const [sheetOpen, setSheetOpen] = useState(false);
-
   const { logout, status } = useAuth();
   const { matches } = useMatchStore();
-  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const handleUnlike = async (userId: number) => {
@@ -42,9 +40,7 @@ export function Navbar() {
         return chatUserIds.filter((chatUserId) => chatUserId.userId !== userId);
       });
       setSheetOpen(false);
-      if (pathname.includes("chat")) {
-        navigate("/");
-      }
+      navigate("/");
     } else {
       toast.error("Error disliking user");
     }
