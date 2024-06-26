@@ -8,10 +8,10 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
-import { MessageCircleHeart, X } from "lucide-react";
+import { Ban, MessageCircleHeart, ThumbsDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { kyGET, kyPOST } from "@/utils/ky/handlers";
-import { useMatchStore } from "@/stores/matches-store";
+import { useChatChangesStore } from "@/stores/chat-changes-store";
 import Login from "@/pages/auth/login/login";
 import Register from "@/pages/auth/register/register";
 import {
@@ -30,7 +30,8 @@ export function Navbar() {
   >([]);
   const [sheetOpen, setSheetOpen] = useState(false);
   const { logout, status } = useAuth();
-  const { matches } = useMatchStore();
+  const { changes, makeChanges } = useChatChangesStore();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const handleUnlike = async (userId: number) => {
@@ -58,7 +59,7 @@ export function Navbar() {
     };
 
     setTimeout(() => fetchChatUserIds(), 200);
-  }, [status, matches]);
+  }, [status, changes]);
 
   return (
     <>
@@ -67,14 +68,7 @@ export function Navbar() {
           Matcha.
         </Link>
         <div className="flex items-center space-x-4">
-          {status === AuthStatus.Authenticated ? (
-            <Link
-              className="hidden items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-              to="/logout"
-            >
-              Se déconnecter
-            </Link>
-          ) : (
+          {status !== AuthStatus.Authenticated && (
             <>
               <Register />
               <Login openDialog={openDialog} setOpenDialog={setOpenDialog} />
@@ -107,7 +101,7 @@ export function Navbar() {
                               navigate(0);
                             }}
                             variant="outline"
-                            className="w-full justify-between"
+                            className="w-full "
                           >
                             Chat avec {chatUserId.firstName}
                           </Button>
@@ -115,7 +109,7 @@ export function Navbar() {
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button size={"icon"} variant={"outline"}>
-                              <X />
+                              <ThumbsDown size={20} />
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="rounded-lg">
@@ -141,6 +135,44 @@ export function Navbar() {
                             </div>
                           </DialogContent>
                         </Dialog>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size={"icon"} variant={"outline"}>
+                              <Ban size={20} className="text-destructive" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="rounded-lg">
+                            <DialogTitle>
+                              Voulez-vous bloquer {chatUserId.firstName} ?
+                            </DialogTitle>
+                            <div className="flex gap-2">
+                              <DialogClose asChild>
+                                <Button variant="secondary" className="grow">
+                                  Annuler
+                                </Button>
+                              </DialogClose>
+                              <DialogClose asChild>
+                                <Button
+                                  className="grow"
+                                  onClick={async () => {
+                                    await kyPOST(
+                                      "block/" + chatUserId.userId,
+                                      {},
+                                      logout,
+                                    );
+                                    makeChanges();
+                                    if (pathname.includes("/chat")) {
+                                      navigate("/");
+                                    }
+                                    setSheetOpen(false);
+                                  }}
+                                >
+                                  Confirmer
+                                </Button>
+                              </DialogClose>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     );
                   })}
@@ -148,47 +180,43 @@ export function Navbar() {
               </SheetContent>
             </Sheet>
           )}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button className="sm:hidden" size="icon" variant="ghost">
-                <MenuIcon className="h-6 w-6" />
-                <span className="sr-only">Bouton pour ouvrir le menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <div className="grid gap-4 p-4">
-                {status === AuthStatus.Authenticated ? (
+          {status !== AuthStatus.Authenticated ? (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button className="sm:hidden" size="icon" variant="ghost">
+                  <MenuIcon className="h-6 w-6" />
+                  <span className="sr-only">Bouton pour ouvrir le menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <div className="grid gap-4 p-4">
                   <SheetClose asChild>
                     <Link
-                      className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                      to="/logout"
+                      className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
+                      to="/register"
                     >
-                      Se déconnecter
+                      Créer un compte
                     </Link>
                   </SheetClose>
-                ) : (
-                  <>
-                    <SheetClose asChild>
-                      <Link
-                        className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                        to="/register"
-                      >
-                        Créer un compte
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link
-                        className="items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                        to="/login"
-                      >
-                        Se connecter
-                      </Link>
-                    </SheetClose>
-                  </>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+                  <SheetClose asChild>
+                    <Link
+                      className="items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300 sm:inline-flex"
+                      to="/login"
+                    >
+                      Se connecter
+                    </Link>
+                  </SheetClose>
+                </div>
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <Link
+              className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
+              to="/logout"
+            >
+              Se déconnecter
+            </Link>
+          )}
         </div>
       </header>
       <div className="h-[64px]"></div>

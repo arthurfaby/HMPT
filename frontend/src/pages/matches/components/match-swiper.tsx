@@ -1,20 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Flag, Heart, X } from "lucide-react";
+import { Ban, Flag, Heart, X } from "lucide-react";
 import { UserDto } from "@/dtos/user_dto";
 import { MatchCard } from "@/pages/matches/components/match-card";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { kyPOST } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
 import { MatchDto } from "@/dtos/match_dto";
-import { useMatchStore } from "@/stores/matches-store";
+import { useChatChangesStore } from "@/stores/chat-changes-store";
 import { ReportDto } from "@/dtos/report_dto";
 import {
   DropdownMenu,
@@ -22,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BlockDto } from "@/dtos/block_dto";
 
 type MatchSwiperProps = {
   users: UserDto[];
@@ -32,8 +26,40 @@ type SwipeState = "like" | "dislike";
 export function MatchSwiper({ users }: MatchSwiperProps) {
   const [activeUser, setActiveUser] = useState(0);
   const [canSwipe, setCanSwipe] = useState(true);
-  const { addMatch } = useMatchStore();
+  const { makeChanges } = useChatChangesStore();
   const { logout } = useAuth();
+
+  const blockUser = async () => {
+    if (!canSwipe) {
+      toast.error("Veuillez attendre avant de swipe à nouveau.", {
+        position: "top-center",
+      });
+      return;
+    }
+    setCanSwipe(false);
+    const block = await kyPOST<BlockDto, {}>(
+      `block/${users[activeUser].id}`,
+      {},
+      logout,
+    );
+    if (!block) {
+      toast.error("Erreur lors du bloquage de l'utilisateur", {
+        position: "top-center",
+      });
+      setCanSwipe(true);
+    } else {
+      users.splice(activeUser, 1);
+      if (users[activeUser]) {
+        setActiveUser(activeUser);
+      } else {
+        setActiveUser(0);
+      }
+      setCanSwipe(true);
+      toast.success("Utilisateur bloqué", {
+        position: "top-center",
+      });
+    }
+  };
 
   const reportUser = async () => {
     if (!canSwipe) {
@@ -123,7 +149,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
             position: "top-center",
           });
         }
-        addMatch();
+        makeChanges();
       } else if (swipeState === "like") {
         if (printToast) {
           toast.success("Utilisateur liké", {
@@ -184,7 +210,26 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={reportUser}>Signaler</DropdownMenuItem>
+            <DropdownMenuItem className="p-1">
+              <Button
+                variant={"ghost"}
+                onClick={reportUser}
+                className="flex gap-2"
+              >
+                <Flag size={18} />
+                Signaler
+              </Button>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="p-1">
+              <Button
+                variant={"destructive"}
+                onClick={blockUser}
+                className="flex gap-2"
+              >
+                <Ban size={18} />
+                Bloquer
+              </Button>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
