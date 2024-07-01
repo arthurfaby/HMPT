@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "biography" VARCHAR(512),
     "interests" TEXT,
     "pictures" TEXT,
-    "verified" BOOLEAN,
+    "verified" BOOLEAN DEFAULT FALSE,
     "fame_rating" DECIMAL(8, 2),
     "geolocation" JSON,
     "accept_location" BOOLEAN,
@@ -98,6 +98,13 @@ CREATE TABLE IF NOT EXISTS "sessions" (
     "token" VARCHAR(255) NOT NULL
 );
 
+
+CREATE TABLE IF NOT EXISTS "verification_tokens" (
+    "id" SERIAL PRIMARY KEY,
+    "user_id" BIGINT NOT NULL,
+    "token" VARCHAR(255) NOT NULL
+);
+
 ALTER TABLE "blocks"
 ADD CONSTRAINT "blocks_blocker_id_foreign" FOREIGN KEY ("blocker_id") REFERENCES "users" ("id");
 
@@ -145,3 +152,6 @@ ADD CONSTRAINT "histories_visitor_id_foreign" FOREIGN KEY ("visitor_id") REFEREN
 
 ALTER TABLE "sessions"
 ADD CONSTRAINT "sessions_user_id_foreign" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "verification_tokens"
+ADD CONSTRAINT "verification_tokens_user_id_foreign" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
