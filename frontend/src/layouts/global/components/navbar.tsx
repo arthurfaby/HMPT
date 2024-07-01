@@ -180,36 +180,7 @@ export function Navbar() {
               </SheetContent>
             </Sheet>
           )}
-          {status !== AuthStatus.Authenticated ? (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button className="sm:hidden" size="icon" variant="ghost">
-                  <MenuIcon className="h-6 w-6" />
-                  <span className="sr-only">Bouton pour ouvrir le menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <div className="grid gap-4 p-4">
-                  <SheetClose asChild>
-                    <Link
-                      className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                      to="/register"
-                    >
-                      Créer un compte
-                    </Link>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <Link
-                      className="items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                      to="/login"
-                    >
-                      Se connecter
-                    </Link>
-                  </SheetClose>
-                </div>
-              </SheetContent>
-            </Sheet>
-          ) : (
+          {status === AuthStatus.Authenticated && (
             <Link
               className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
               to="/logout"
