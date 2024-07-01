@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { Report } from "../../models/report_model";
+import { User } from "../../models/user_model";
 
 const router = Router();
 
@@ -39,6 +40,15 @@ router.post("/:userId", async (req: Request, res: Response) => {
 
   try {
     await report.create();
+
+    const reportedUser = await User.select({ id: { equal: parseInt(userId) } });
+    if (reportedUser.length > 0) {
+      reportedUser[0].fameRating = reportedUser[0].fameRating * 0.9;
+      if (reportedUser[0].fameRating < 0) {
+        reportedUser[0].fameRating = 0;
+      }
+      await reportedUser[0].update();
+    }
   } catch (e) {
     return res.status(500).send({
       error: "Internal server error",
