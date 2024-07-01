@@ -8,7 +8,7 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
-import { Ban, MessageCircleHeart, ThumbsDown } from "lucide-react";
+import { Ban, History, MessageCircleHeart, ThumbsDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { kyGET, kyPOST } from "@/utils/ky/handlers";
 import { useChatChangesStore } from "@/stores/chat-changes-store";
@@ -76,142 +76,126 @@ export function Navbar() {
           )}
           <ToggleTheme />
           {status === AuthStatus.Authenticated && (
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <MessageCircleHeart className="h-6 w-6" />
-                  <span className="sr-only">Bouton pour ouvrir le menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <div className="flex flex-col gap-2 p-4">
-                  {chatUserIds.length === 0 && (
-                    <span className="text-gray-900 dark:text-gray-50">
-                      Aucun chat à afficher.
-                    </span>
-                  )}
-                  {chatUserIds.map((chatUserId) => {
-                    return (
-                      <div className="flex" key={chatUserId.userId}>
-                        <SheetClose asChild>
-                          <Button
-                            onClick={() => {
-                              navigate(`/chat/${chatUserId.userId}`);
-                              // Must have this to refresh the page
-                              navigate(0);
-                            }}
-                            variant="outline"
-                            className="w-full "
-                          >
-                            Chat avec {chatUserId.firstName}
-                          </Button>
-                        </SheetClose>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button size={"icon"} variant={"outline"}>
-                              <ThumbsDown size={20} />
+            <>
+              <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                <SheetTrigger asChild>
+                  <Button size="icon" variant="ghost">
+                    <MessageCircleHeart className="h-6 w-6" />
+                    <span className="sr-only">Bouton pour ouvrir le menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right">
+                  <div className="flex flex-col gap-2 p-4">
+                    {chatUserIds.length === 0 && (
+                      <span className="text-gray-900 dark:text-gray-50">
+                        Aucun chat à afficher.
+                      </span>
+                    )}
+                    {chatUserIds.map((chatUserId) => {
+                      return (
+                        <div className="flex" key={chatUserId.userId}>
+                          <SheetClose asChild>
+                            <Button
+                              onClick={() => {
+                                navigate(`/chat/${chatUserId.userId}`);
+                                // Must have this to refresh the page
+                                navigate(0);
+                              }}
+                              variant="outline"
+                              className="w-full "
+                            >
+                              Chat avec {chatUserId.firstName}
                             </Button>
-                          </DialogTrigger>
-                          <DialogContent className="rounded-lg">
-                            <DialogTitle>
-                              Voulez-vous disliker {chatUserId.firstName} ?
-                            </DialogTitle>
-                            <div className="flex gap-2">
-                              <DialogClose asChild>
-                                <Button variant="secondary" className="grow">
-                                  Annuler
-                                </Button>
-                              </DialogClose>
-                              <DialogClose asChild>
-                                <Button
-                                  className="grow"
-                                  onClick={() =>
-                                    handleUnlike(chatUserId.userId)
-                                  }
-                                >
-                                  Confirmer
-                                </Button>
-                              </DialogClose>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button size={"icon"} variant={"outline"}>
-                              <Ban size={20} className="text-destructive" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="rounded-lg">
-                            <DialogTitle>
-                              Voulez-vous bloquer {chatUserId.firstName} ?
-                            </DialogTitle>
-                            <div className="flex gap-2">
-                              <DialogClose asChild>
-                                <Button variant="secondary" className="grow">
-                                  Annuler
-                                </Button>
-                              </DialogClose>
-                              <DialogClose asChild>
-                                <Button
-                                  className="grow"
-                                  onClick={async () => {
-                                    await kyPOST(
-                                      "block/" + chatUserId.userId,
-                                      {},
-                                      logout,
-                                    );
-                                    makeChanges();
-                                    if (pathname.includes("/chat")) {
-                                      navigate("/");
+                          </SheetClose>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size={"icon"} variant={"outline"}>
+                                <ThumbsDown size={20} />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="rounded-lg">
+                              <DialogTitle>
+                                Voulez-vous disliker {chatUserId.firstName} ?
+                              </DialogTitle>
+                              <div className="flex gap-2">
+                                <DialogClose asChild>
+                                  <Button variant="secondary" className="grow">
+                                    Annuler
+                                  </Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button
+                                    className="grow"
+                                    onClick={() =>
+                                      handleUnlike(chatUserId.userId)
                                     }
-                                    setSheetOpen(false);
-                                  }}
-                                >
-                                  Confirmer
-                                </Button>
-                              </DialogClose>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                    );
-                  })}
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
-          {status === AuthStatus.Authenticated && (
-            <Link
-              className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-              to="/logout"
-            >
-              Se déconnecter
-            </Link>
+                                  >
+                                    Confirmer
+                                  </Button>
+                                </DialogClose>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size={"icon"} variant={"outline"}>
+                                <Ban size={20} className="text-destructive" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="rounded-lg">
+                              <DialogTitle>
+                                Voulez-vous bloquer {chatUserId.firstName} ?
+                              </DialogTitle>
+                              <div className="flex gap-2">
+                                <DialogClose asChild>
+                                  <Button variant="secondary" className="grow">
+                                    Annuler
+                                  </Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button
+                                    className="grow"
+                                    onClick={async () => {
+                                      await kyPOST(
+                                        "block/" + chatUserId.userId,
+                                        {},
+                                        logout,
+                                      );
+                                      makeChanges();
+                                      if (pathname.includes("/chat")) {
+                                        navigate("/");
+                                      }
+                                      setSheetOpen(false);
+                                    }}
+                                  >
+                                    Confirmer
+                                  </Button>
+                                </DialogClose>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </SheetContent>
+              </Sheet>
+              <Button variant={"ghost"} size={"icon"}>
+                <Link to="/history">
+                  <History />
+                </Link>
+              </Button>
+              <Link
+                className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
+                to="/logout"
+              >
+                Se déconnecter
+              </Link>
+            </>
           )}
         </div>
       </header>
       <div className="h-[64px]"></div>
     </>
-  );
-}
-
-function MenuIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" x2="20" y1="12" y2="12" />
-      <line x1="4" x2="20" y1="6" y2="6" />
-      <line x1="4" x2="20" y1="18" y2="18" />
-    </svg>
   );
 }
