@@ -8,7 +8,8 @@ import { ChevronDown, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { getGenderTaxo } from "@/utils/taxonomy";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistance } from "@/utils/formatDistance";
-import { kyGET } from "@/utils/ky/handlers";
+import { kyGET, kyPOST } from "@/utils/ky/handlers";
+import { Card } from "@/components/ui/card";
 
 export type MatchProfileProps = {
   user: UserDto;
@@ -39,6 +40,8 @@ export function MatchProfile({
     }
   };
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
     getDistance();
   }, [user]);
@@ -58,6 +61,16 @@ export function MatchProfile({
     setImageIndex(imageIndex - 1);
   };
 
+  useEffect(() => {
+    const seeProfile = async () => {
+      await kyPOST<UserDto, {}>(`history/seeProfile/${user.id}`, {}, logout);
+    };
+
+    if (open) {
+      seeProfile();
+    }
+  }, [open]);
+
   const handleOpenChange = () => {
     handleOpenProfile();
     setFullImage(false);
@@ -72,7 +85,6 @@ export function MatchProfile({
         onOpenAutoFocus={(e) => {
           e.preventDefault();
         }}
-        style={{}}
       >
         <div
           className={
