@@ -20,8 +20,8 @@ router.post("/", async (req: Request, res: Response) => {
     email: { equal: userDto.email },
   });
   if (existingUserByMail.length > 0) {
-    return res.status(400).send({
-      error: "User already exists",
+    return res.status(200).send({
+      error: "Adresse email déjà utilisée",
     });
   }
 
@@ -29,8 +29,8 @@ router.post("/", async (req: Request, res: Response) => {
     username: { equal: userDto.username },
   });
   if (existingUserByUsername.length > 0) {
-    return res.status(400).send({
-      error: "User already exists",
+    return res.status(200).send({
+      error: "Username déjà utilisé",
     });
   }
 
@@ -43,8 +43,8 @@ router.post("/", async (req: Request, res: Response) => {
       email: { equal: userDto.email },
     });
     if (!usersWithId || !usersWithId[0] || !usersWithId[0].id) {
-      return res.status(502).send({
-        error: "error creating user",
+      return res.status(200).send({
+        error: "Erreur lors de la création de l'utilisateur",
       });
     }
     const userWithId = usersWithId[0];
@@ -62,8 +62,6 @@ router.post("/", async (req: Request, res: Response) => {
     // Send verification email
     try {
       const url = "http://localhost:3000/verify/" + token;
-      const transporter = nodemailer.createTransport(mailerConfig);
-
       const message = {
         from: {
           name: "Matcha",
@@ -85,18 +83,18 @@ router.post("/", async (req: Request, res: Response) => {
 
       message.html = message.html.replace("{{url}}", url);
       return res.status(200).send({
-        message: "Email sent to verify account",
+        message: "Email envoyé avec succès",
       });
     } catch {
-      res.status(502).send({
-        error: "error sending email",
+      res.status(200).send({
+        error: "Erreur lors de l'envoi de l'email de vérification",
       });
     }
 
     return res.status(200).send(user.dto);
   } catch (error) {
-    return res.status(401).send({
-      error: "Error creating user",
+    return res.status(200).send({
+      error: "Erreur lors de la création de l'utilisateur",
     });
   }
 });
