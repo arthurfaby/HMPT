@@ -15,10 +15,30 @@ router.post("/", async (req: Request, res: Response) => {
     first_name: req.body.firstName,
     last_name: req.body.lastname,
   };
+
+  const existingUserByMail = await User.select({
+    email: { equal: userDto.email },
+  });
+  if (existingUserByMail.length > 0) {
+    return res.status(400).send({
+      error: "User already exists",
+    });
+  }
+
+  const existingUserByUsername = await User.select({
+    username: { equal: userDto.username },
+  });
+  if (existingUserByUsername.length > 0) {
+    return res.status(400).send({
+      error: "User already exists",
+    });
+  }
+
   try {
     const user = new User(userDto);
     await user.hash();
     await user.create();
+    console.log(user.dto);
     const usersWithId = await User.select({
       email: { equal: userDto.email },
     });
@@ -64,7 +84,6 @@ router.post("/", async (req: Request, res: Response) => {
       };
 
       message.html = message.html.replace("{{url}}", url);
-      transporter.sendMail(message).then((info) => console.log(info));
       return res.status(200).send({
         message: "Email sent to verify account",
       });
@@ -77,7 +96,7 @@ router.post("/", async (req: Request, res: Response) => {
     return res.status(200).send(user.dto);
   } catch (error) {
     return res.status(401).send({
-      error: "error creating user",
+      error: "Error creating user",
     });
   }
 });

@@ -16,10 +16,15 @@ export function History() {
       date?: Date;
     })[]
   >([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async (_histories: HistoryDto[]) => {
       const userIds = _histories.map((history) => history.visited_id);
+      if (userIds.length === 0) {
+        setError("Aucune vue de profil");
+        return;
+      }
       const usersIdsParam = userIds.join(",");
       const users = await kyGET<UserDto[]>(`users/${usersIdsParam}`, logout);
       if (users) {
@@ -33,6 +38,7 @@ export function History() {
           };
         });
         setUsersWithDate(usersWithDate);
+        setError(null);
       }
     };
 
@@ -53,6 +59,7 @@ export function History() {
     <FullHeightContainer className="p-4">
       <div className="m-auto w-full max-w-4xl ">
         <h1 className="mb-4 text-2xl font-bold">Vues de votre profil</h1>
+        {error && <span>{error}</span>}
         {usersWithDate.map((userWithDate, index) => {
           return (
             <Card
