@@ -25,7 +25,7 @@ export default function Profile() {
 
   
   return (
-    <FullHeightContainer className="flex flex-col h-full items-center justify-center" dontScroll={false}>
+    <FullHeightContainer className="flex flex-col h-full items-center justify-center gap-10" dontScroll={false}>
         <ProfilePicture></ProfilePicture>
         <NameUser/>
         <AgeUser/>

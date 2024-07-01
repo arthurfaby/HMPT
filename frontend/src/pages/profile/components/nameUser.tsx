@@ -25,13 +25,16 @@ export function NameUser() {
                 <Pencil/>
                 </PopoverTrigger>
                 <PopoverContent >
-                    <form className="flex flex-row">
-                        <Input value={firstName} onChange={(event) => {setFirstName(event.target.value)}}></Input>
-                        <Input value={lastName} onChange={(event) => {setLastName(event.target.value)}}></Input>
-                    <PopoverClose type="submit" onClick={handleSubmit}>
-                            <Check/>
-                    </PopoverClose>
-                    </form>
+                    <div>
+                        <form className="flex flex-row">
+                            <Input value={firstName} onChange={(event) => {setFirstName(event.target.value)}}></Input>
+                            <Input value={lastName} onChange={(event) => {setLastName(event.target.value)}}></Input>
+                            <PopoverClose type="submit" onClick={handleSubmit}>
+                                <Check/>
+                            </PopoverClose>
+                        </form>
+                    </div>
+                    
                 </PopoverContent>
                 
             </Popover>
