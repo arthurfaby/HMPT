@@ -13,7 +13,7 @@ router.get("/", async (req: Request, res: Response) => {
   }
 
   const histories = await History.select({
-    visitor_id: {
+    visited_id: {
       equal: authenticatedUser.id,
     },
   });

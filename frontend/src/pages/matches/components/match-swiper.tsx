@@ -132,7 +132,6 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
       return;
     }
     setCanSwipe(false);
-    //TODO: Add logic to swipe
     const data = await fetchMatch(swipeState);
     if ("error" in data) {
       toast.error(data.error, {

@@ -53,6 +53,11 @@ router.post("/cancel/:id", async (req: Request, res: Response) => {
 
   const match = matches[0];
   await match.delete();
+  user.fameRating = user.fameRating / 1.1;
+  if (user.fameRating < 0) {
+    user.fameRating = 0;
+  }
+  await user.update();
   return res.status(200).send(match.dto);
 });
 

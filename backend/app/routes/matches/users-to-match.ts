@@ -68,6 +68,7 @@ router.get("/usersToMatch", async (req: Request, res: Response) => {
           WHERE
               blocker_id = $5
       )
+      AND u.verified = true
       AND u.gender != $6
       AND u.age >= $7
       AND u.age <= $8

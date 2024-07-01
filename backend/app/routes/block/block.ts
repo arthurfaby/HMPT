@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { Block } from "../../models/block_model";
+import { User } from "../../models/user_model";
 
 const router = Router();
 
@@ -38,6 +39,16 @@ router.post("/:userId", async (req: Request, res: Response) => {
   });
 
   await block.create();
+
+  const blockedUser = await User.select({ id: { equal: parseInt(userId) } });
+  if (blockedUser.length > 0) {
+    blockedUser[0].fameRating = blockedUser[0].fameRating * 0.9;
+    if (blockedUser[0].fameRating < 0) {
+      blockedUser[0].fameRating = 0;
+    }
+    await blockedUser[0].update();
+  }
+  
   return res.status(200).send(block.dto);
 });
 

@@ -4,6 +4,7 @@ import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
 import postRegister from "@/services/api/registerApi";
 import { kyPOST } from "@/utils/ky/handlers";
+import { HTTPError } from "ky";
 
 export enum AuthStatus {
   Unknown = 0,
@@ -69,10 +70,25 @@ export function useAuth() {
       firstName: string,
       lastName: string,
     ) => {
-      await postRegister(username, email, password, firstName, lastName).then(
-        setAccount,
-      );
-    },
+      try {
+
+      await postRegister(username, email, password, firstName, lastName).then((data) => {
+        if ('error' in data) {
+          toast.error(data.error);
+          setAccount(null);
+        } else {
+          setAccount(data.message)
+        }
+      });
+    } catch(error) {
+      if (error instanceof HTTPError) {
+        console.log(error.request)
+      }
+      console.log(error)
+      toast.error("Une erreur est survenue lors de l'inscription.")
+      setAccount(null);
+    }
+  },
     [],
   );
 
