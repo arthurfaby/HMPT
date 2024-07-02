@@ -67,6 +67,7 @@ export function MatchCard({ user, nextUser }: MatchCardProps) {
           <span>{user.biography.substring(0, 25) + "..."}</span>
           <div className="flex flex-wrap gap-1">
             {user.interests.map((interest) => {
+              console.log(user.id + interest);
               return <Badge key={user.id + interest}>{interest}</Badge>;
             })}
           </div>

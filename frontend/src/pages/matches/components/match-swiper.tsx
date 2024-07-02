@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Ban, Flag, Heart, X } from "lucide-react";
 import { UserDto } from "@/dtos/user_dto";

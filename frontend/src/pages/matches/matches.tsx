@@ -4,6 +4,8 @@ import { MatchSwiper } from "@/pages/matches/components/match-swiper";
 import { useEffect, useState } from "react";
 import { kyGET } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { getGPSDistance } from "@/utils/getGPSDistance";
 
 export function Matches() {
   const [users, setUsers] = useState<UserDto[]>([]);
@@ -15,8 +17,51 @@ export function Matches() {
     });
   }, []);
 
+  const handleToggleChange = (value: string) => {
+    console.log(value);
+    if (value !== "distance" && value !== "age" && value !== "fame_rating") {
+      kyGET<UserDto[]>("matches/usersToMatch", logout).then((users) => {
+        setUsers(users ?? []);
+      });
+    } else {
+      kyGET<UserDto[]>("matches/usersToMatch/" + value, logout).then(
+        (users) => {
+          setUsers(users ?? []);
+        },
+      );
+    }
+  };
+
   return (
-    <FullHeightContainer className="flex-center flex-col">
+    <FullHeightContainer className="flex-center flex-col gap-10">
+      <ToggleGroup
+        type="single"
+        className="gap-4"
+        onValueChange={handleToggleChange}
+      >
+        Tri :
+        <ToggleGroupItem
+          variant={"outline"}
+          value="distance"
+          aria-label="Toggle bold"
+        >
+          par distance
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          variant={"outline"}
+          value="age"
+          aria-label="Toggle italic"
+        >
+          par age
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          variant={"outline"}
+          value="fame_rating"
+          aria-label="Toggle underline"
+        >
+          par fame rating
+        </ToggleGroupItem>
+      </ToggleGroup>
       <MatchSwiper users={users} />
     </FullHeightContainer>
   );
