@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Register() {
   const { register } = useAuth();
@@ -64,6 +65,7 @@ export default function Register() {
     console.log(ok);
     if (ok) {
       setOpenDialog(false);
+      toast.success("Un email de confirmation vous a été envoyé.");
     } else {
       setOpenDialog(true);
     }
