@@ -13,6 +13,7 @@ import message from "./messages/index";
 import register from "./register.route";
 import report from "./report/index";
 import users from "./users/index";
+import verify from "./verify/index";
 
 const router = Router();
 
@@ -32,5 +33,6 @@ router.use("/factories", factory_user);
 router.use("/login", login);
 router.use("/mail", mail);
 router.use("/register", register);
+router.use("/verify", verify);
 
 export default router;

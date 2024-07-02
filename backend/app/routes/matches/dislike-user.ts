@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { Dislike } from "../../models/dislike_model";
+import { User } from "../../models/user_model";
 
 const router = Router();
 
@@ -40,6 +41,15 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
   });
 
   await dislike.create();
+
+  const dislikedUser = await User.select({ id: { equal: parseInt(userToLikeId) } });
+  if (dislikedUser.length > 0) {
+    dislikedUser[0].fameRating = dislikedUser[0].fameRating * 0.95
+    if (dislikedUser[0].fameRating < 0) {
+      dislikedUser[0].fameRating = 0;
+    }
+    await dislikedUser[0].update();
+  }
 
   return res.status(200).send(dislike.dto);
 });

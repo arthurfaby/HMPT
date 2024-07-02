@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { Match } from "../../models/match_model";
 import { Chat } from "../../models/chat_model";
+import { User } from "../../models/user_model";
 
 const router = Router();
 
@@ -91,7 +92,16 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
     }
     existingMatchAsLiked[0].update();
   }
-  match.create();
+  await match.create();
+  const likedUser = await User.select({ id: { equal: parseInt(userToLikeId) } });
+  if (likedUser.length > 0) {
+    likedUser[0].fameRating = likedUser[0].fameRating * 1.1
+    if (likedUser[0].fameRating > 5) {
+      likedUser[0].fameRating = 5;
+    }
+    await likedUser[0].update();
+  }
+  
   return res.json(match.dto);
 });
 

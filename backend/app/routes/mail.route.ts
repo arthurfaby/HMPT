@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import nodemailer from "nodemailer";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "../models/user_model";
+import { mailerConfig } from "../app";
 
 const router = Router();
 
@@ -10,19 +11,14 @@ router.post("/forget_password", async (req: Request, res: Response) => {
   if (!(user && user[0])) {
     return res.status(502).send({ error: "username not found" });
   }
+  //TODO put in .env
   const token = jwt.sign({ username: req.body.username }, "prout", {
     expiresIn: "300s",
   });
   const url = "http://localhost:3000/forget_password/" + token;
-  let config = {
-    service: "gmail",
-    auth: {
-      user: "rabaudp@gmail.com",
-      pass: "damz dsek jgfn vnjs",
-    },
-  };
+
   try {
-    const transporter = nodemailer.createTransport(config);
+    const transporter = nodemailer.createTransport(mailerConfig);
 
     const message = {
       from: {
@@ -30,8 +26,8 @@ router.post("/forget_password", async (req: Request, res: Response) => {
         address: "rabaudp@gmail.com",
       },
       to: user[0].email,
-      subject: "reset password",
-      html: "<p>bonjour,</p><p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte. Si vous n'avez pas fait cette demande, vous pouvez ignorer cet email. Sinon, vous pouvez réinitialiser votre mot de passe en cliquant sur le bouton ci-dessous :</p><a href=url class='button'>Réinitialiser mon mot de passe</a><p>Ce lien expirera dans 24 heures.</p>",
+      subject: "Réinitialisation de votre mot de passe.",
+      html: "<p>Bonjour,</p><p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte. Si vous n'avez pas fait cette demande, vous pouvez ignorer cet email. Sinon, vous pouvez réinitialiser votre mot de passe en cliquant sur le bouton ci-dessous :</p><a href=url class='button'>Réinitialiser mon mot de passe</a>",
     };
 
     message.html = message.html.replace("url", url);

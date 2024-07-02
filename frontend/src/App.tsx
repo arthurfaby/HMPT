@@ -19,6 +19,7 @@ import { kyGET, kyPOST } from "./utils/ky/handlers";
 import { AuthStatus, useAuth } from "./hooks/useAuth";
 import { Location } from "./types/geolocation_type";
 import { History } from "./pages/history/history";
+import { Verify } from "./pages/verify_account/verify";
 
 type IPGeolocationApiResponse = {
   IPv4: string;
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <Home />,
+          },
+          {
+            path: "/verify/:token",
+            element: <Verify />,
           },
           {
             path: "/forget_password/:id",

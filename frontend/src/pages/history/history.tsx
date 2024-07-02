@@ -38,6 +38,7 @@ export function History() {
           };
         });
         setUsersWithDate(usersWithDate);
+        setError(null);
       }
     };
 
@@ -58,7 +59,7 @@ export function History() {
     <FullHeightContainer className="p-4">
       <div className="m-auto w-full max-w-4xl ">
         <h1 className="mb-4 text-2xl font-bold">Vues de votre profil</h1>
-        {error ? <p>{error}</p> : null}
+        {error && <span>{error}</span>}
         {usersWithDate.map((userWithDate, index) => {
           return (
             <Card
