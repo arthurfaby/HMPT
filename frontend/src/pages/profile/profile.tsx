@@ -7,6 +7,9 @@ import User from "@/types/user";
 import { NameUser } from "./components/nameUser";
 import { Button } from "@/components/ui/button";
 import AgeUser from "./components/ageUser";
+import Gender from "./components/gender";
+import PreferenceSexual from "./components/preferenceSexual";
+import Biography from "./components/biography";
 
 export default function Profile() {
 
@@ -26,9 +29,12 @@ export default function Profile() {
   
   return (
     <FullHeightContainer className="flex flex-col h-full items-center justify-center gap-10" dontScroll={false}>
-        <ProfilePicture></ProfilePicture>
+        <ProfilePicture/>
         <NameUser/>
         <AgeUser/>
+        <Gender/>
+        <PreferenceSexual/>
+        <Biography/>
         <Button type="submit" onClick={handleSubmit}> enregistrez </Button>
     </FullHeightContainer>
   );

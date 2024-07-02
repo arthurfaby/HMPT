@@ -5,9 +5,10 @@ import { useAccountStore } from "@/stores/account-store"
 import User from "@/types/user"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog"
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
+import { Anchor, Arrow, Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip"
 import { Check, Pencil } from "lucide-react"
+import  noImage  from "../../../assets/avatar-3814049_1920.png"
 import { ChangeEvent, MouseEventHandler, SetStateAction, useEffect, useRef, useState } from "react"
 
 export function ProfilePicture() {
@@ -18,7 +19,7 @@ export function ProfilePicture() {
 
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        if (!(account && pictureRef.current)) {
+        if (!(account && pictureRef.current && pictureRef.current.value == "")) {
             return;
         }
             if (!Array.isArray(account.pictures)){
@@ -34,23 +35,24 @@ export function ProfilePicture() {
     return (
         <div className="relative items-center justify-center">
             <Avatar className="flex border-2 border-primary h-[240px] w-[240px] rounded-full overflow-hidden ">
-            <AvatarImage className="object-cover h-full w-full" src={printPicture}/>
+                <AvatarImage className="object-cover h-full w-full" src={printPicture}/>
+                <AvatarFallback> 
+                    <img src={noImage}>
+                    </img>
+                </AvatarFallback>
             </Avatar>
-            <div className="absolute bottom-0 right-6">
+            <div className="absolute bottom-0 right-8">
                 <Popover>
                     <PopoverTrigger asChild>
-                        <button
-                            className="relative bottom-0 left-0 rounded-full w-[35px] h-[35px] inline-flex items-center justify-center text-violet11 bg-secondary"
-                            aria-label="Edit profile picture"
-                        >
-                    <Pencil/>
-                    </button>
+                       <button className="inline-flex h-[30px] w-[30px] rounded-full bg-secondary items-center justify-center">
+                            <Pencil className="h-2/3"/>
+                        </button>
                     </PopoverTrigger>
-                    <PopoverContent >
-                        <form className="flex flex-row">
-                            <Input ref={pictureRef}></Input>
+                    <PopoverContent className="absolute bottom-0 left-5 w-52">
+                        <form className="flex flex-row w-full">
+                            <Input ref={pictureRef} placeholder="Nouvelle photo de profile"></Input>
                         <PopoverClose>
-                            <button type="submit" onClick={handleSubmit}>
+                            <button type="submit" onClick={handleSubmit} className="absolute bottom-2 right-0">
                                 <Check/>
                             </button>
                         </PopoverClose>

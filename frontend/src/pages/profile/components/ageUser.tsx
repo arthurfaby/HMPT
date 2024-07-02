@@ -25,23 +25,25 @@ export default function AgeUser() {
 
     return(
         <div className="flex flex-row">
-            <h1 className="px-2">{age}</h1>
+            <h1 className="px-2 font-bold text-2xl">{age}</h1>
             <Popover >
-                <PopoverTrigger asChild>
-                <Pencil/>
-                </PopoverTrigger>
-                <PopoverContent className="flex flex-row">
+                 <PopoverTrigger asChild>
+                    <button className="inline-flex h-[30px] w-[30px] rounded-full bg-secondary items-center justify-center">
+                        <Pencil className="h-2/3"/>
+                    </button>
+                    </PopoverTrigger>
+                <PopoverContent className="relative flex-row">
                     <Slider defaultValue={[age]} max={150} min={18} step={1} orientation="horizontal" onValueChange={(value) => {setAge(value[0])}}  className="relative flex items-center select-none touch-none w-[200px] h-5">
-                        <SliderTrack className="bg-green-500 relative grow rounded-full h-[3px]">
-                            <SliderRange className="bg-blue-600 absolute rounded-full h-full">
+                        <SliderTrack className="bg-primary relative grow rounded-full h-[3px]">
+                            <SliderRange className="bg-primary absolute rounded-full h-full">
                             </SliderRange>
                         </SliderTrack>
                         <SliderThumb 
-                            className="block w-5 h-5 bg-red-600  rounded-[60px]  focus:outline-none "
+                            className="block w-5 h-5 bg-secondary border-secondary border-2 rounded-[60px]  focus:outline-none "
                             aria-label="Volume"
                         />
                     </Slider>
-                    <PopoverClose type="submit" onClick={handleSubmit}>
+                    <PopoverClose type="submit" onClick={handleSubmit} className="absolute bottom-0 -right-8 rounded-full bg-secondary">
                             <Check/>
                     </PopoverClose>
                 </PopoverContent>
