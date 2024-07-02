@@ -71,24 +71,31 @@ export function useAuth() {
       lastName: string,
     ) => {
       try {
-
-      await postRegister(username, email, password, firstName, lastName).then((data) => {
-        if ('error' in data) {
+        const data = await postRegister(
+          username,
+          email,
+          password,
+          firstName,
+          lastName,
+        );
+        if ("error" in data) {
           toast.error(data.error);
           setAccount(null);
+          return false;
         } else {
-          setAccount(data.message)
+          setAccount(data.message);
+          return true;
         }
-      });
-    } catch(error) {
-      if (error instanceof HTTPError) {
-        console.log(error.request)
+      } catch (error) {
+        if (error instanceof HTTPError) {
+          console.log(error.request);
+        }
+        console.log(error);
+        toast.error("Une erreur est survenue lors de l'inscription.");
+        setAccount(null);
+        return false;
       }
-      console.log(error)
-      toast.error("Une erreur est survenue lors de l'inscription.")
-      setAccount(null);
-    }
-  },
+    },
     [],
   );
 

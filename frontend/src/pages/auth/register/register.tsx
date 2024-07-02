@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Register() {
   const { register } = useAuth();
@@ -16,18 +16,61 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [validForm, setValidForm] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const handleSubmit = (
+  useEffect(() => {
+    setValidForm(
+      username.length > 0 &&
+        password.length > 0 &&
+        email.length > 0 &&
+        firstName.length > 0 &&
+        lastName.length > 0,
+    );
+  }, [username, password, email, firstName, lastName]);
+
+  useEffect(() => {
+    const isLengthValid = password.length >= 8;
+    const isUpperCaseValid = /[A-Z]/.test(password);
+    const isLowerCaseValid = /[a-z]/.test(password);
+    const isDigitValid = /[0-9]/.test(password);
+    const isSymbolValid = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(
+      password,
+    );
+    if (
+      isLengthValid &&
+      isUpperCaseValid &&
+      isLowerCaseValid &&
+      isDigitValid &&
+      isSymbolValid
+    ) {
+      setPasswordError(null);
+    } else {
+      setPasswordError(
+        "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+      );
+    }
+  }, [password]);
+
+  const handleSubmit = async (
     username: string,
     email: string,
     password: string,
     firstName: string,
     lastName: string,
   ) => {
-    register(username, email, password, firstName, lastName);
+    const ok = await register(username, email, password, firstName, lastName);
+    console.log(ok);
+    if (ok) {
+      setOpenDialog(false);
+    } else {
+      setOpenDialog(true);
+    }
   };
+
   return (
-    <Dialog>
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
         <Button>Créer un compte</Button>
       </DialogTrigger>
@@ -55,6 +98,9 @@ export default function Register() {
           value={password}
           onChange={(event) => setPassword(event.currentTarget.value)}
         />
+        {passwordError && (
+          <span className="text-xs text-red-500">{passwordError}</span>
+        )}
         <Input
           type="text"
           placeholder="Prénom"
@@ -71,16 +117,15 @@ export default function Register() {
           onChange={(event) => setLastName(event.currentTarget.value)}
           className=""
         />
-        <DialogClose asChild>
-          <Button
-            type="button"
-            onClick={() =>
-              handleSubmit(username, email, password, firstName, lastName)
-            }
-          >
-            Register
-          </Button>
-        </DialogClose>
+        <Button
+          disabled={!validForm}
+          type="button"
+          onClick={() =>
+            handleSubmit(username, email, password, firstName, lastName)
+          }
+        >
+          Register
+        </Button>
       </DialogContent>
     </Dialog>
   );

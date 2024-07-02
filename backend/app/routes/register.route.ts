@@ -6,6 +6,21 @@ import { VerificationToken } from "../models/verification_token_model";
 
 const router = Router();
 
+function verifyPassword(password: string): boolean {
+  const isLengthValid = password.length >= 8;
+  const isUpperCaseValid = /[A-Z]/.test(password);
+  const isLowerCaseValid = /[a-z]/.test(password);
+  const isDigitValid = /[0-9]/.test(password);
+  const isSymbolValid = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
+  return (
+    isLengthValid &&
+    isUpperCaseValid &&
+    isLowerCaseValid &&
+    isDigitValid &&
+    isSymbolValid
+  );
+}
+
 router.post("/", async (req: Request, res: Response) => {
   //const result = await db.query('SELECT username FROM users')
   const userDto = {
@@ -15,6 +30,13 @@ router.post("/", async (req: Request, res: Response) => {
     first_name: req.body.firstName,
     last_name: req.body.lastname,
   };
+
+  if (!verifyPassword(userDto.password)) {
+    return res.status(200).send({
+      error:
+        "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+    });
+  }
 
   const existingUserByMail = await User.select({
     email: { equal: userDto.email },
@@ -38,7 +60,6 @@ router.post("/", async (req: Request, res: Response) => {
     const user = new User(userDto);
     await user.hash();
     await user.create();
-    console.log(user.dto);
     const usersWithId = await User.select({
       email: { equal: userDto.email },
     });
@@ -62,6 +83,7 @@ router.post("/", async (req: Request, res: Response) => {
     // Send verification email
     try {
       const url = "http://localhost:3000/verify/" + token;
+      const transporter = nodemailer.createTransport(mailerConfig);
       const message = {
         from: {
           name: "Matcha",
@@ -82,6 +104,9 @@ router.post("/", async (req: Request, res: Response) => {
       };
 
       message.html = message.html.replace("{{url}}", url);
+      transporter.sendMail(message).then((_) => {
+        return;
+      });
       return res.status(200).send({
         message: "Email envoyé avec succès",
       });

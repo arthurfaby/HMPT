@@ -31,7 +31,9 @@ router.post("/forget_password", async (req: Request, res: Response) => {
     };
 
     message.html = message.html.replace("url", url);
-    transporter.sendMail(message).then((info) => console.log(info));
+    transporter.sendMail(message).then((_) => {
+      return;
+    });
     return res.status(200).send("send email");
   } catch {
     res.status(502).send("error server mail");
