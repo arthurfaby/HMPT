@@ -9,7 +9,7 @@ const router = Router();
 router.post("/forget_password", async (req: Request, res: Response) => {
   const user = await User.select({ username: { equal: req.body.username } });
   if (!(user && user[0])) {
-    return res.status(502).send({ error: "username not found" });
+    return res.status(404).send({ error: "username not found" });
   }
   //TODO put in .env
   const token = jwt.sign({ username: req.body.username }, "prout", {
@@ -34,9 +34,9 @@ router.post("/forget_password", async (req: Request, res: Response) => {
     transporter.sendMail(message).then((_) => {
       return;
     });
-    return res.status(200).send("send email");
+    return res.status(200).send({ message: "send email" });
   } catch {
-    res.status(502).send("error server mail");
+    res.status(404).send({ error: "error server mail" });
   }
 });
 
@@ -48,7 +48,7 @@ router.post("/change_password", async (req: Request, res: Response) => {
       user[0].password = req.body.newPassword;
       await user[0].hash();
       await user[0].update();
-      return res.status(200).send("change password");
+      return res.status(200).send({ message: "change password" });
     } catch {
       res.status(401).send({ error: "token invalid" });
     }
