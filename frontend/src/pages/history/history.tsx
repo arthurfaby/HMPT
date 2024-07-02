@@ -20,7 +20,7 @@ export function History() {
 
   useEffect(() => {
     const fetchUsers = async (_histories: HistoryDto[]) => {
-      const userIds = _histories.map((history) => history.visited_id);
+      const userIds = _histories.map((history) => history.visitor_id);
       if (userIds.length === 0) {
         setError("Aucune vue de profil");
         return;
@@ -30,7 +30,7 @@ export function History() {
       if (users) {
         const usersWithDate = users.map((user) => {
           const history = _histories.find(
-            (history) => history.visited_id == user.id,
+            (history) => history.visitor_id == user.id,
           );
           return {
             user,

@@ -9,7 +9,7 @@ import { getGPSDistance } from "../../utils/getGPSDistance";
 
 const router = Router();
 
-router.get("/usersToMatch", async (req: Request, res: Response) => {
+router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
   const authUser = await getAuthenticatedUser(req.sessionID);
   if (!authUser || !authUser.id) {
     return res.status(401).send({
@@ -95,6 +95,19 @@ router.get("/usersToMatch", async (req: Request, res: Response) => {
     return distance <= preference.distance;
   });
   const sortedUserDtos = matchesAlgorithm(authUser, userDtosInDistance);
+  if (req.params.sort === "distance") {
+    sortedUserDtos.sort((a, b) => {
+      if (!authUser.geolocation || !a.geolocation || !b.geolocation) return 0;
+      const distanceA = getGPSDistance(authUser.geolocation, a.geolocation);
+      const distanceB = getGPSDistance(authUser.geolocation, b.geolocation);
+      return distanceA - distanceB;
+    });
+  } else if (req.params.sort === "age") {
+    sortedUserDtos.sort((a, b) => a.age! - b.age!);
+  } else if (req.params.sort === "fame_rating") {
+    sortedUserDtos.sort((a, b) => b.fame_rating! - a.fame_rating!);
+  }
+
   return res.json(sortedUserDtos);
 });
 

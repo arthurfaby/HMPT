@@ -42,6 +42,15 @@ router.get("/chatUserIds", async (req: Request, res: Response) => {
       },
     });
 
+    const matchAsLiked = await Match.select({
+      liker_id: {
+        equal: otherUserId,
+      },
+      liked_id: {
+        equal: authUser.id,
+      },
+    });
+
     const isUserBlocked = await Block.select({
       blocker_id: {
         equal: authUser.id,
@@ -51,7 +60,11 @@ router.get("/chatUserIds", async (req: Request, res: Response) => {
       },
     });
 
-    if (matchAsLiker.length > 0 && isUserBlocked.length === 0) {
+    if (
+      matchAsLiker.length > 0 &&
+      matchAsLiked.length > 0 &&
+      isUserBlocked.length === 0
+    ) {
       chats.push(chat);
     }
   }

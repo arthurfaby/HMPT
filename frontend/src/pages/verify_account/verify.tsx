@@ -2,6 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { kyPOST } from "@/utils/ky/handlers";
 import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 export function Verify() {
   // Get the token from the URL
@@ -10,12 +11,18 @@ export function Verify() {
 
   useEffect(() => {
     const verifyAccount = async () => {
-      await kyPOST("verify/" + token, {}, logout);
-      window.location.href = "/login";
+      const data = await kyPOST("verify/" + token, {}, logout);
+      if (data && typeof data === "object" && "message" in data) {
+        toast.success(
+          "Votre compte a bien été vérifié. Vous pouvez maintenant vous connecter.",
+        );
+      } else {
+        toast.error("Erreur lors de la vérification du compte.");
+      }
     };
 
     verifyAccount();
   });
 
-  return <Navigate to={"/login"} />;
+  return <Navigate to={"/"} />;
 }
