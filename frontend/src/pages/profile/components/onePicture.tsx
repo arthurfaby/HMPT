@@ -1,7 +1,9 @@
 import { Card, CardContent } from "@mui/material";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useEffect, useRef } from "react";
-import PopoverString from "./popoverString";
+import { useEffect, useRef, useState } from "react";
+import { Pencil, Plus } from "lucide-react";
+import PopoverString from "@/components/utils/popoverString";
+import { Delete, DeleteForever } from "@mui/icons-material";
 
 interface arrayPicture {
     pictures: string[]
@@ -12,6 +14,7 @@ interface arrayPicture {
 export default function Picture({pictures, setPicture, index}: arrayPicture) {
 
     const pictureRef = useRef<HTMLInputElement>(null)
+    const [ imageload, setimageload ] = useState<boolean>(false)
 
     useEffect(() => {
         if (!pictureRef || !pictureRef.current || pictureRef.current.value == "")
@@ -31,14 +34,34 @@ export default function Picture({pictures, setPicture, index}: arrayPicture) {
         setPicture(newPictures)
     })
 
+    const handleLoad = (() => {
+        setimageload(true)
+    })
+
+    const handleDelete = (() => {
+        const newPictures = [...pictures]
+        if(index >= 0)
+            newPictures[index] = ""
+        setPicture(newPictures)
+        setimageload(false)
+    })
+    
     return (
         <div className="flex flex-grow basis-48">
-                <Avatar className=" grow flex size-full object-fill">
-                    <AvatarImage src={pictures[index]} className="flex object-cover rounded-lg"></AvatarImage>
+                <Avatar className=" relative grow flex size-full object-fill" onLoad={handleLoad}>
+                    <AvatarImage src={pictures[index]} className="flex object-cover rounded-lg">
+                    </AvatarImage>
+                    {
+                        imageload && (
+                            <button onClick={handleDelete} className="absolute -top-2 right-0 bg-secondary rounded-full">
+                                <DeleteForever/>
+                            </button>
+                        )
+                    }
                     <AvatarFallback className="flex size-full items-center justify-center">
                         <Card className="flex size-full">
                             <CardContent className="flex size-full bg-primary-foreground items-center justify-center">
-                              <PopoverString pictureRef={pictureRef} onSubmit={handleClick} placeHolder="nouvelle photo"/>
+                              <PopoverString pictureRef={pictureRef} onSubmit={handleClick} placeHolder="url de la photo" Icon={Plus}/>
                             </CardContent>
                         </Card>
                     </AvatarFallback>

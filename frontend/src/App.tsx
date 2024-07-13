@@ -25,10 +25,7 @@ const router = createBrowserRouter([
             path: "/profile",
             element: <Profile />,
           },
-          {
-            path: "/logout",
-            element: <Logout />,
-          },
+         
           {
             path: "/matches",
             element: <Matches />,
@@ -59,6 +56,10 @@ const router = createBrowserRouter([
             element: <Navigate to={"/"} />,
           },
         ],
+      },
+      {
+        path: "/logout",
+        element: <Logout />,
       },
     ],
   },

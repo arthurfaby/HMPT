@@ -7,14 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 export default function Gender() {
 
     const {account, setAccount} = useAccountStore()
-    const [ gender, setGender ] = useState("")
-
-    useEffect( () => {
-        if(account && account.gender == "male")
-            setGender("male")
-        else
-            setGender("female")
-    }, [])
+    const [ gender, setGender ] = useState(account?.gender ?? "")
 
     const handleChange = (change: string) => {
         if(change == "male" && account)

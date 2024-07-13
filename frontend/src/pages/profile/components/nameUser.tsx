@@ -4,21 +4,23 @@ import { Input } from "@/components/ui/input";
 import { useAccountStore } from "@/stores/account-store";
 import { Arrow, Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Check, Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function NameUser() {
     const {account, setAccount} = useAccountStore()
-    const [firstName, setFirstName] = useState(account?.first_name ?? "jean")
-    const [lastName, setLastName] = useState(account?.last_name ?? "fil")
-
-    const submitFirstName = () => {
-        if (account)
-            account.first_name = firstName
-        setAccount(account)
-    }
+    const [firstName, setFirstName] = useState(account?.first_name ?? "Prénom")
+    const [lastName, setLastName] = useState(account?.last_name ?? "Nom")
 
     const handleSubmit = () => {
-        if (account) {
+        
+        if(firstName == "" || lastName == "") {
+            setFirstName(account?.first_name ?? "Prénom")
+            setLastName(account?.last_name ?? "Nom")
+            toast.error("les champs ne doivent pas être vide")
+        }
+          
+        else if (account) {
             account.first_name = firstName
             account.last_name = lastName
             setAccount(account)
@@ -37,12 +39,12 @@ export function NameUser() {
                     <PopoverContent side="right">
                         <Card className="w-full flex flex-col items-center justify-center p-2">
                             <form className="flex flex-col p-8 gap-4 items-center">
-                                <label>Prenom</label>
+                                <label>Prénom</label>
                                 <Input value={firstName} onChange={(event) => {setFirstName(event.target.value)}}></Input>
-                                <label>nom</label>
+                                <label>Nom</label>
                                 <Input value={lastName} onChange={(event) => {setLastName(event.target.value)}}></Input>
                             </form>
-                                <PopoverClose className="w-full">
+                                <PopoverClose className="w-full" >
                                     <Button type="submit" onClick={handleSubmit} className="w-full">
                                         <Check/>
                                     </Button>

@@ -2,6 +2,7 @@ import { useAccountStore } from "@/stores/account-store"
 import { Man, Woman} from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { getSexualPreferences } from "@/services/api/preferencesApi";
 
 export default function PreferenceSexual() {
 
@@ -9,6 +10,8 @@ export default function PreferenceSexual() {
     const [ preferenceSexual, setPreferenceSxual ] = useState("bisexual")
 
     useEffect( () => {
+    const sexpref = getSexualPreferences()
+    console.log(sexpref)
     }, [])
 
     const handleChange = (change: string) => {

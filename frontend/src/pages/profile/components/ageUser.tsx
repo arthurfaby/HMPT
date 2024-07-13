@@ -19,8 +19,10 @@ export default function AgeUser() {
   }
 
   const handleSubmit = () => {
-        if (account)
+        if (account) {
             account.age = age
+            setAccount(account)
+        }
   }
 
     return(

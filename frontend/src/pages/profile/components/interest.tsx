@@ -44,7 +44,6 @@ export default function Interest() {
                                     {badge.value}
                                 </div>
                                 <button className="absolute right-1 bottom-[6px]" onClick={() => handleDelete(badge.key)}><CrossCircledIcon className="size-[15px] font-bold"/></button>
-                
                             </Badge>
                         )
                     })}
