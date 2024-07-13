@@ -28,7 +28,6 @@ export function NameUser() {
     return (
         <div className="flex flex-row h-full">
             <h1 className="px-2 font-bold text-2xl">{firstName} {lastName}</h1>
-            <div className="relative">
                 <Popover>
                     <PopoverTrigger asChild>
                     <button className="inline-flex h-[30px] w-[30px] rounded-full bg-secondary items-center justify-center">
@@ -53,10 +52,6 @@ export function NameUser() {
                     </PopoverContent>
                 </Popover>
             </div>
-                   
-                
-        </div>
-        
     )
 
 }

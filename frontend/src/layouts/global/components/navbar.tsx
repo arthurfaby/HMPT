@@ -41,7 +41,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
+      <header className="fixed z-40 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
         <Link className="text-xl font-semibold" to="/">
           Matcha.
         </Link>

@@ -11,6 +11,7 @@ import Gender from "./components/gender";
 import PreferenceSexual from "./components/preferenceSexual";
 import Biography from "./components/biography";
 import Interest from "./components/interest";
+import PicturesUser from "./components/pictures";
 
 export default function Profile() {
 
@@ -37,6 +38,7 @@ export default function Profile() {
         <PreferenceSexual/>
         <Biography/>
         <Interest/>
+        <PicturesUser/>
         <Button type="submit" onClick={handleSubmit}> enregistrez </Button>
     </FullHeightContainer>
   );
