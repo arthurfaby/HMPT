@@ -11,7 +11,6 @@ export default function AgeUser() {
     const [age, setAge] = useState<number>(account?.age ?? 0)
 
   useEffect(() => {
-    console.log(age)
   }, [age]) 
 
   const handle = (value: number[]) => {

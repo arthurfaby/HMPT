@@ -17,7 +17,13 @@ router.get("/", async (req: Request, res: Response) => {
 router.post("/update", async (req: Request, res: Response) => {
   try {
       const user: User = new User(req.body) 
+      console.log(user)
       await user.update()
+      console.log(req.body.username)
+      const newUser = await User.select({username: {
+        equal: req.body.username
+      }})
+      console.log(newUser)
       return res.status(200).send("user updated")
     }
   catch(error){

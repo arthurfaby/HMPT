@@ -7,9 +7,17 @@ export default function Biography() {
     const [Biography, setBiography] = useState("")
 
     useEffect( () => {
-        if(account && account.biography)
+        if(account && account.biography) {
             setBiography(account.biography)
+        }
     }, [])
+
+    useEffect(() => {
+        if(!account) 
+            return
+        account.biography = Biography
+        setAccount(account)
+    }, [Biography])
 
     return (
         <div className="flex w-full max-w-[600px] h-full">

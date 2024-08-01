@@ -12,6 +12,7 @@ export default async function postRegister(
   return (
     await ky.post("http://localhost:5000/register", {
       json: { username, email, password, firstName, lastname },
+      credentials: "include",
     })
   ).json();
 }

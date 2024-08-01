@@ -5,21 +5,9 @@ import { kyGET } from "@/utils/ky/handlers";
 import { useAccountStore } from "@/stores/account-store";
 import User from "@/types/user";
 import Profile from "../profile/profile";
+import { toast } from "sonner";
 
-function isCompleted(user: User): boolean {
-  console.log(user) 
-  if (!user ||
-      !user['gender'] ||
-      !user['biography'] ||
-      !user['interests'] ||
-      !user['profil_picture'] ||
-      !user['pictures'] ||
-      user['age'] === 0
-    ) 
-    return false
-  
-  return true
-}
+
 
 
 export function AuthGuard(props: PropsWithChildren) {
@@ -34,16 +22,11 @@ export function AuthGuard(props: PropsWithChildren) {
     return <Navigate to="/" replace={true}></Navigate>;
   }
   
-  if (account && isCompleted(account)) {
     return <Outlet />;
-  }
-  else
-    return <Profile/>
 }
 
 export function UnAuthGuard(props: PropsWithChildren) {
   const { status } = useAuth();
-
   if (status === AuthStatus.Authenticated) {
     return <Navigate to="/matches" replace={true}></Navigate>;
   }

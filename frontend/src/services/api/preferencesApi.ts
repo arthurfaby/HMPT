@@ -6,14 +6,32 @@ export async function getSexualPreferences():Promise<SexualPreference> {
     try {
         const response = await ky.get(`${apiUrl}/preferences/sexualPreference`, {
             credentials: "include",
-        }).json()
+        }).json() 
+        
+        if (response && typeof response === 'object' && 'sexualPreference' in response)
+            return response.sexualPreference as SexualPreference
 
-        console.log("response :", response)
-        if (!response)
-            return("bisexual")
-        return("bisexual")
+        return "bisexual"
     }
-    catch {
+    catch{
         return("bisexual")
     }
 }
+
+export async function postSexualPreferences(sexualPreference: SexualPreference):Promise<boolean> {
+    try{
+        const response = await ky.post(`${apiUrl}/preferences/sexualPreference`, {
+            credentials: "include",
+            json: {sexualPreference}
+        })
+
+        if (response.ok)
+            return true
+        return false
+    }
+    catch {
+        return false
+    }
+
+}
+    

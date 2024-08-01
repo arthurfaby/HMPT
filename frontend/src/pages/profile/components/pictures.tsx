@@ -1,10 +1,25 @@
 import { Card } from "@/components/ui/card";
 import { CardContent } from "@mui/material";
 import Picture from "./onePicture";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAccountStore } from "@/stores/account-store";
 
 export default function PicturesUser() {
     const [pictures, setPicture] = useState<string[]>([])
+    const { account, setAccount } = useAccountStore()
+
+    useEffect(() => {
+        if(account && account.pictures)
+            setPicture(account.pictures)
+    }, [])
+
+    useEffect(() => {
+        if(account){
+            account.pictures = pictures
+            setAccount(account)
+        }
+    }, [pictures])
+
     return (
         <Card className="flex w-2/3 h-full">
             <CardContent className="flex flex-row flex-wrap h-full w-full gap-2">

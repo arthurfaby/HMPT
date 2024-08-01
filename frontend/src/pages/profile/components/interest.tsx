@@ -2,31 +2,52 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useAccountStore } from "@/stores/account-store";
 import { Cross2Icon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { Arrow, Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Check, Pencil, PlusCircle, X } from "lucide-react";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-interface badge {
+interface Badge {
     key: number
     value: string
 }
 
 export default function Interest() {
 
-    const [badgeTotal, setBadgeTotal] = useState<badge[]>([])
+    const { account, setAccount } = useAccountStore()
+    const [badgeTotal, setBadgeTotal] = useState<Badge[]>([])
     const interestRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+       if (account && account.interests) {
+            const newBadges : Badge[] = []
+            account.interests.forEach((interest: string) => {
+                newBadges.push({ value: interest, key: newBadges.length })
+            })
+            setBadgeTotal(newBadges)
+       } 
+    }, [])
 
     const handleDelete = (index: number) => {
         setBadgeTotal(badgeTotal.filter((badge) => badge.key !== index))
+        if(account){
+            account.interests = account.interests.filter((interest) => interest !== badgeTotal[index].value)
+            setAccount(account)
+        }
     }
 
 
 
     const handleClick = () => {
         if (interestRef.current && interestRef.current.value.length < 18) {
-            setBadgeTotal([...badgeTotal, { value: interestRef.current.value, key: badgeTotal.length }])}
+            setBadgeTotal([...badgeTotal, { value: interestRef.current.value, key: badgeTotal.length }])
+            if (account) {
+                account.interests = [...account.interests, interestRef.current.value]
+                setAccount(account)
+            }
+        }
         else {
             toast.error("max 18 caractere")
         }

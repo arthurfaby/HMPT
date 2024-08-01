@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
 export default function Register() {
 
@@ -18,8 +19,8 @@ export default function Register() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
 
-    const handleSubmit = (username: string, email: string, password: string, firstName: string, lastName: string) => {
-        register(username, email, password, firstName, lastName)
+    const handleSubmit = async (username: string, email: string, password: string, firstName: string, lastName: string) => {
+        await register(username, email, password, firstName, lastName)
     }
     return (
         <Dialog>

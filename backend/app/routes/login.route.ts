@@ -12,7 +12,6 @@ router.post("/", async (req: Request, res: Response) => {
       equal: req.body.username,
     },
   });
-  console.log(req.body, users)
   if (users.length === 0) {
     res.status(401).send("Unauthorized");
     return;

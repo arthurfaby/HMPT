@@ -13,6 +13,8 @@ import { Logout } from "@/pages/auth/logout/logout";
 import { Matches } from "./pages/matches/matches";
 import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
+import ProfilGuard from "./pages/auth/profilGuard";
+import { Children } from "react";
 
 const router = createBrowserRouter([
   {
@@ -25,19 +27,25 @@ const router = createBrowserRouter([
             path: "/profile",
             element: <Profile />,
           },
-         
           {
+            element: <ProfilGuard/>,
+            children: [
+            {
             path: "/matches",
             element: <Matches />,
-          },
-          {
-            path: "/chat/:userId",
-            element: <Chat />,
-          },
-          {
-            path: "*",
-            element: <Navigate to={"/matches"} />,
-          },
+            },
+            {
+              path: "/chat/:userId",
+              element: <Chat />,
+            },
+            {
+              path: "*",
+              element: <Navigate to={"/matches"} />,
+            },
+
+          ]
+        }
+          
         ],
       },
       {

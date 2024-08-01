@@ -7,11 +7,13 @@ export default async function auth(
   res: Response,
   next: NextFunction
 ) {
+  console.log("auth");
   const session = await Session.select({
     token: {
       equal: req.sessionID,
     },
   });
+  console.log(session);
   if (session.length !== 0) {
     next();
   } else {

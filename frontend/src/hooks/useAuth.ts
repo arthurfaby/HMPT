@@ -64,9 +64,19 @@ export function useAuth() {
       firstName: string,
       lastName: string,
     ) => {
-      await postRegister(username, email, password, firstName, lastName).then(
-        setAccount,
-      );
+      try {
+        const response = await postRegister(username, email, password, firstName, lastName);
+        if (response) {
+          toast.success("Vous êtes bien inscris.");
+          setAccount(response);
+          return true;
+        }
+      } catch (error) {
+        toast.error("identifiants ou mot de passe incorrects.");
+        setAccount(null);
+        return false;
+      }
+      return false;
     },
     [],
   );

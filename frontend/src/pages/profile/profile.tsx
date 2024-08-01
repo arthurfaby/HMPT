@@ -16,10 +16,12 @@ import PicturesUser from "./components/pictures";
 export default function Profile() {
 
   const { account } = useAuth();
+  console.log("profile")
   
   const handleSubmit = async () => {
     try {
       if (account) {
+        console.log(account)
         await postUser(account)
       }
     }

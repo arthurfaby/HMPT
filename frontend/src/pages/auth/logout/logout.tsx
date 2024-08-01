@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { postLogout } from "@/services/api/authApi";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { Home } from "lucide-react";
 
 export function Logout() {
   const { logout } = useAuth();
@@ -18,5 +19,6 @@ export function Logout() {
       });
   }, []);
 
-  return <Navigate to="/" />;
+  return <Home></Home>
+  // return <Navigate to="/" />;
 }
