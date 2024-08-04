@@ -59,5 +59,14 @@ io.engine.use(sessionMiddleware);
 
 initIO();
 
+export const mailerConfig = {
+  service: "gmail",
+  auth: {
+    user: "rabaudp@gmail.com",
+    //TODO put in .env
+    pass: "damz dsek jgfn vnjs",
+  },
+};
+
 // Export Express app
 export default app;

@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
+  useNavigate,
 } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/home/home";
@@ -15,6 +16,23 @@ import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
 import ProfilGuard from "./pages/auth/profilGuard";
 import { Children } from "react";
+import { useEffect, useState } from "react";
+import { kyGET, kyPOST } from "./utils/ky/handlers";
+import { AuthStatus, useAuth } from "./hooks/useAuth";
+import { Location } from "./types/geolocation_type";
+import { History } from "./pages/history/history";
+import { Verify } from "./pages/verify_account/verify";
+
+type IPGeolocationApiResponse = {
+  IPv4: string;
+  city: string;
+  country_code: string;
+  country_name: string;
+  latitude: number;
+  longitude: number;
+  postal: string;
+  state: string;
+};
 
 const router = createBrowserRouter([
   {
@@ -42,10 +60,20 @@ const router = createBrowserRouter([
               path: "*",
               element: <Navigate to={"/matches"} />,
             },
-
-          ]
-        }
-          
+          {
+            path: "/chat/:userId",
+            element: <Chat />,
+          },
+          {
+            path: "/history",
+            element: <History />,
+          },
+          {
+            path: "*",
+            element: <Navigate to={"/matches"} />,
+          },
+         ],
+        },
         ],
       },
       {
@@ -54,6 +82,10 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <Home />,
+          },
+          {
+            path: "/verify/:token",
+            element: <Verify />,
           },
           {
             path: "/forget_password/:id",
@@ -74,6 +106,68 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [initStatus, setInitStatus] = useState(false);
+  const [initGeolocation, setInitGeolocation] = useState(false);
+  const { status, logout } = useAuth();
+
+  useEffect(() => {
+    if (status !== AuthStatus.Authenticated) return;
+
+    const listenGeolocationChange = async () => {
+      const accessResult = await navigator.permissions.query({
+        name: "geolocation",
+      });
+      accessResult.onchange = getAndPutGeolocation;
+    };
+
+    const getAndPutGeolocation = async () => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          await kyPOST<{ geolocation: Location }, Location>(
+            "users/geolocation",
+            { latitude, longitude },
+            logout,
+          );
+        },
+        async () => {
+          const response = await fetch("https://geolocation-db.com/json/");
+          const geolocation =
+            (await response.json()) as IPGeolocationApiResponse;
+          const { latitude, longitude } = geolocation;
+          await kyPOST<{ geolocation: Location }, Location>(
+            "users/geolocation",
+            { latitude, longitude },
+            logout,
+          );
+        },
+      );
+    };
+
+    const updateOnlineStatus = async (status: boolean) => {
+      await kyPOST<{}, { online: boolean }>(
+        "users/online",
+        { online: status },
+        logout,
+      );
+    };
+
+    if (!initGeolocation) {
+      listenGeolocationChange();
+      getAndPutGeolocation();
+      setInitGeolocation(true);
+    }
+
+    if (!initStatus) {
+      updateOnlineStatus(true);
+      window.addEventListener("beforeunload", (e) => {
+        updateOnlineStatus(false);
+      });
+      setInitStatus(true);
+    }
+  });
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="matcha-theme">
       <RouterProvider router={router} />

@@ -1,26 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Flag, Heart, X } from "lucide-react";
+import { Ban, Flag, Heart, X } from "lucide-react";
 import { UserDto } from "@/dtos/user_dto";
 import { MatchCard } from "@/pages/matches/components/match-card";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { kyPOST } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
 import { MatchDto } from "@/dtos/match_dto";
-import { useMatchStore } from "@/stores/matches-store";
+import { useChatChangesStore } from "@/stores/chat-changes-store";
+import { ReportDto } from "@/dtos/report_dto";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { BlockDto } from "@/dtos/block_dto";
 
 type MatchSwiperProps = {
   users: UserDto[];
@@ -31,13 +26,78 @@ type SwipeState = "like" | "dislike";
 export function MatchSwiper({ users }: MatchSwiperProps) {
   const [activeUser, setActiveUser] = useState(0);
   const [canSwipe, setCanSwipe] = useState(true);
-  const { addMatch } = useMatchStore();
+  const { makeChanges } = useChatChangesStore();
   const { logout } = useAuth();
+
+  const blockUser = async () => {
+    if (!canSwipe) {
+      toast.error("Veuillez attendre avant de swipe à nouveau.", {
+        position: "top-center",
+      });
+      return;
+    }
+    setCanSwipe(false);
+    const block = await kyPOST<BlockDto, {}>(
+      `block/${users[activeUser].id}`,
+      {},
+      logout,
+    );
+    if (!block) {
+      toast.error("Erreur lors du bloquage de l'utilisateur", {
+        position: "top-center",
+      });
+      setCanSwipe(true);
+    } else {
+      users.splice(activeUser, 1);
+      if (users[activeUser]) {
+        setActiveUser(activeUser);
+      } else {
+        setActiveUser(0);
+      }
+      setCanSwipe(true);
+      toast.success("Utilisateur bloqué", {
+        position: "top-center",
+      });
+    }
+  };
+
+  const reportUser = async () => {
+    if (!canSwipe) {
+      toast.error("Veuillez attendre avant de swipe à nouveau.", {
+        position: "top-center",
+      });
+      return;
+    }
+    setCanSwipe(false);
+    const report = await kyPOST<ReportDto, {}>(
+      `report/${users[activeUser].id}`,
+      {},
+      logout,
+    );
+    if (!report) {
+      toast.error("Erreur lors du signalement de l'utilisateur", {
+        position: "top-center",
+      });
+      setCanSwipe(true);
+    } else {
+      users.splice(activeUser, 1);
+      if (users[activeUser]) {
+        setActiveUser(activeUser);
+      } else {
+        setActiveUser(0);
+      }
+      setCanSwipe(true);
+      toast.success("Utilisateur signalé", {
+        position: "top-center",
+      });
+    }
+  };
 
   const fetchMatch = async (
     swipeState: SwipeState,
   ): Promise<MatchDto | { error: string }> => {
     if (swipeState === "like") {
+      // Like
       const match = await kyPOST<MatchDto, {}>(
         `matches/likeUser/${users[activeUser].id}`,
         {},
@@ -47,11 +107,24 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         return { error: "Erreur lors du like de l'utilisateur" };
       }
       return match;
+    } else {
+      // Dislike
+      const match = await kyPOST<MatchDto, {}>(
+        `matches/dislikeUser/${users[activeUser].id}`,
+        {},
+        logout,
+      );
+      if (!match) {
+        return { error: "Erreur lors du dislike de l'utilisateur" };
+      }
+      return match;
     }
-    return { error: "Dislike non implenté" };
   };
 
-  const handleSwipe = async (swipeState: SwipeState) => {
+  const handleSwipe = async (
+    swipeState: SwipeState,
+    printToast: boolean = true,
+  ) => {
     if (!canSwipe) {
       toast.error("Veuillez attendre avant de swipe à nouveau.", {
         position: "top-center",
@@ -59,7 +132,6 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
       return;
     }
     setCanSwipe(false);
-    //TODO: Add logic to swipe
     const data = await fetchMatch(swipeState);
     if ("error" in data) {
       toast.error(data.error, {
@@ -71,19 +143,28 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
       // If chat_id is present, it means a chat has been created
       // So the user has been matched
       if (data.chat_id) {
-        toast.success("ITS A MATCH !", {
-          position: "top-center",
-        });
-        addMatch();
+        if (printToast) {
+          toast.success("ITS A MATCH !", {
+            position: "top-center",
+          });
+        }
+        makeChanges();
+      } else if (swipeState === "like") {
+        if (printToast) {
+          toast.success("Utilisateur liké", {
+            position: "top-center",
+          });
+        }
       } else {
-        toast.success("Utilisateur liké", {
-          position: "top-center",
-        });
+        if (printToast) {
+          toast.success("Utilisateur disliké", {
+            position: "top-center",
+          });
+        }
       }
 
       // Remove the user from the list
       users.splice(activeUser, 1);
-
       if (users[activeUser]) {
         setActiveUser(activeUser);
       } else {
@@ -93,11 +174,10 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     }
   };
 
-  const handleReport = () => {};
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">
-        Aucun utilisateur à afficher.
+        Aucun utilisateur ne correspond à vos critères.
       </span>
     );
   }
@@ -123,29 +203,36 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         >
           <X />
         </Button>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size="icon" onClick={handleReport} variant="outline">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="icon" variant="outline">
               <Flag className="h-5 w-5" />
             </Button>
-          </DialogTrigger>
-          <DialogContent className="rounded-lg">
-            <DialogTitle>
-              Confirmez-vous que {users[activeUser].first_name} est un faux
-              compte ?
-            </DialogTitle>
-            <div className="flex gap-2">
-              <DialogClose asChild>
-                <Button variant="secondary" className="grow">
-                  Annuler
-                </Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button className="grow">Confirmer</Button>
-              </DialogClose>
-            </div>
-          </DialogContent>
-        </Dialog>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem className="p-1">
+              <Button
+                variant={"ghost"}
+                onClick={reportUser}
+                className="flex gap-2"
+              >
+                <Flag size={18} />
+                Signaler
+              </Button>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="p-1">
+              <Button
+                variant={"destructive"}
+                onClick={blockUser}
+                className="flex gap-2"
+              >
+                <Ban size={18} />
+                Bloquer
+              </Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Button
           size="icon"
           onClick={() => {

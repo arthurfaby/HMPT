@@ -1,3 +1,3 @@
-export type Gender = "male" | "female" | "other";
+export type Gender = "male" | "female";
 
-export const GENDERS = ["male", "female", "other"];
+export const GENDERS = ["male", "female"];

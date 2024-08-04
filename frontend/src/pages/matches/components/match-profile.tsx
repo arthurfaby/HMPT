@@ -1,17 +1,15 @@
 import { UserDto } from "@/dtos/user_dto";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Loader,
-  MapPin,
-} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { getGenderTaxo } from "@/utils/taxonomy";
+import { useAuth } from "@/hooks/useAuth";
+import { formatDistance } from "@/utils/formatDistance";
+import { kyGET, kyPOST } from "@/utils/ky/handlers";
+import { Card } from "@/components/ui/card";
 
 export type MatchProfileProps = {
   user: UserDto;
@@ -26,6 +24,35 @@ export function MatchProfile({
 }: MatchProfileProps) {
   const [fullImage, setFullImage] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
+  const { logout } = useAuth();
+  const [distanceMeters, setDistanceMeters] = useState(-1);
+  const [distanceString, setDistanceString] = useState("Loading...");
+
+  const getDistance = async () => {
+    const response = await kyGET<{ distance: number }>(
+      `users/distance/${user.id}`,
+      logout,
+    );
+    if (response) {
+      setDistanceMeters(response.distance);
+    } else {
+      setDistanceString("Erreur lors du chargement de la distance");
+    }
+  };
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {
+    getDistance();
+  }, [user]);
+
+  useEffect(() => {
+    if (distanceMeters === -1) {
+      setDistanceString("Loading...");
+    } else {
+      setDistanceString(formatDistance(distanceMeters));
+    }
+  }, [distanceMeters]);
 
   const handleNextImage = () => {
     setImageIndex(imageIndex + 1);
@@ -33,6 +60,16 @@ export function MatchProfile({
   const handlePreviousImage = () => {
     setImageIndex(imageIndex - 1);
   };
+
+  useEffect(() => {
+    const seeProfile = async () => {
+      await kyPOST<UserDto, {}>(`history/seeProfile/${user.id}`, {}, logout);
+    };
+
+    if (open) {
+      seeProfile();
+    }
+  }, [open]);
 
   const handleOpenChange = () => {
     handleOpenProfile();
@@ -48,7 +85,6 @@ export function MatchProfile({
         onOpenAutoFocus={(e) => {
           e.preventDefault();
         }}
-        style={{}}
       >
         <div
           className={
@@ -62,10 +98,12 @@ export function MatchProfile({
             alt="Profile picture"
           />
           {user.online ? (
-            <Badge variant="success">En ligne</Badge>
+            <Badge variant="success" className="absolute">
+              En ligne
+            </Badge>
           ) : (
-            <Badge variant="destructive">
-              Hors ligne depuis le : {user.last_online_date}
+            <Badge variant="destructive" className="absolute">
+              Hors ligne depuis le : {user.last_online_date.split("T")[0]}
             </Badge>
           )}
           {fullImage ? (
@@ -117,10 +155,19 @@ export function MatchProfile({
                 <span>({getGenderTaxo(user.gender)})</span>
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex justify-between">
               <div className="flex gap-2">
                 <MapPin size={20} />
-                <h1>//TODO: Calculer la distance</h1>
+                <span>{distanceString}</span>
+              </div>
+              <div>
+                {user.fame_rating > 4 ? (
+                  <Badge variant="success">{user.fame_rating} / 5</Badge>
+                ) : user.fame_rating > 2.5 ? (
+                  <Badge variant="warning">{user.fame_rating} / 5</Badge>
+                ) : (
+                  <Badge variant="destructive">{user.fame_rating} / 5</Badge>
+                )}
               </div>
             </div>
           </div>

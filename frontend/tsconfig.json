@@ -28,5 +28,5 @@
     "src",
     "**/*.ts",
     "**/*.tsx"
-  ]
+, "../backend/app/utils/getGPSDistance.ts"  ]
 }

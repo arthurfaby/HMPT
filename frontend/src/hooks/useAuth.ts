@@ -3,6 +3,8 @@ import { useCallback } from "react";
 import { getUser, postLogin } from "@/services/api/authApi";
 import { toast } from "sonner";
 import postRegister from "@/services/api/registerApi";
+import { kyPOST } from "@/utils/ky/handlers";
+import { HTTPError } from "ky";
 
 export enum AuthStatus {
   Unknown = 0,
@@ -44,6 +46,11 @@ export function useAuth() {
         if (response) {
           toast.success("Vous êtes bien connecté.");
           setAccount(response);
+          await kyPOST<{}, { online: boolean }>(
+            "users/online",
+            { online: true },
+            () => setAccount(null),
+          );
           return true;
         }
       } catch (error) {
@@ -65,18 +72,30 @@ export function useAuth() {
       lastName: string,
     ) => {
       try {
-        const response = await postRegister(username, email, password, firstName, lastName);
-        if (response) {
-          toast.success("Vous êtes bien inscris.");
-          setAccount(response);
+        const data = await postRegister(
+          username,
+          email,
+          password,
+          firstName,
+          lastName,
+        );
+        if ("error" in data) {
+          toast.error(data.error);
+          setAccount(null);
+          return false;
+        } else {
+          setAccount(data.message);
           return true;
         }
       } catch (error) {
-        toast.error("identifiants ou mot de passe incorrects.");
+        if (error instanceof HTTPError) {
+          console.log(error.request);
+        }
+        console.log(error);
+        toast.error("Une erreur est survenue lors de l'inscription.");
         setAccount(null);
         return false;
       }
-      return false;
     },
     [],
   );

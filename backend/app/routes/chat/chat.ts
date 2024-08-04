@@ -7,6 +7,9 @@ import { User } from "../../models/user_model";
 import { Chat } from "../../models/chat_model";
 import { Message } from "../../models/message_model";
 import { io } from "../../app";
+import { Match } from "../../models/match_model";
+import { Block } from "../../models/block_model";
+import { Report } from "../../models/report_model";
 
 const router = Router();
 
@@ -50,6 +53,29 @@ router.get("/chatData/:userId", async (req: Request, res: Response) => {
     });
   }
 
+  const block = await Block.select({
+    blocker_id: {
+      equal: authUser.id,
+    },
+    blocked_id: {
+      equal: parseInt(userId),
+    },
+  });
+  const report = await Report.select({
+    reporter_id: {
+      equal: authUser.id,
+    },
+    reported_id: {
+      equal: parseInt(userId),
+    },
+  });
+
+  if (block.length > 0 || report.length > 0) {
+    return res.status(403).send({
+      error: "Forbidden",
+    });
+  }
+
   const chat1 = (
     await Chat.select({
       user1_id: {
@@ -77,6 +103,21 @@ router.get("/chatData/:userId", async (req: Request, res: Response) => {
   if (!chat || chat.id == null) {
     return res.status(404).send({
       error: "Chat not found",
+    });
+  }
+
+  const match = await Match.select({
+    liker_id: {
+      equal: authUser.id,
+    },
+    liked_id: {
+      equal: parseInt(userId),
+    },
+  });
+
+  if (match.length === 0) {
+    return res.status(404).send({
+      error: "Match not found",
     });
   }
 

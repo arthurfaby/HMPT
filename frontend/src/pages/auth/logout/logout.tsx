@@ -4,19 +4,29 @@ import { postLogout } from "@/services/api/authApi";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { Home } from "lucide-react";
+import { kyPOST } from "@/utils/ky/handlers";
 
 export function Logout() {
   const { logout } = useAuth();
 
   useEffect(() => {
-    postLogout()
-      .then(() => {
-        logout();
-      })
-      .catch(() => {
-        toast.error("Vous n'êtes pas connecté.");
-        logout();
-      });
+    const logoutAndUpdateStatus = async () => {
+      await kyPOST<{}, { online: boolean }>(
+        "users/online",
+        { online: false },
+        logout,
+      );
+      postLogout()
+        .then(() => {
+          logout();
+        })
+        .catch(() => {
+          toast.error("Vous n'êtes pas connecté.");
+          logout();
+        });
+    };
+
+    logoutAndUpdateStatus();
   }, []);
 
   return <Navigate to="/" />;

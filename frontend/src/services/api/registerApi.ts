@@ -8,7 +8,7 @@ export default async function postRegister(
   password: string,
   firstName: string,
   lastname: string,
-): Promise<User | null> {
+) : Promise<{ error: string } | { message: User }>{
   return (
     await ky.post("http://localhost:5000/register", {
       json: { username, email, password, firstName, lastname },

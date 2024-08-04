@@ -1,17 +1,17 @@
 CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL PRIMARY KEY,
-    "email" VARCHAR(255) NOT NULL,
-    "username" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(255) NOT NULL UNIQUE,
+    "username" VARCHAR(255) NOT NULL UNIQUE,
     "password" VARCHAR(255) NOT NULL,
     "first_name" VARCHAR(255),
     "last_name" VARCHAR(255),
     "gender" VARCHAR(255) CHECK (
-        "gender" IN ('male', 'female', 'other')
+        "gender" IN ('male', 'female')
     ),
     "biography" VARCHAR(512),
     "interests" TEXT,
     "pictures" TEXT,
-    "verified" BOOLEAN,
+    "verified" BOOLEAN DEFAULT FALSE,
     "fame_rating" DECIMAL(8, 2),
     "geolocation" JSON,
     "accept_location" BOOLEAN,
@@ -74,8 +74,8 @@ CREATE TABLE IF NOT EXISTS "preferences" (
     "user_id" BIGINT NOT NULL,
     "age_gap_min" SMALLINT NOT NULL,
     "age_gap_max" SMALLINT NULL,
-    "fame_rating_min" SMALLINT NOT NULL,
-    "fame_rating_max" SMALLINT NULL,
+    "fame_rating_min" DECIMAL NOT NULL,
+    "fame_rating_max" DECIMAL NULL,
     "sexual_preference" VARCHAR(255) CHECK (
         "sexual_preference" IN (
             'heterosexual',
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS "preferences" (
             'bisexual'
         )
     ) NOT NULL DEFAULT 'bisexual',
-    "location" JSON NOT NULL
+    "distance" BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "chats" (
@@ -93,6 +93,13 @@ CREATE TABLE IF NOT EXISTS "chats" (
 );
 
 CREATE TABLE IF NOT EXISTS "sessions" (
+    "id" SERIAL PRIMARY KEY,
+    "user_id" BIGINT NOT NULL,
+    "token" VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS "verification_tokens" (
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "token" VARCHAR(255) NOT NULL
@@ -145,3 +152,6 @@ ADD CONSTRAINT "histories_visitor_id_foreign" FOREIGN KEY ("visitor_id") REFEREN
 
 ALTER TABLE "sessions"
 ADD CONSTRAINT "sessions_user_id_foreign" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "verification_tokens"
+ADD CONSTRAINT "verification_tokens_user_id_foreign" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
