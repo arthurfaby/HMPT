@@ -6,7 +6,6 @@ import { Chat } from "../../models/chat_model";
 const router = Router();
 
 router.get("/chatUserIds", async (req: Request, res: Response) => {
-  console.log("chatUserIds");
   const authUser = await getAuthenticatedUser(req.sessionID);
   if (!authUser || authUser.id == null) {
     return res.status(401).send({

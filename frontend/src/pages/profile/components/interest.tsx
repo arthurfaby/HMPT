@@ -74,17 +74,13 @@ export default function Interest() {
                 <CardFooter className="flex justify-center">
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button>
                                 <PlusCircle />
-                            </button>
                         </PopoverTrigger>
                         <PopoverContent side="bottom" sideOffset={5} >
                             <form className="flex flex-row w-full">
                                 <Input ref={interestRef} placeholder="nouvel interet"></Input>
                                 <PopoverClose>
-                                    <button type="submit" onClick={handleClick} className="absolute bottom-2 right-0">
-                                        <Check />
-                                    </button>
+                                    <Check type="submit" onClick={handleClick} className="absolute bottom-2 right-0"/>
                                 </PopoverClose>
                             </form>
                         </PopoverContent>

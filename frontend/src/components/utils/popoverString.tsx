@@ -1,8 +1,6 @@
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
-import { Check, PlusCircle } from "lucide-react"
-import { JSXElementConstructor } from "react"
-import { JsxElement } from "typescript"
+import { Check } from "lucide-react"
 
 interface newPicture {
     pictureRef: React.Ref<HTMLInputElement>
@@ -23,9 +21,7 @@ export default function PopoverString({pictureRef, onSubmit, placeHolder, Icon}:
                 <form className="flex flex-row w-full">
                     <Input ref={pictureRef} placeholder={placeHolder}></Input>
                     <PopoverClose>
-                        <button type="submit" className="absolute bottom-2 right-0" onClick={onSubmit}>
-                            <Check/>
-                        </button>
+                            <Check type="submit" className="absolute bottom-2 right-0 " onClick={onSubmit}/>
                     </PopoverClose>
                 </form>
             </PopoverContent>

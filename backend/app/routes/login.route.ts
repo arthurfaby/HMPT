@@ -18,7 +18,6 @@ router.post("/", async (req: Request, res: Response) => {
   }
   const { password, id } = users[0];
   const compare = await bcrypt.compare(req.body.password, password);
-  console.log(compare)
   if (compare) {
     const session = new Session({
       user_id: id,

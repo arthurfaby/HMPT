@@ -7,7 +7,6 @@ const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
   const user = await getAuthenticatedUser(req.sessionID);
-  console.log(user)
   if (!user) {
     return res.status(401).send({ error: "Unauthorized" });
   }
@@ -17,13 +16,10 @@ router.get("/", async (req: Request, res: Response) => {
 router.post("/update", async (req: Request, res: Response) => {
   try {
       const user: User = new User(req.body) 
-      console.log(user)
       await user.update()
-      console.log(req.body.username)
       const newUser = await User.select({username: {
         equal: req.body.username
       }})
-      console.log(newUser)
       return res.status(200).send("user updated")
     }
   catch(error){

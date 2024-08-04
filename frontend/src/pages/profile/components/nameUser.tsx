@@ -45,10 +45,8 @@ export function NameUser() {
                                 <label>Nom</label>
                                 <Input value={lastName} onChange={(event) => {setLastName(event.target.value)}}></Input>
                             </form>
-                                <PopoverClose className="w-full" >
-                                    <Button type="submit" onClick={handleSubmit} className="w-full">
-                                        <Check/>
-                                    </Button>
+                                <PopoverClose className="flex rounded- w-2/3 bg-secondary justify-center rounded-full" >
+                                        <Check type="submit" onClick={handleSubmit}/>
                                 </PopoverClose> 
                         </Card> 
                         <Arrow className="fill-primary"/>

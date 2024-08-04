@@ -26,12 +26,10 @@ export default function Login({openDialog, setOpenDialog}: props) {
 
     const handleSubmit = async (username: string, password: string) => {
        if (await login(username, password))
-            console.log(status)
             setOpenDialog(false)
     }
 
     const forget_password = async (username: string) => {
-        console.log(username)
         if(username !== ""){
            const response = await postForgetPassword(username)
            if (response.ok){

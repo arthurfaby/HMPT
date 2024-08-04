@@ -46,20 +46,20 @@ export function Navbar() {
         <Link className="text-xl font-semibold" to="/">
           Matcha.
         </Link>
+        {status === AuthStatus.Authenticated && (
+          <Link className="text-xl font-semibold" to="/profile">
+            Profile
+          </Link>
+          )}
+       
         <div className="flex items-center space-x-4">
           {status === AuthStatus.Authenticated ? (
             <Button onClick={() => {
-              console.log("logout")
               navigate("/logout")
               navigate(0)
             }}>
               Se déconnecter
             </Button>
-            // // <Link
-            // //   className="hidden items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-            // //   to="/logout"
-            // >
-            // </Link>
           ) : (
             <>
               <Register />

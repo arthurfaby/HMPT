@@ -27,7 +27,6 @@ export default function ChangePassword() {
             else{
                 toast.error('erreur serveur')
             } 
-            console.log("prout")
             navigate("/")
         }
         else {

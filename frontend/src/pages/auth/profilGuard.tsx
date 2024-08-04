@@ -10,7 +10,6 @@ function verifyArrayPictures(array: string[]) : boolean {
     return false
 }
   for (let i = 1; i < array.length; i++) {
-    console.log(array[i])
     if (array[i] === undefined || array[i] === null || array[i] === '') {
       return false
     }

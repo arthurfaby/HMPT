@@ -5,7 +5,6 @@ export default async function getAuthenticatedUser(
   sessionId: string
 ): Promise<User | null> {
   const session = (await Session.select({ token: { equal: sessionId } }))[0];
-  console.log("session", session);
 
   if (!session) return null;
 

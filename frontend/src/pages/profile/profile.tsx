@@ -17,7 +17,6 @@ import { toast } from "sonner";
 export default function Profile() {
 
   const { account } = useAuth();
-  console.log(account)
   
   const handleSubmit = async () => {
     try {

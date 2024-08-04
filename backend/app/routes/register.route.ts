@@ -39,8 +39,6 @@ router.post("/", async (req: Request, res: Response) => {
       } as SessionDto);
       await session.create();
      const newSession = await Session.select({token: {equal: req.sessionID}})
-      console.log(newSession)
-
     }
     res.status(200).send(user.dto)
   }

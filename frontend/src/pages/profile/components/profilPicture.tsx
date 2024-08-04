@@ -21,11 +21,6 @@ export function ProfilePicture() {
         }
     }, [])
 
-    useEffect(() => {
-        // Effectue une action après le rendu, si nécessaire
-        console.log('pictureRef.current:', pictureRef.current);
-    }, [pictureRef.current]); // Dépendances pour surveiller les changements
-    
     const handleSubmit = async () => {
         if (!account || !pictureRef.current) {
             return;
@@ -37,12 +32,10 @@ export function ProfilePicture() {
             return
         }
         if (!Array.isArray(account.pictures)){
-            console.log(valid)
             account.pictures = []
             account.pictures.push(newImage)
         }
         else{
-            console.log(valid)
             account.pictures[0] = newImage
         }
         setPicture(account.pictures[0])

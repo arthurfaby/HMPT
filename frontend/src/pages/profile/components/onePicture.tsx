@@ -53,8 +53,8 @@ export default function Picture({pictures, setPicture, index}: arrayPicture) {
                     </AvatarImage>
                     {
                         imageload && (
-                            <button onClick={handleDelete} className="absolute -top-2 right-0 bg-secondary rounded-full">
-                                <DeleteForever/>
+                            <button >
+                                <DeleteForever onClick={handleDelete} className="absolute -top-2 right-0 bg-secondary rounded-full"/>
                             </button>
                         )
                     }
