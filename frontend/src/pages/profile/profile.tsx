@@ -12,17 +12,18 @@ import PreferenceSexual from "./components/preferenceSexual";
 import Biography from "./components/biography";
 import Interest from "./components/interest";
 import PicturesUser from "./components/pictures";
+import { toast } from "sonner";
 
 export default function Profile() {
 
   const { account } = useAuth();
-  console.log("profile")
+  console.log(account)
   
   const handleSubmit = async () => {
     try {
       if (account) {
-        console.log(account)
         await postUser(account)
+        toast.success("Votre profil a bien été enregistré")
       }
     }
     catch {

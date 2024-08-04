@@ -6,6 +6,8 @@ import { Check, Pencil } from "lucide-react"
 import  noImage  from "../../../assets/avatar-3814049_1920.png"
 import { useEffect, useRef, useState } from "react"
 import PopoverString from "../../../components/utils/popoverString"
+import ImageValidator from "@/utils/imageValidator"
+import { toast } from "sonner"
 
 export function ProfilePicture() {
 
@@ -19,21 +21,34 @@ export function ProfilePicture() {
         }
     }, [])
 
-
-    const handleSubmit = () => {
-        if (!account || !pictureRef.current || pictureRef.current.value == "") {
+    useEffect(() => {
+        // Effectue une action après le rendu, si nécessaire
+        console.log('pictureRef.current:', pictureRef.current);
+    }, [pictureRef.current]); // Dépendances pour surveiller les changements
+    
+    const handleSubmit = async () => {
+        if (!account || !pictureRef.current) {
             return;
         }
-            if (!Array.isArray(account.pictures)){
-                account.pictures = []
-                account.pictures.push(pictureRef.current.value)
-            }
-            else
-                account.pictures[0] = pictureRef.current.value
-            setPicture(account.pictures[0])
-            setAccount(account)
-    }
-
+        const newImage = pictureRef.current.value
+        const valid = await ImageValidator(newImage)
+        if(!valid){
+            toast.error("Url invalide")
+            return
+        }
+        if (!Array.isArray(account.pictures)){
+            console.log(valid)
+            account.pictures = []
+            account.pictures.push(newImage)
+        }
+        else{
+            console.log(valid)
+            account.pictures[0] = newImage
+        }
+        setPicture(account.pictures[0])
+        setAccount(account)
+        }
+       
     return (
         <div className="items-center justify-center">
             <Avatar className="flex border-2 border-primary h-[240px] w-[240px] rounded-full overflow-hidden ">

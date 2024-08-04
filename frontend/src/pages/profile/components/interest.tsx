@@ -21,13 +21,15 @@ export default function Interest() {
     const interestRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
-       if (account && account.interests) {
-            const newBadges : Badge[] = []
-            account.interests.forEach((interest: string) => {
-                newBadges.push({ value: interest, key: newBadges.length })
-            })
-            setBadgeTotal(newBadges)
-       } 
+        if (!account)
+            return
+        if(!account.interests)
+            account.interests = []
+        const newBadges : Badge[] = []
+        account.interests.forEach((interest: string) => {
+            newBadges.push({ value: interest, key: newBadges.length })
+        })
+        setBadgeTotal(newBadges)
     }, [])
 
     const handleDelete = (index: number) => {
