@@ -1,5 +1,8 @@
 import { Router, Request, Response } from "express";
 import { User } from "../models/user_model";
+import { Preference } from "../models/preference_model";
+import { Session } from "../models/session_model";
+import { SessionDto } from "../dtos/session_dto";
 import nodemailer from "nodemailer";
 import { mailerConfig } from "../app";
 import { VerificationToken } from "../models/verification_token_model";
@@ -22,7 +25,6 @@ function verifyPassword(password: string): boolean {
 }
 
 router.post("/", async (req: Request, res: Response) => {
-  //const result = await db.query('SELECT username FROM users')
   const userDto = {
     username: req.body.username,
     password: req.body.password,
@@ -37,6 +39,32 @@ router.post("/", async (req: Request, res: Response) => {
         "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
     });
   }
+  try {
+    const user = new User(userDto)
+    user.pictures = ["", "", "", "", "", ""]
+    await user.hash()
+    await user.create()
+    const newUser = await User.select({username: {equal: user.username}})
+    if(newUser.length > 0 && newUser[0].id !== undefined) {
+      const userPreference = new Preference({
+        user_id: newUser[0].id,
+        age_gap_min: 18,
+        fame_rating_min: 0,
+        sexual_preference: "bisexual",
+        location: {
+          x: 0,
+          y: 0
+        }
+      })
+      await userPreference.create()
+      const session = new Session({
+        user_id: newUser[0].id,
+        token: req.sessionID,
+      } as SessionDto);
+      await session.create();
+     const newSession = await Session.select({token: {equal: req.sessionID}})
+    }
+    res.status(200).send(user.dto)
 
   const existingUserByMail = await User.select({
     email: { equal: userDto.email },

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { postLogout } from "@/services/api/authApi";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { Home } from "lucide-react";
 import { kyPOST } from "@/utils/ky/handlers";
 
 export function Logout() {

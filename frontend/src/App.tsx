@@ -14,6 +14,8 @@ import { Logout } from "@/pages/auth/logout/logout";
 import { Matches } from "./pages/matches/matches";
 import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
+import ProfilGuard from "./pages/auth/profilGuard";
+import { Children } from "react";
 import { useEffect, useState } from "react";
 import { kyGET, kyPOST } from "./utils/ky/handlers";
 import { AuthStatus, useAuth } from "./hooks/useAuth";
@@ -44,13 +46,20 @@ const router = createBrowserRouter([
             element: <Profile />,
           },
           {
-            path: "/logout",
-            element: <Logout />,
-          },
-          {
+            element: <ProfilGuard/>,
+            children: [
+            {
             path: "/matches",
             element: <Matches />,
-          },
+            },
+            {
+              path: "/chat/:userId",
+              element: <Chat />,
+            },
+            {
+              path: "*",
+              element: <Navigate to={"/matches"} />,
+            },
           {
             path: "/chat/:userId",
             element: <Chat />,
@@ -63,6 +72,8 @@ const router = createBrowserRouter([
             path: "*",
             element: <Navigate to={"/matches"} />,
           },
+         ],
+        },
         ],
       },
       {
@@ -85,6 +96,10 @@ const router = createBrowserRouter([
             element: <Navigate to={"/"} />,
           },
         ],
+      },
+      {
+        path: "/logout",
+        element: <Logout />,
       },
     ],
   },

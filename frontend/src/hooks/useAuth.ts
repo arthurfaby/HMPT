@@ -29,9 +29,10 @@ export function useAuth() {
   }
 
   const Authenticate = useCallback(async () => {
-    await getUser()
+    const user = await getUser()
       .then(setAccount)
       .catch(() => setAccount(null));
+      return user
   }, []);
 
   const logout = useCallback(async () => {

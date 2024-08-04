@@ -6,9 +6,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth"
+import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
 
 export default function Register() {
   const { register } = useAuth();

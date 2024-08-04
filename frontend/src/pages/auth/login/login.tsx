@@ -40,44 +40,42 @@ export default function Login({ openDialog, setOpenDialog }: props) {
     } else {
       toast.error("Login vide");
     }
-  };
-  return (
-    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Se connecter</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <Input
-          type="text"
-          placeholder="login"
-          name="username"
-          value={username}
-          onChange={(event) => setUsername(event.currentTarget.value)}
-          className=""
-        />
-        <Input
-          type="password"
-          placeholder="password"
-          name="password"
-          value={password}
-          onChange={(event) => setPassword(event.currentTarget.value)}
-        />
-        <Button type="button" onClick={() => forget_password(username)}>
-          mot de passe oublié
-        </Button>
-        <Button type="button" onClick={() => handleSubmit(username, password)}>
-          login
-        </Button>
-        <p>
-          {" "}
-          tu n'as pas de compte frero ?{" "}
-          <DialogClose asChild>
-            <Link type="button" to="/register">
-              register
-            </Link>
-          </DialogClose>
-        </p>
-      </DialogContent>
-    </Dialog>
-  );
+
+    const forget_password = async (username: string) => {
+        if(username !== ""){
+           const response = await postForgetPassword(username)
+           if (response.ok){
+                toast.success('Email envoyé')
+                setOpenDialog(false)
+           }
+           else {
+                toast.error('Problème de serveur, veuillez réessayer')
+           }
+        }
+        else {
+            toast.error('Login vide')
+        }
+    }
+    return (
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger asChild>
+                <Button variant="outline">Sign in</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <Input type="text" placeholder="login" name="username" value={username} onChange={(event) => setUsername(event.currentTarget.value)} className=""/> 
+                <Input type="password" placeholder="password" name="password" value={password} onChange={(event) => setPassword(event.currentTarget.value)}/>
+                <Button type="button" onClick={() => forget_password(username)}>mot de passe oublié</Button>
+                <Button type="button" onClick={() => handleSubmit(username, password)}>
+                    login 
+                </Button>
+            <p> tu n'as pas de compte frero ?{" "}
+                <DialogClose asChild>
+                    <Link type="button" to="/register">
+                        register
+                    </Link>
+                </DialogClose>
+            </p>
+            </DialogContent>
+        </Dialog>
+    )
 }
