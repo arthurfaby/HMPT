@@ -38,7 +38,7 @@ export default function Profile() {
         <AgeUser/>
         <Gender/>
         <PreferenceSexual/>
-        <Biography/>
+        <Biography/> 
         <Interest/>
         <PicturesUser/>
         <Button type="submit" onClick={handleSubmit}> enregistrez </Button>

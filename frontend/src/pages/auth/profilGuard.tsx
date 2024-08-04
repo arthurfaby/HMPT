@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import { useAccountStore } from "@/stores/account-store";
 import User from "@/types/user";
 import { PropsWithChildren } from "react";
@@ -25,6 +26,7 @@ const profilCompleted = profil.filter(profil => !user || !user[profil.key as key
 }
 export default function ProfilGuard(props: PropsWithChildren) {
     const { account } = useAccountStore()
+
     if (account && isCompleted(account))
         return <Outlet/>
     else {

@@ -12,6 +12,7 @@ export function NameUser() {
     const [firstName, setFirstName] = useState(account?.first_name ?? "Prénom")
     const [lastName, setLastName] = useState(account?.last_name ?? "Nom")
 
+    
     const handleSubmit = () => {
         
         if(firstName == "" || lastName == "") {

@@ -5,13 +5,8 @@ import { useEffect, useState } from "react";
 import { useAccountStore } from "@/stores/account-store";
 
 export default function PicturesUser() {
-    const [pictures, setPicture] = useState<string[]>([])
     const { account, setAccount } = useAccountStore()
-
-    useEffect(() => {
-        if(account && account.pictures)
-            setPicture(account.pictures)
-    }, [])
+    const [pictures, setPicture] = useState<string[]>(account?.pictures ?? [])
 
     useEffect(() => {
         if(account){

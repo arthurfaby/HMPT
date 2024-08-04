@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 
 export default function Biography() {
     const { account, setAccount } = useAccountStore()
-    const [Biography, setBiography] = useState("")
+    const [Biography, setBiography] = useState(account?.biography ?? "")
 
-    useEffect( () => {
-        if(account && account.biography) {
-            setBiography(account.biography)
-        }
-    }, [])
 
     useEffect(() => {
         if(!account) 

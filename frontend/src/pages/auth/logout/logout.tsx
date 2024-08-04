@@ -19,6 +19,5 @@ export function Logout() {
       });
   }, []);
 
-  return <Home></Home>
-  // return <Navigate to="/" />;
+  return <Navigate to="/" />;
 }
