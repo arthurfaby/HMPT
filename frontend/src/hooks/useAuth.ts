@@ -84,7 +84,6 @@ export function useAuth() {
           setAccount(null);
           return false;
         } else {
-          setAccount(data.message);
           return true;
         }
       } catch (error) {

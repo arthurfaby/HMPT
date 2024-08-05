@@ -6,7 +6,6 @@ import factory_user from "./factories/user.route";
 import history from "./history/index";
 import login from "./login.route";
 import logout from "./logout.route";
-import mail from "./mail.route";
 import matches from "./matches/index";
 import me from "./me.route";
 import message from "./messages/index";

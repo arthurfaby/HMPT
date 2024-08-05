@@ -4,8 +4,7 @@ import { FullHeightContainer } from "@/components/utils/full-height-container";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { changePassword } from "@/services/api/passwordApi";
-import { Navigate, useNavigate } from "react-router-dom";
-import  Home from "../../home/home";
+import { useNavigate } from "react-router-dom";
 
 export default function ChangePassword() {
     const [newPassword, setNewPassword] = useState("")
@@ -13,7 +12,7 @@ export default function ChangePassword() {
     const navigate = useNavigate()
 
     const handleSubmit = async (newPassword: string, oldPassword: string) => {
-        if(newPassword == oldPassword){
+        if(newPassword === oldPassword){
             const token = window.location.href.split('/').pop()
             if(!token) {
                 toast.error('erreur de token') 

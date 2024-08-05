@@ -7,7 +7,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { kyGET } from "@/utils/ky/handlers";
 import { useEffect, useState } from "react";
-import { MatchProfile } from "../matches/components/match-profile";
 
 export function History() {
   const { logout } = useAuth();
@@ -30,7 +29,7 @@ export function History() {
       if (users) {
         const usersWithDate = users.map((user) => {
           const history = _histories.find(
-            (history) => history.visitor_id == user.id,
+            (history) => history.visitor_id === user.id,
           );
           return {
             user,

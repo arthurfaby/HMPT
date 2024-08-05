@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import { useAccountStore } from "@/stores/account-store";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Slider, SliderRange, SliderThumb, SliderTrack } from "@radix-ui/react-slider";
@@ -13,9 +12,6 @@ export default function AgeUser() {
   useEffect(() => {
   }, [age]) 
 
-  const handle = (value: number[]) => {
-    setAge(value[0])
-  }
 
   const handleSubmit = () => {
         if (account) {

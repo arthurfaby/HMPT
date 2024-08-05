@@ -1,5 +1,4 @@
 import ky from "ky";
-import { apiUrl } from "@/config/apiUrl";
 import User from "@/types/user";
 
 export default async function postRegister(

@@ -19,7 +19,7 @@ interface props {
 }
 
 export default function Login({ openDialog, setOpenDialog }: props) {
-  const { login, status } = useAuth();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,7 +28,6 @@ export default function Login({ openDialog, setOpenDialog }: props) {
   };
 
   const forget_password = async (username: string) => {
-    console.log(username);
     if (username !== "") {
       const response = await postForgetPassword(username);
       if (response.ok) {
@@ -40,22 +39,7 @@ export default function Login({ openDialog, setOpenDialog }: props) {
     } else {
       toast.error("Login vide");
     }
-
-    const forget_password = async (username: string) => {
-        if(username !== ""){
-           const response = await postForgetPassword(username)
-           if (response.ok){
-                toast.success('Email envoyé')
-                setOpenDialog(false)
-           }
-           else {
-                toast.error('Problème de serveur, veuillez réessayer')
-           }
-        }
-        else {
-            toast.error('Login vide')
-        }
-    }
+  }
     return (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogTrigger asChild>
@@ -78,4 +62,4 @@ export default function Login({ openDialog, setOpenDialog }: props) {
             </DialogContent>
         </Dialog>
     )
-}
+  }

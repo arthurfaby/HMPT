@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { kyGET } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { getGPSDistance } from "@/utils/getGPSDistance";
 
 export function Matches() {
   const [users, setUsers] = useState<UserDto[]>([]);

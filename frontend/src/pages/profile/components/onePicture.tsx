@@ -1,9 +1,9 @@
 import { Card, CardContent } from "@mui/material";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import PopoverString from "@/components/utils/popoverString";
-import { Delete, DeleteForever } from "@mui/icons-material";
+import { DeleteForever } from "@mui/icons-material";
 
 interface arrayPicture {
     pictures: string[]
@@ -17,7 +17,7 @@ export default function Picture({pictures, setPicture, index}: arrayPicture) {
     const [ imageload, setimageload ] = useState<boolean>(false)
 
     useEffect(() => {
-        if (!pictureRef || !pictureRef.current || pictureRef.current.value == "")
+        if (!pictureRef || !pictureRef.current || pictureRef.current.value === "")
             return 
         const newPictures = [...pictures]
         if(index >= 0)
@@ -26,7 +26,7 @@ export default function Picture({pictures, setPicture, index}: arrayPicture) {
     }, [pictureRef])
 
     const handleClick = (() => {
-        if (!pictureRef || !pictureRef.current || pictureRef.current.value == "")
+        if (!pictureRef || !pictureRef.current || pictureRef.current.value === "")
             return
         const newPictures = [...pictures]
         if(index >= 0)

@@ -3,9 +3,6 @@ import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import {
   Heart,
-  MessageCircle,
-  MessageCircleHeart,
-  MessageSquareHeart,
 } from "lucide-react";
 
 const spinnerVariants = cva("flex-col items-center justify-center", {

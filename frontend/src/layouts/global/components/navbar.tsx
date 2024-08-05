@@ -75,14 +75,8 @@ export function Navbar() {
           )}
        
         <div className="flex items-center space-x-4">
-          {status === AuthStatus.Authenticated ? (
-            <Button onClick={() => {
-              navigate("/logout")
-              navigate(0)
-            }}>
-              Se déconnecter
-            </Button>
-          ) : (
+          {status !== AuthStatus.Authenticated && ( 
+            
             <>
               <Register />
               <Login openDialog={openDialog} setOpenDialog={setOpenDialog} />
@@ -199,12 +193,15 @@ export function Navbar() {
                   <History />
                 </Link>
               </Button>
-              <Link
+              <Button
                 className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                to="/logout"
+                onClick={() => {
+                  navigate("/logout");
+                  navigate(0);
+                }}
               >
                 Se déconnecter
-              </Link>
+              </Button>
             </>
           )}
         </div>

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAccountStore } from "@/stores/account-store";
@@ -15,7 +14,7 @@ export function NameUser() {
     
     const handleSubmit = () => {
         
-        if(firstName == "" || lastName == "") {
+        if(firstName === "" || lastName === "") {
             setFirstName(account?.first_name ?? "Prénom")
             setLastName(account?.last_name ?? "Nom")
             toast.error("les champs ne doivent pas être vide")

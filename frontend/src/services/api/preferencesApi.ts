@@ -1,5 +1,5 @@
 import { apiUrl } from "@/config/apiUrl";
-import { SEXUAL_PREFERENCES, SexualPreference } from "@/types/sexual_preference_type";
+import { SexualPreference } from "@/types/sexual_preference_type";
 import ky from "ky";
 
 export async function getSexualPreferences():Promise<SexualPreference> {

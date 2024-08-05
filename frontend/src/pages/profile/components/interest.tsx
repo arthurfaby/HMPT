@@ -1,15 +1,14 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAccountStore } from "@/stores/account-store";
-import { Cross2Icon, CrossCircledIcon } from "@radix-ui/react-icons";
-import { Arrow, Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { Check, Pencil, PlusCircle, X } from "lucide-react";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { CrossCircledIcon } from "@radix-ui/react-icons";
+import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import { Check, PlusCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-interface Badge {
+interface newBadge {
     key: number
     value: string
 }
@@ -17,7 +16,7 @@ interface Badge {
 export default function Interest() {
 
     const { account, setAccount } = useAccountStore()
-    const [badgeTotal, setBadgeTotal] = useState<Badge[]>([])
+    const [badgeTotal, setBadgeTotal] = useState<newBadge[]>([])
     const interestRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
@@ -25,7 +24,7 @@ export default function Interest() {
             return
         if(!account.interests)
             account.interests = []
-        const newBadges : Badge[] = []
+        const newBadges : newBadge[] = []
         account.interests.forEach((interest: string) => {
             newBadges.push({ value: interest, key: newBadges.length })
         })

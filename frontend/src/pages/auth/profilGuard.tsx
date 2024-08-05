@@ -1,4 +1,3 @@
-import { useAuth } from "@/hooks/useAuth";
 import { useAccountStore } from "@/stores/account-store";
 import User from "@/types/user";
 import { PropsWithChildren } from "react";
@@ -6,6 +5,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 
 function verifyArrayPictures(array: string[]) : boolean {
+  console.log(array)
   if (array.length < 2) {
     return false
 }
@@ -19,6 +19,7 @@ function verifyArrayPictures(array: string[]) : boolean {
 
 function isCompleted(user: User): boolean {
   
+  console.log(user)
   const profil = [
     { key: 'gender', keyFrench: 'ton genre' },
     { key: 'biography', keyFrench: 'ta biographie' },
@@ -30,9 +31,9 @@ function isCompleted(user: User): boolean {
 const profilCompleted = profil.filter(profil => !user || 
   !user[profil.key as keyof User] ||
   (profil.key === 'age' && user[profil.key as keyof User] === 0) ||
-  (profil.key === 'interests' && user[profil.key as keyof User] && [profil.key as keyof User].length == 0) ||
+  (profil.key === 'interests' && user[profil.key as keyof User] && [profil.key as keyof User].length === 0) ||
   (profil.key === 'pictures' && user[profil.key as keyof User] && !verifyArrayPictures(user[profil.key as keyof User] as string[])))
- if (profilCompleted.length  == 0) 
+ if (profilCompleted.length  === 0) 
     return true
 
   let keyMessage = profilCompleted.map(profil => profil.keyFrench).join(', ')

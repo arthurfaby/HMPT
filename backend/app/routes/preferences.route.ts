@@ -18,9 +18,11 @@ router.get("/sexualPreference", async(req: Request, res: Response) => {
 
 router.post("/sexualPreference", async(req: Request, res:Response) => {
     const user = await getAuthenticatedUser(req.sessionID);
+    console.log(user)
     if(!user || !user.id)
         return res.status(401).send({error: "not authorized"})
     const sexualPreference = await Preference.select({user_id: {equal: user.id}}) 
+    console.log(sexualPreference)
     if (!sexualPreference)
         return res.status(400).send({error: "bad request"})
     sexualPreference[0].sexualPreference = req.body.sexualPreference

@@ -2,7 +2,6 @@ import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
-  useNavigate,
 } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/home/home";
@@ -15,9 +14,8 @@ import { Matches } from "./pages/matches/matches";
 import Chat from "./pages/chat/chat";
 import ChangePassword from "./pages/auth/changePassword/changePassword";
 import ProfilGuard from "./pages/auth/profilGuard";
-import { Children } from "react";
 import { useEffect, useState } from "react";
-import { kyGET, kyPOST } from "./utils/ky/handlers";
+import { kyPOST } from "./utils/ky/handlers";
 import { AuthStatus, useAuth } from "./hooks/useAuth";
 import { Location } from "./types/geolocation_type";
 import { History } from "./pages/history/history";

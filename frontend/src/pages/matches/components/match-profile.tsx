@@ -9,7 +9,6 @@ import { getGenderTaxo } from "@/utils/taxonomy";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistance } from "@/utils/formatDistance";
 import { kyGET, kyPOST } from "@/utils/ky/handlers";
-import { Card } from "@/components/ui/card";
 
 export type MatchProfileProps = {
   user: UserDto;
