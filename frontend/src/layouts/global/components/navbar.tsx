@@ -69,9 +69,15 @@ export function Navbar() {
           Matcha.
         </Link>
         {status === AuthStatus.Authenticated && (
+          <>
           <Link className="text-xl font-semibold" to="/profile">
             Profile
           </Link>
+          <Link className="text-xl font-semibold" to="/preference">
+            Préférence
+          </Link>
+          </>
+        
           )}
        
         <div className="flex items-center space-x-4">

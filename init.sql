@@ -83,7 +83,8 @@ CREATE TABLE IF NOT EXISTS "preferences" (
             'bisexual'
         )
     ) NOT NULL DEFAULT 'bisexual',
-    "distance" BIGINT NOT NULL
+    "distance" BIGINT NOT NULL,
+    "interests" TEXT,
 );
 
 CREATE TABLE IF NOT EXISTS "chats" (
