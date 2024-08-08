@@ -28,10 +28,10 @@ export default function AgeGap({preferences, setPreferences}: preferences) {
     return (
         <div className="flex flex-col w-full gap-4 p-4">
             <div className="flex flex-row justify-between text-xl font-semibold">
-                <h1> écart d'age</h1>
+                <h1> écart d'âge</h1>
                 <p>{ageMin} - {ageMax}</p>
             </div>
-            <Slider value={[preferences.age_gap_min, preferences.age_gap_max]} max={150} min={18} step={1} orientation="horizontal" onValueChange={(value) => {setAgeMin(value[0]); setAgeMax(value[1])}} onValueCommit={handleCommit} className="relative flex items-center select-none touch-none w-[200px] h-5 w-full">
+            <Slider value={[ageMin, ageMax]} max={150} min={18} step={1} orientation="horizontal" onValueChange={(value) => {setAgeMin(value[0]); setAgeMax(value[1])}} onValueCommit={handleCommit} className="relative flex items-center select-none touch-none w-[200px] h-5 w-full">
             <SliderTrack className="bg-primary relative grow rounded-full h-[3px]">
                 <SliderRange className="bg-primary absolute rounded-full h-full">
                 </SliderRange>

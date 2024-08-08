@@ -68,6 +68,7 @@ router.post("/", async (req: Request, res: Response) => {
       const userPreference = new Preference({
         user_id: newUser[0].id,
         age_gap_min: 18,
+        age_gap_max: 150,
         fame_rating_min: 0,
         fame_rating_max: 1000,
         sexual_preference: "bisexual",

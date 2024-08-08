@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface newBadge {
-    key: number
+    key: number,
     value: string
 }
 

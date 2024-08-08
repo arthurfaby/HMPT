@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { getPreferences, postPreferences } from "@/services/api/preferencesApi"
 import { Button } from "@/components/ui/button"
 import { PreferenceDto } from "@/dtos/preference_dto"
+import { toast } from "sonner"
 
 export default function Preference() {
 
@@ -22,8 +23,6 @@ export default function Preference() {
         distance: 0,
         interests: []
     })
-
-    console.log(preferences)
 
     useEffect(() => {
         const fetchPreferences = async () => {
@@ -41,7 +40,9 @@ export default function Preference() {
 
     const handleSubmit = async () => {
         try {
-            await postPreferences(preferences)
+            const response = await postPreferences(preferences)
+            if (response)
+                toast.success("les préférences ont été sauvegardées")
         }
         catch {
             console.log("error save preferences")}

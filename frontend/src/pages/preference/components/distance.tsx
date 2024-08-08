@@ -26,7 +26,7 @@ export default function DistanceMax({preferences, setPreferences}: preferences) 
                 <h1>distance max</h1>
                 <p>{distanceMax} KM</p>
             </div>
-            <Slider value={[distanceMax]} max={6371} min={0} step={1} orientation="horizontal" onValueChange={(value) => {setDistanceMax(value[0])}}  className="relative flex items-center select-none touch-none w-[200px] h-5 w-full">
+            <Slider onValueCommit={handleCommit} value={[distanceMax]} max={6371} min={0} step={1} orientation="horizontal" onValueChange={(value) => {setDistanceMax(value[0])}}  className="relative flex items-center select-none touch-none w-[200px] h-5 w-full">
             <SliderTrack className="bg-primary relative grow rounded-full h-[3px]">
                 <SliderRange className="bg-primary absolute rounded-full h-full">
                 </SliderRange>

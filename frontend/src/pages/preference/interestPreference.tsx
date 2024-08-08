@@ -42,7 +42,6 @@ export default function InterestPreference({preferences, setPreferences}: prefer
 
     const handleClick = () => {
         if (interestRef.current && interestRef.current.value && interestRef.current.value.length < 18) {
-            console.log(interestRef.current.value)
             setBadgeTotal([...badgeTotal, { value: interestRef.current.value, key: badgeTotal.length }])
             preferences.interests = [...preferences.interests, interestRef.current.value]
             setPreferences(preferences)

@@ -12,6 +12,10 @@ import { Filters } from "../libs/orm/types/filter_type";
 
 export const PREFERENCE_TABLE_NAME = "preferences";
 
+export type PreferenceDtoArrayAsString = Omit<PreferenceDto, "interests"> & {
+  interests: string;
+};
+
 export class Preference extends AbstractModel<PreferenceDto> {
   /**
    * The user's id.
@@ -159,20 +163,28 @@ export class Preference extends AbstractModel<PreferenceDto> {
   }
 
   public static async select(filters?: Filters): Promise<Preference[]> {
-    let apiResponse: APIResponse<PreferenceDto>;
+    let apiResponse: APIResponse<PreferenceDtoArrayAsString>;
     if (filters) {
       const [stringFilters, values] = getStringFilters(filters);
-      apiResponse = await query<PreferenceDto>(
+      apiResponse = await query<PreferenceDtoArrayAsString>(
         `SELECT * FROM ${PREFERENCE_TABLE_NAME} WHERE ${stringFilters}`,
         values
       );
     } else {
-      apiResponse = await query<PreferenceDto>(
+      apiResponse = await query<PreferenceDtoArrayAsString>(
         `SELECT * FROM ${PREFERENCE_TABLE_NAME}`
       );
     }
-    const dtos: PreferenceDto[] = apiResponse.rows;
-    const models: Preference[] = dtos.map((dto) => new Preference(dto));
-    return models;
+    const dtosString: PreferenceDtoArrayAsString[] = apiResponse.rows;
+    const dtos: PreferenceDto[] = dtosString.map((dtoString) => {
+      const interestsAsArray = dtoString.interests
+        ? dtoString.interests.replace(/{/g, "[").replace(/}/g, "]")
+        : "[]";
+      return {
+        ...dtoString,
+        interests: JSON.parse(interestsAsArray)
+      };
+    });
+    return dtos.map((dto) => new Preference(dto));
   }
 }
