@@ -64,18 +64,19 @@ router.post("/", async (req: Request, res: Response) => {
     await user.hash()
     await user.create()
     const newUser = await User.select({username: {equal: user.username}})
-    console.log(newUser.length, newUser[0].id)
     if(newUser.length > 0 && newUser[0].id !== undefined) {
       const userPreference = new Preference({
         user_id: newUser[0].id,
         age_gap_min: 18,
+        age_gap_max: 150,
         fame_rating_min: 0,
+        fame_rating_max: 1000,
         sexual_preference: "bisexual",
         distance: 0,
+        interests: [],
       });
       await userPreference.create()
       const Preferenceid = await Preference.select({user_id: {equal: newUser[0].id}})
-      console.log(Preferenceid)
       const session = new Session({
         user_id: newUser[0].id,
         token: req.sessionID,

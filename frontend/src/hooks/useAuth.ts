@@ -43,6 +43,7 @@ export function useAuth() {
     async (username: string, password: string): Promise<Boolean> => {
       try {
         const response = await postLogin({ username, password });
+        console.log(response);
         if (response) {
           toast.success("Vous êtes bien connecté.");
           setAccount(response);

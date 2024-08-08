@@ -1,4 +1,5 @@
 import { apiUrl } from "@/config/apiUrl";
+import { PreferenceDto } from "@/dtos/preference_dto";
 import { SexualPreference } from "@/types/sexual_preference_type";
 import ky from "ky";
 
@@ -34,4 +35,29 @@ export async function postSexualPreferences(sexualPreference: SexualPreference):
     }
 
 }
-    
+  
+export async function getPreferences():Promise<PreferenceDto | null> {
+    try{
+        const response = await ky.get(`${apiUrl}/preferences/preferences`, {
+            credentials: "include",
+        }).json()
+        return response as PreferenceDto
+
+    }
+    catch {
+        return null
+    }
+}
+
+export async function postPreferences(preferences: PreferenceDto):Promise<boolean> {
+    try{
+        const response = await ky.post(`${apiUrl}/preferences/preferences`, {
+            credentials: "include",
+            json: preferences
+        })
+        return response.ok
+    }
+    catch {
+        return false
+    }
+}

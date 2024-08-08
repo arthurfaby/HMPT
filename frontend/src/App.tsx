@@ -20,6 +20,7 @@ import { AuthStatus, useAuth } from "./hooks/useAuth";
 import { Location } from "./types/geolocation_type";
 import { History } from "./pages/history/history";
 import { Verify } from "./pages/verify_account/verify";
+import Preference from "./pages/preference/preference";
 
 type IPGeolocationApiResponse = {
   IPv4: string;
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
           {
             path: "*",
             element: <Navigate to={"/matches"} />,
+          },
+          {
+            path: "/preference",
+            element: <Preference/>,
           },
          ],
         },

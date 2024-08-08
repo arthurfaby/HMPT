@@ -12,6 +12,10 @@ import { Filters } from "../libs/orm/types/filter_type";
 
 export const PREFERENCE_TABLE_NAME = "preferences";
 
+export type PreferenceDtoArrayAsString = Omit<PreferenceDto, "interests"> & {
+  interests: string;
+};
+
 export class Preference extends AbstractModel<PreferenceDto> {
   /**
    * The user's id.
@@ -56,11 +60,18 @@ export class Preference extends AbstractModel<PreferenceDto> {
   private _sexualPreference: SexualPreference;
 
   /**
-   * The distance (in meters).
+   * The distance (in km).
    * @type {number}
    * @private
    */
   private _distance: number;
+
+  /**
+   * interest preference
+   * @type {string[]}
+   * @private
+   */
+  private _interests: string[];
 
   public get userId(): number {
     return this._userId;
@@ -120,9 +131,18 @@ export class Preference extends AbstractModel<PreferenceDto> {
     return this._distance;
   }
 
+  public get interests(): string[] {
+    return this._interests;
+  }
+
   public set distance(value: number) {
     this._dto.distance = value;
     this._distance = value;
+  }
+
+  public set interests(value: string[]) {
+    this._dto.interests = value;
+    this._interests = value;
   }
 
   public constructor(dto: PreferenceDto) {
@@ -132,6 +152,7 @@ export class Preference extends AbstractModel<PreferenceDto> {
     this._ageGapMax = dto.age_gap_max;
     this._fameRatingMin = dto.fame_rating_min;
     this._fameRatingMax = dto.fame_rating_max;
+    this._interests = dto.interests;
     if (!SEXUAL_PREFERENCES.includes(dto.sexual_preference)) {
       throw new Error(
         `Sexual preference ${dto.sexual_preference} is not valid`
@@ -142,20 +163,28 @@ export class Preference extends AbstractModel<PreferenceDto> {
   }
 
   public static async select(filters?: Filters): Promise<Preference[]> {
-    let apiResponse: APIResponse<PreferenceDto>;
+    let apiResponse: APIResponse<PreferenceDtoArrayAsString>;
     if (filters) {
       const [stringFilters, values] = getStringFilters(filters);
-      apiResponse = await query<PreferenceDto>(
+      apiResponse = await query<PreferenceDtoArrayAsString>(
         `SELECT * FROM ${PREFERENCE_TABLE_NAME} WHERE ${stringFilters}`,
         values
       );
     } else {
-      apiResponse = await query<PreferenceDto>(
+      apiResponse = await query<PreferenceDtoArrayAsString>(
         `SELECT * FROM ${PREFERENCE_TABLE_NAME}`
       );
     }
-    const dtos: PreferenceDto[] = apiResponse.rows;
-    const models: Preference[] = dtos.map((dto) => new Preference(dto));
-    return models;
+    const dtosString: PreferenceDtoArrayAsString[] = apiResponse.rows;
+    const dtos: PreferenceDto[] = dtosString.map((dtoString) => {
+      const interestsAsArray = dtoString.interests
+        ? dtoString.interests.replace(/{/g, "[").replace(/}/g, "]")
+        : "[]";
+      return {
+        ...dtoString,
+        interests: JSON.parse(interestsAsArray)
+      };
+    });
+    return dtos.map((dto) => new Preference(dto));
   }
 }

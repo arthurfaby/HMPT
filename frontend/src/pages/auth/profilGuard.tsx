@@ -5,7 +5,6 @@ import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 
 function verifyArrayPictures(array: string[]) : boolean {
-  console.log(array)
   if (array.length < 2) {
     return false
 }
@@ -19,7 +18,6 @@ function verifyArrayPictures(array: string[]) : boolean {
 
 function isCompleted(user: User): boolean {
   
-  console.log(user)
   const profil = [
     { key: 'gender', keyFrench: 'ton genre' },
     { key: 'biography', keyFrench: 'ta biographie' },

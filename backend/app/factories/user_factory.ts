@@ -102,6 +102,7 @@ class UserFactory {
       user_id,
       sexual_preference,
       distance: faker.number.int({ min: 1, max: 20000000 }),
+      interests: [],
     };
     const preference = new Preference(preferenceDto);
     await preference.create();
