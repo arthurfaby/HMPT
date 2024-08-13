@@ -5,6 +5,7 @@ import query from "../../libs/orm/queries/abstract_query";
 import { Message } from "../../models/message_model";
 import { Chat } from "../../models/chat_model";
 import { io } from "../../app";
+import { Notification } from "../../models/notification_model";
 
 const router = Router();
 
@@ -79,6 +80,30 @@ router.post("/:chatId", async (req: Request, res: Response) => {
   }
   io.to(`chat-${chatId}`).emit("message", messageWithId.dto);
 
+  const messageseen = (await Message.select({
+    chat_id: {
+      equal: chatId,
+    },
+  }))[0];
+ 
+  
+  let userReceiverId;
+  
+  if (chat && chat.userId1 === authUser.id) {
+      userReceiverId = chat.userId2;
+  }
+  else {
+      userReceiverId = chat.userId1;
+  }
+ if (messageseen && messageseen.seen === true) {
+    const notification = new Notification({
+      user_id: userReceiverId,
+      message: 'vous avez reçu un message de ' + authUser.firstName,
+      seen: false,
+      date: new Date().toDateString(),
+    })
+    await notification.create();
+  }
   return res.status(200).send(messageWithId.dto);
 });
 

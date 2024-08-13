@@ -89,11 +89,13 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
     ]
   );
   const userDtos = parseUserQueryResponse(queryResponse);
+  console.log(userDtos.length);
   const userDtosInDistance = userDtos.filter((userDto) => {
     if (!authUser.geolocation || !userDto.geolocation) return false;
     const distance = getGPSDistance(authUser.geolocation, userDto.geolocation);
     return distance <= preference.distance;
   });
+  console.log(userDtosInDistance.length);
   const sortedUserDtos = matchesAlgorithm(authUser, userDtosInDistance);
   if (req.params.sort === "distance") {
     sortedUserDtos.sort((a, b) => {
@@ -108,6 +110,7 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
     sortedUserDtos.sort((a, b) => b.fame_rating! - a.fame_rating!);
   }
 
+  console.log(sortedUserDtos.length);
   return res.json(sortedUserDtos);
 });
 
