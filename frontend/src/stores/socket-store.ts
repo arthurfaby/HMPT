@@ -14,6 +14,7 @@ const useSocketStore = create<SocketStore>()((set, get) => ({
 
 const useSocket = (): { socket: Socket } => {
   const socket = useSocketStore((state) => state.socket);
+  console.log(socket)
   if (!socket) {
     const newSocket = io("http://localhost:5000", {
       withCredentials: true,

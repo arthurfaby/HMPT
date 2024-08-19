@@ -20,6 +20,7 @@ import { AuthStatus, useAuth } from "./hooks/useAuth";
 import { Location } from "./types/geolocation_type";
 import { History } from "./pages/history/history";
 import { Verify } from "./pages/verify_account/verify";
+import  Notifications  from "./pages/notifications/notifications"
 import Preference from "./pages/preference/preference";
 
 type IPGeolocationApiResponse = {
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
             {
               path: "*",
               element: <Navigate to={"/matches"} />,
+            },
+            {
+              path: "/notification",
+              element: <Notifications/>
             },
           {
             path: "/chat/:userId",

@@ -45,6 +45,7 @@ export default function Chat() {
         if (messageDto.user_id === parseInt(userId!)) {
           setTimeout(() => {
             socket.emit("seen", messageDto);
+            socket.emit("read", messageDto.user_id);
           }, 100);
         }
       }

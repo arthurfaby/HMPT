@@ -1,9 +1,10 @@
 import { Socket } from "socket.io";
 import { NotificationDto } from "../../dtos/notification_dto";
 import { Notification } from "../../models/notification_model";
+import { MessageDto } from "../../dtos/message_dto";
 
 export function eventNotifications(socket: Socket) {
-  socket.on("notification", async (data: NotificationDto) => {
+  socket.on("read", async (data: MessageDto) => {
     if (data.id == null) {
       return;
     }
@@ -13,6 +14,7 @@ export function eventNotifications(socket: Socket) {
             equal: data.id,
         },
     });
-    socket.emit("notification", notification[0].dto);
+    notification[0].seen = true;
+    await notification[0].update();
   });
 }

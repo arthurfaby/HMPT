@@ -18,7 +18,6 @@ export function Matches() {
   }, []);
 
   const handleToggleChange = (value: string) => {
-    console.log(value);
     if (value !== "distance" && value !== "age" && value !== "fame_rating") {
       kyGET<UserDto[]>("matches/usersToMatch", logout).then((users) => {
         setUsers(users ?? []);
