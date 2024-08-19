@@ -9,6 +9,7 @@ import { Notification } from "../../models/notification_model";
 import { Socket } from "socket.io";
 import redisClient from "../../sockets/init";
 import socketClient from "../../sockets/init";
+import createNotifications from "../notifications/create-notifications";
 
 const router = Router();
 
@@ -91,17 +92,25 @@ router.post("/:chatId", async (req: Request, res: Response) => {
   else {
       userReceiverId = chat.userId1;
   }
-  const notification = new Notification({
-    user_id: userReceiverId,
-    message: 'vous avez reçu un message de ' + authUser.firstName,
-    seen: false,
-    date: new Date().toDateString(),
-  })
-  await notification.create();
-  const socketReceiver = socketClient[userReceiverId];
-  if(socketReceiver) {
-    socketReceiver.emit("notification", notification.dto);
-  }
+  // const notification = new Notification({
+  //   user_id: userReceiverId,
+  //   message: 'vous avez reçu un message de ' + authUser.firstName,
+  //   seen: false,
+  //   date: new Date().toDateString(),
+  //   chat_id: chat.id
+  // })
+  // await notification.create();
+  // const socketReceiver = socketClient[userReceiverId];
+  // if(socketReceiver) {
+  //   socketReceiver.emit("notification", notification.dto);
+  // }
+
+  await createNotifications(
+      'vous avez reçu un message de ' + authUser.firstName,
+      userReceiverId,
+      chat.id
+  )
+
   return res.status(200).send(messageWithId.dto);
 });
 

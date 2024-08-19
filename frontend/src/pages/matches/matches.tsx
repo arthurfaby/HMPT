@@ -14,7 +14,6 @@ export function Matches() {
     kyGET<UserDto[]>("matches/usersToMatch", logout).then((users) => {
       setUsers(users ?? []);
     });
-    console.log(users)
   }, []);
 
   const handleToggleChange = (value: string) => {

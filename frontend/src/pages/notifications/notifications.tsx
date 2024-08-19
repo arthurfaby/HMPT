@@ -7,7 +7,6 @@ import { useSocket } from "@/stores/socket-store";
 import { CardContent } from "@mui/material";
 import { Bell } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
 
 export default function Notifications() {
 
@@ -19,11 +18,20 @@ export default function Notifications() {
         const handleNotification = (notification: any) => {
             setNotifications([...notifications, notification]);
         }
+        const handleReadFromChat = (index: number) => {
+            console.log(index)
+        const newNotifications = [...notifications];
+        newNotifications.map((notification) => {
+            if(notification.chat_id && notification.chat_id == index)
+                notification.seen = true
+        })
+        setNotifications(newNotifications);
+        }
         socket.on("notification", handleNotification);
-        socket.on("read", handleRead)
+        socket.on("read", handleReadFromChat)
         return  () => {
             socket.off("notification", handleNotification);
-            socket.off("read", handleRead);
+            socket.off("read", handleReadFromChat);
         }
     }, [notifications]);
 
@@ -47,6 +55,8 @@ export default function Notifications() {
         socket.emit("read", {id: newNotifications[index].id});
     }, [notifications]);
 
+    
+
     return (
         <div>
             <Sheet>
@@ -65,6 +75,7 @@ export default function Notifications() {
                             <Card key={index} className={notification.seen ? "bg-background" : "bg-secondary"} onClick={() => handleRead(index)}>
                                 <CardContent>
                                     <p>{notification.message}</p>
+                                    <p>{notification.date}</p>
                                 </CardContent>
                             </Card>
                         ))

@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { Dislike } from "../../models/dislike_model";
 import { User } from "../../models/user_model";
+import createNotifications from "../notifications/create-notifications";
 
 const router = Router();
 
@@ -41,6 +42,7 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
   });
 
   await dislike.create();
+  await createNotifications(authUser.firstName + 'ne t\'aime plus', parseInt(userToLikeId), undefined)
 
   const dislikedUser = await User.select({ id: { equal: parseInt(userToLikeId) } });
   if (dislikedUser.length > 0) {

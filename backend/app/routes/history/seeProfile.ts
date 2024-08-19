@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { History } from "../../models/history_model";
+import createNotifications from "../notifications/create-notifications";
 
 const router = Router();
 
@@ -41,6 +42,7 @@ router.post("/seeProfile/:userId", async (req: Request, res: Response) => {
   });
 
   await history.create();
+  await createNotifications(authenticatedUser.firstName + 'a visite votre profil', parseInt(userId), undefined)
   return res.status(200).send(history.dto);
 });
 

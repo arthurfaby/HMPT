@@ -36,6 +36,13 @@ export class Notification extends AbstractModel<NotificationDto> {
    */
   private _date: Date;
 
+ /**
+   * The date of the notification
+   * @type {number | undefined}
+   * @private
+   */
+  private _chat_id: number | undefined;
+
   public get userId(): number {
     return this._userId;
   }
@@ -72,12 +79,19 @@ export class Notification extends AbstractModel<NotificationDto> {
     this._date = value;
   }
 
+  public get chat_id(): number | undefined{
+    if (this._chat_id)
+      return this._dto.chat_id;
+  }
+
   public constructor(dto: NotificationDto) {
     super(dto, NOTIFICATION_TABLE_NAME);
     this._userId = dto.user_id;
     this._message = dto.message;
     this._seen = dto.seen;
     this._date = new Date(dto.date);
+    if (dto.chat_id)
+      this._chat_id = dto.chat_id
   }
 
   public static async select(filters?: Filters): Promise<Notification[]> {

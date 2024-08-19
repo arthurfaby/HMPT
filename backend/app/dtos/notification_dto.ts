@@ -5,4 +5,5 @@ export interface NotificationDto extends AbstractDto {
   message: string;
   seen: boolean;
   date: string;
+  chat_id?: number;
 }

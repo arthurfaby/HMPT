@@ -5,14 +5,12 @@ export async function kyGET<T>(
   endpoint: string,
   logout: () => void,
 ): Promise<T | null> {
-  console.log(`${apiUrl}/${endpoint}`);
   try {
     const data = await ky
       .get(`${apiUrl}/${endpoint}`, {
         credentials: "include",
       })
       .json<T>();
-    console.log(data);
     return data;
   } catch (error) {
     if (error instanceof HTTPError) {
