@@ -75,7 +75,6 @@ export class Notification extends AbstractModel<NotificationDto> {
   }
 
   public set date(value: Date) {
-    // this._dto.date = value.toISOString().split("T")[0];
     this._date = value;
   }
 
