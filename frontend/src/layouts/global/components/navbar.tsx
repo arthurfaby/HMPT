@@ -22,6 +22,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import Notifications from "@/pages/notifications/notifications";
 
 export function Navbar() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -91,6 +92,7 @@ export function Navbar() {
           <ToggleTheme />
           {status === AuthStatus.Authenticated && (
             <>
+              <Notifications />
               <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                 <SheetTrigger asChild>
                   <Button size="icon" variant="ghost">

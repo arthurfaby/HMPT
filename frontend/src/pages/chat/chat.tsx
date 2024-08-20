@@ -26,6 +26,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { account } = useAuth()
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -45,6 +46,7 @@ export default function Chat() {
         if (messageDto.user_id === parseInt(userId!)) {
           setTimeout(() => {
             socket.emit("seen", messageDto);
+            socket.emit("read", {id: account?.id, chat_id: messageDto.chat_id});
           }, 100);
         }
       }
@@ -72,6 +74,8 @@ export default function Chat() {
     if (chat) {
       socket.on("message", handleMessage);
       socket.on("seen", handleSeen);
+      if (account)
+        socket.emit("read", {id: account.id, chat_id: chat.id})
     }
 
     return () => {

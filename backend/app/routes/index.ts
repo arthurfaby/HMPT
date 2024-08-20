@@ -15,6 +15,7 @@ import register from "./register.route";
 import report from "./report/index";
 import users from "./users/index";
 import verify from "./verify/index";
+import notification from "./notifications/notification_route";
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.use("/me", auth, me);
 router.use("/message", auth, message);
 router.use("/report", auth, report);
 router.use("/users", auth, users);
+router.use("/notifications", auth, notification)
 
 // Non-auth routes
 router.use("/factories", factory_user);

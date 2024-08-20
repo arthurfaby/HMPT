@@ -5,6 +5,11 @@ import query from "../../libs/orm/queries/abstract_query";
 import { Message } from "../../models/message_model";
 import { Chat } from "../../models/chat_model";
 import { io } from "../../app";
+import { Notification } from "../../models/notification_model";
+import { Socket } from "socket.io";
+import redisClient from "../../sockets/init";
+import socketClient from "../../sockets/init";
+import createNotifications from "../notifications/create-notifications";
 
 const router = Router();
 
@@ -78,6 +83,21 @@ router.post("/:chatId", async (req: Request, res: Response) => {
     });
   }
   io.to(`chat-${chatId}`).emit("message", messageWithId.dto);
+
+  let userReceiverId;
+  
+  if (chat && chat.userId1 == authUser.id) {
+      userReceiverId = chat.userId2;
+  }
+  else {
+      userReceiverId = chat.userId1;
+  }
+
+  await createNotifications(
+      'vous avez reçu un message de ' + authUser.firstName,
+      userReceiverId,
+      chat.id
+  )
 
   return res.status(200).send(messageWithId.dto);
 });
