@@ -1,6 +1,7 @@
 import { Router } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { Notification } from "../../models/notification_model";
+import socketClient from "../../sockets/init";
 
 const router = Router();
 

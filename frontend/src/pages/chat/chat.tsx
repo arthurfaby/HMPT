@@ -106,8 +106,6 @@ export default function Chat() {
       setUser(chatDataRes.user);
       setMessages(chatDataRes.messages);
       setLoading(false);
-      console.log(user, chat)
-      // socket.emit("read", user?.id, chat?.id)
     };
 
     fetchChatData();

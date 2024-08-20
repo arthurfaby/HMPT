@@ -30,13 +30,12 @@ export default async function createNotifications(message: string, userReceiverI
     user_id: userReceiverId,
     message: message,
     seen: false,
-    date: new Date().toDateString(),
+    date: new Date(),
     chat_id: chat_id
   })
   await notification.create();
   const socketReceiver = socketClient[userReceiverId];
   if(socketReceiver) {
-    console.log(notification.dto)
     socketReceiver.emit("notification", notification.dto);
   }
 }

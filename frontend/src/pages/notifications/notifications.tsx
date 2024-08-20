@@ -1,7 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { NotificationDto } from "@/dtos/notification_dto";
 import { getNotifications } from "@/services/api/notificationsApi";
 import { useSocket } from "@/stores/socket-store";
 import { CardContent } from "@mui/material";
@@ -11,15 +12,17 @@ import { useCallback, useEffect, useState } from "react";
 export default function Notifications() {
 
   const { socket } = useSocket();
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<NotificationDto[]>([]);
 
 
     useEffect(() => {
-        const handleNotification = (notification: any) => {
-            setNotifications([...notifications, notification]);
+        const handleNotification = (notification: NotificationDto) => {
+            notification.date = new Date(notification.date)
+            const newNotifications = [...notifications]
+            newNotifications.unshift(notification)
+            setNotifications(newNotifications);
         }
         const handleReadFromChat = (index: number) => {
-            console.log(index)
         const newNotifications = [...notifications];
         newNotifications.map((notification) => {
             if(notification.chat_id && notification.chat_id == index)
@@ -38,8 +41,13 @@ export default function Notifications() {
     useEffect(() => {
         const fillNotifications = async () => {
             try {
-                const fillNotifications: any = await getNotifications()
-                setNotifications(fillNotifications)
+                const fillNotifications: NotificationDto[] | null = await getNotifications()
+                if (fillNotifications){
+                     fillNotifications.sort((notificationPrev: NotificationDto, notificationNext: NotificationDto) => 
+                        new Date(notificationNext.date).getTime() - new Date(notificationPrev.date).getTime()
+                    )
+                    setNotifications(fillNotifications)
+                }
             }
             catch (e) {
                 console.log(e)
@@ -66,8 +74,8 @@ export default function Notifications() {
                     <span className="sr-only">Bouton pour ouvrir le menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent>
-                    <div className="p-4">
+                <SheetContent className="overflow-auto">
+                    <div className="space-y-2">
                         <h2 className="text-xl font-bold">Notifications</h2>
                         {notifications.length === 0 ? <p>No notifications</p> 
                             :
@@ -75,8 +83,10 @@ export default function Notifications() {
                             <Card key={index} className={notification.seen ? "bg-background" : "bg-secondary"} onClick={() => handleRead(index)}>
                                 <CardContent>
                                     <p>{notification.message}</p>
-                                    <p>{notification.date}</p>
                                 </CardContent>
+                                <CardFooter className="flex items-end justify-end">
+                                    <p className="justify-self-end">{notification.date.toLocaleString("fr")}</p>
+                                </CardFooter>
                             </Card>
                         ))
                     )}

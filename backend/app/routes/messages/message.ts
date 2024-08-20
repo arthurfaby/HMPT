@@ -92,18 +92,6 @@ router.post("/:chatId", async (req: Request, res: Response) => {
   else {
       userReceiverId = chat.userId1;
   }
-  // const notification = new Notification({
-  //   user_id: userReceiverId,
-  //   message: 'vous avez reçu un message de ' + authUser.firstName,
-  //   seen: false,
-  //   date: new Date().toDateString(),
-  //   chat_id: chat.id
-  // })
-  // await notification.create();
-  // const socketReceiver = socketClient[userReceiverId];
-  // if(socketReceiver) {
-  //   socketReceiver.emit("notification", notification.dto);
-  // }
 
   await createNotifications(
       'vous avez reçu un message de ' + authUser.firstName,

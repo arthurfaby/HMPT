@@ -4,7 +4,6 @@ import { Notification, NOTIFICATION_TABLE_NAME } from "../../models/notification
 
 export function eventNotifications(socket: Socket) {
   socket.on("read", async (data: NotificationDto) => {
-    console.log("data", data)
     if (data.id == null) {
       return;
     }
@@ -18,7 +17,6 @@ export function eventNotifications(socket: Socket) {
           equal: data.chat_id
         }
     })
-    console.log("lenght", notification.length)
       return notification.map(async (notification) => {
         if(notification.chat_id && notification.chat_id == data.chat_id)
           notification.seen = true

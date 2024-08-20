@@ -31,7 +31,7 @@ export class Notification extends AbstractModel<NotificationDto> {
 
   /**
    * The date of the notification
-   * @type {string}
+   * @type {Date}
    * @private
    */
   private _date: Date;
@@ -75,7 +75,7 @@ export class Notification extends AbstractModel<NotificationDto> {
   }
 
   public set date(value: Date) {
-    this._dto.date = value.toISOString().split("T")[0];
+    // this._dto.date = value.toISOString().split("T")[0];
     this._date = value;
   }
 
@@ -89,7 +89,7 @@ export class Notification extends AbstractModel<NotificationDto> {
     this._userId = dto.user_id;
     this._message = dto.message;
     this._seen = dto.seen;
-    this._date = new Date(dto.date);
+    this._date = dto.date;
     if (dto.chat_id)
       this._chat_id = dto.chat_id
   }
