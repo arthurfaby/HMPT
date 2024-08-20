@@ -58,6 +58,46 @@ router.post("/", async (req: Request, res: Response) => {
     });
   }
 
+  // Generate random token
+    const token =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+
+  try {
+      const url = "http://localhost:3000/verify/" + token;
+      const transporter = nodemailer.createTransport(mailerConfig);
+      const message = {
+        from: {
+          name: "Matcha",
+          address: "rabaudp@gmail.com",
+        },
+        to: req.body.email,
+        subject: "Vérification de votre compte Matcha",
+        html: "\
+          <p>Bonjour,</p>\
+          <p>\
+            Pour finaliser votre inscription et accéder à toutes nos fonctionnalités,\
+            nous avons besoin de vérifier votre adresse email.<br>\
+            Cliquez sur le lien ci-dessous pour vérifier votre compte :\
+          </p>\
+          <a href={{url}} class='button'>\
+            Vérifier mon compte\
+          </a>",
+      };
+
+      message.html = message.html.replace("{{url}}", url);
+      const testMail = await transporter.sendMail(message).then((_) => {
+        return true;
+      }).catch((error) => {return false});
+      if (!testMail)
+        return res.status(200).send({
+      error: "Email invalide"
+    })
+    } catch {
+      res.status(200).send({
+        error: "Erreur lors de l'envoi de l'email de vérification",
+      });
+    }
     try {
     const user = new User(userDto)
     user.pictures = ["", "", "", "", "", ""]
@@ -94,52 +134,14 @@ router.post("/", async (req: Request, res: Response) => {
     }
     const userWithId = usersWithId[0];
 
-    // Generate random token
-    const token =
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
-
     const verificationToken = new VerificationToken({
       user_id: userWithId.id!,
       token,
     });
-    await verificationToken.create();
+    ;
     // Send verification email
-    try {
-      const url = "http://localhost:3000/verify/" + token;
-      const transporter = nodemailer.createTransport(mailerConfig);
-      const message = {
-        from: {
-          name: "Matcha",
-          address: "rabaudp@gmail.com",
-        },
-        to: user.email,
-        subject: "Vérification de votre compte Matcha",
-        html: "\
-          <p>Bonjour,</p>\
-          <p>\
-            Pour finaliser votre inscription et accéder à toutes nos fonctionnalités,\
-            nous avons besoin de vérifier votre adresse email.<br>\
-            Cliquez sur le lien ci-dessous pour vérifier votre compte :\
-          </p>\
-          <a href={{url}} class='button'>\
-            Vérifier mon compte\
-          </a>",
-      };
-
-      message.html = message.html.replace("{{url}}", url);
-      transporter.sendMail(message).then((_) => {
-        return;
-      });
-      return res.status(200).send({
-        message: "Email envoyé avec succès",
-      });
-    } catch {
-      res.status(200).send({
-        error: "Erreur lors de l'envoi de l'email de vérification",
-      });
-    }
-
+   
+    await verificationToken.create()
     return res.status(200).send(user.dto);
   } catch (error) {
     return res.status(200).send({

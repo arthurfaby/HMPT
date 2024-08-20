@@ -24,18 +24,28 @@ export default function Login({ openDialog, setOpenDialog }: props) {
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (username: string, password: string) => {
-    if (await login(username, password)) setOpenDialog(false);
+    if (await login(username, password)) 
+      setOpenDialog(false);
+    else
+      toast.error('le nom d\'utilisateur et/ou le mot de passe sont incorrects')
   };
 
   const forget_password = async (username: string) => {
     if (username !== "") {
-      const response = await postForgetPassword(username);
-      if (response.ok) {
-        toast.success("Email envoyé");
-        setOpenDialog(false);
-      } else {
-        toast.error("Problème de serveur, veuillez réessayer");
+      try {
+        const response = await postForgetPassword(username);
+        console.log(response)
+        if ("error" in response) {
+          toast.error(response.error as string);
+        } else {
+          toast.success("Email envoyé");
+          setOpenDialog(false);
+        }
       }
+      catch (e){
+        console.log(e)
+      }
+      
     } else {
       toast.error("Login vide");
     }

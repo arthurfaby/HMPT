@@ -90,7 +90,6 @@ export function useAuth() {
         if (error instanceof HTTPError) {
           console.log(error.request);
         }
-        console.log(error);
         toast.error("Une erreur est survenue lors de l'inscription.");
         setAccount(null);
         return false;
