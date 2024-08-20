@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "notifications" (
     "user_id" BIGINT NOT NULL,
     "message" TEXT NOT NULL,
     "seen" BOOLEAN NOT NULL,
-    "date" DATE NOT NULL,
+    "date" TIMESTAMP NOT NULL,
     "chat_id" BIGINT
 );
 
