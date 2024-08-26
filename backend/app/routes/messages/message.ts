@@ -78,7 +78,7 @@ router.post("/:chatId", async (req: Request, res: Response) => {
     })
   )[0];
   if (!messageWithId || !messageWithId.id) {
-    return res.status(500).send({
+    return res.status(404).send({
       error: "Internal server error",
     });
   }

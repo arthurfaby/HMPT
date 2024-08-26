@@ -22,7 +22,6 @@ export default function PicturesUser() {
                 <Picture index={2} pictures={pictures ?? []} setPicture={setPicture}></Picture>
                 <Picture index={3} pictures={pictures ?? []} setPicture={setPicture}></Picture>
                 <Picture index={4} pictures={pictures ?? []} setPicture={setPicture}></Picture>
-                <Picture index={5} pictures={pictures ?? []} setPicture={setPicture}></Picture>
             </CardContent>
         </Card>
     )

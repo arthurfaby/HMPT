@@ -86,25 +86,35 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
         existingMatchAsLiked[0].chatId = createdChat.id;
         match.chatId = createdChat.id;
       } else {
-        return res.status(500).send({
+        return res.status(404).send({
           error: "Error while creating chat.",
         });
       }
     }
-    await createNotifications(authUser.username + ' a aussi aimé votre profil, un chat a été créé', parseInt(userToLikeId), undefined)
+    await createNotifications(
+      authUser.username + " a aussi aimé votre profil, un chat a été créé",
+      parseInt(userToLikeId),
+      undefined
+    );
     existingMatchAsLiked[0].update();
   }
   await match.create();
-  await createNotifications(authUser.username + ' a aimé votre profil', parseInt(userToLikeId), undefined)
-  const likedUser = await User.select({ id: { equal: parseInt(userToLikeId) } });
+  await createNotifications(
+    authUser.username + " a aimé votre profil",
+    parseInt(userToLikeId),
+    undefined
+  );
+  const likedUser = await User.select({
+    id: { equal: parseInt(userToLikeId) },
+  });
   if (likedUser.length > 0) {
-    likedUser[0].fameRating = likedUser[0].fameRating * 1.1
+    likedUser[0].fameRating = likedUser[0].fameRating * 1.1;
     if (likedUser[0].fameRating > 5) {
       likedUser[0].fameRating = 5;
     }
     await likedUser[0].update();
   }
-  
+
   return res.json(match.dto);
 });
 

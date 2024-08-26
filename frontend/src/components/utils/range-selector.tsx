@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 
 type RangeSelectorProps = {
@@ -8,8 +8,8 @@ type RangeSelectorProps = {
   maxValue: number;
   minText: string;
   maxText: string;
-  setMin: (value: number) => void;
-  setMax: (value: number) => void;
+  setMinCallback: (value: number) => void;
+  setMaxCallback: (value: number) => void;
   className?: string;
   step?: number;
 };
@@ -22,11 +22,14 @@ export function RangeSelector(props: RangeSelectorProps) {
     maxValue,
     minText,
     maxText,
-    setMin,
-    setMax,
+    setMinCallback: setMin,
+    setMaxCallback: setMax,
     className,
     step,
   } = props;
+
+  const [localMin, setLocalMin] = useState(minValue);
+  const [localMax, setLocalMax] = useState(maxValue);
 
   useEffect(() => {
     if (minValue < limitMin) {
@@ -35,6 +38,7 @@ export function RangeSelector(props: RangeSelectorProps) {
     if (minValue > maxValue) {
       setMax(minValue);
     }
+    setLocalMin(minValue);
   }, [minValue]);
 
   useEffect(() => {
@@ -44,6 +48,7 @@ export function RangeSelector(props: RangeSelectorProps) {
     if (maxValue < minValue) {
       setMin(maxValue);
     }
+    setLocalMax(maxValue);
   }, [maxValue]);
 
   return (
@@ -56,8 +61,9 @@ export function RangeSelector(props: RangeSelectorProps) {
           type="number"
           id="min-selector"
           step={step}
-          value={minValue}
-          onChange={(e) => setMin(+e.target.value)}
+          value={localMin}
+          onChange={(e) => setLocalMin(+e.target.value)}
+          onBlur={(e) => setMin(+e.target.value)}
         />
       </div>
       <div className="flex items-center gap-2">
@@ -68,8 +74,9 @@ export function RangeSelector(props: RangeSelectorProps) {
           type="number"
           step={step}
           id="max-selector"
-          value={maxValue}
-          onChange={(e) => setMax(+e.target.value)}
+          value={localMax}
+          onChange={(e) => setLocalMax(+e.target.value)}
+          onBlur={(e) => setMax(+e.target.value)}
         />
       </div>
     </div>

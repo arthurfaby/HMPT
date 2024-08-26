@@ -5,24 +5,22 @@ import { Navigate, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 
 function verifyArrayPictures(array: string[]) : boolean {
-  if (array.length < 2) {
+  if (array.length < 1) {
     return false
 }
-  for (let i = 1; i < array.length; i++) {
-    if (array[i] === undefined || array[i] === null || array[i] === '') {
+    if (array[0] === undefined || array[0] === null || array[0] === '') {
       return false
     }
-  }
   return true
 }
 
 function isCompleted(user: User): boolean {
   
   const profil = [
-    { key: 'gender', keyFrench: 'ton genre' },
-    { key: 'biography', keyFrench: 'ta biographie' },
-    { key: 'interests', keyFrench: "tes centres d'intérêts"},
-    { key: 'pictures', keyFrench: '5 photos de toi'},
+    { key: 'gender', keyFrench: 'votre genre' },
+    { key: 'biography', keyFrench: 'votre biographie' },
+    { key: 'interests', keyFrench: "vos centres d'intérêts"},
+    { key: 'pictures', keyFrench: 'votre photo de profil'},
     { key: 'age', keyFrench: 'ton age'}
   ]
   

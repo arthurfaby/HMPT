@@ -23,7 +23,7 @@ export function MatchProfile({
 }: MatchProfileProps) {
   const [fullImage, setFullImage] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
-  const { logout } = useAuth();
+  const { account, logout } = useAuth();
   const [distanceMeters, setDistanceMeters] = useState(-1);
   const [distanceString, setDistanceString] = useState("Loading...");
 
@@ -178,7 +178,7 @@ export function MatchProfile({
           <Separator className="my-4" />
           <div className="flex flex-col gap-2.5">
             <span className="text-xl font-bold">Centre d'intérêts</span>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex max-h-28 flex-wrap gap-2 overflow-auto">
               {user.interests.map((interest) => {
                 return (
                   <Badge key={user.id + interest} variant="outline">

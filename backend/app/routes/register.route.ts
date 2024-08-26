@@ -39,7 +39,7 @@ router.post("/", async (req: Request, res: Response) => {
         "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
     });
   }
-  
+
   const existingUserByMail = await User.select({
     email: { equal: userDto.email },
   });
@@ -59,21 +59,21 @@ router.post("/", async (req: Request, res: Response) => {
   }
 
   // Generate random token
-    const token =
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
+  const token =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
 
   try {
-      const url = "http://localhost:3000/verify/" + token;
-      const transporter = nodemailer.createTransport(mailerConfig);
-      const message = {
-        from: {
-          name: "Matcha",
-          address: "rabaudp@gmail.com",
-        },
-        to: req.body.email,
-        subject: "Vérification de votre compte Matcha",
-        html: "\
+    const url = "http://localhost:3000/verify/" + token;
+    const transporter = nodemailer.createTransport(mailerConfig);
+    const message = {
+      from: {
+        name: "Matcha",
+        address: "rabaudp@gmail.com",
+      },
+      to: req.body.email,
+      subject: "Vérification de votre compte Matcha",
+      html: "\
           <p>Bonjour,</p>\
           <p>\
             Pour finaliser votre inscription et accéder à toutes nos fonctionnalités,\
@@ -83,29 +83,34 @@ router.post("/", async (req: Request, res: Response) => {
           <a href={{url}} class='button'>\
             Vérifier mon compte\
           </a>",
-      };
+    };
 
-      message.html = message.html.replace("{{url}}", url);
-      const testMail = await transporter.sendMail(message).then((_) => {
+    message.html = message.html.replace("{{url}}", url);
+    const testMail = await transporter
+      .sendMail(message)
+      .then((_) => {
         return true;
-      }).catch((error) => {return false});
-      if (!testMail)
-        return res.status(200).send({
-      error: "Email invalide"
-    })
-    } catch {
-      res.status(200).send({
-        error: "Erreur lors de l'envoi de l'email de vérification",
+      })
+      .catch((error) => {
+        return false;
       });
-    }
-    try {
-    const user = new User(userDto)
-    user.pictures = ["", "", "", "", "", ""]
-    user.fameRating = 0
-    await user.hash()
-    await user.create()
-    const newUser = await User.select({username: {equal: user.username}})
-    if(newUser.length > 0 && newUser[0].id !== undefined) {
+    if (!testMail)
+      return res.status(200).send({
+        error: "Email invalide",
+      });
+  } catch {
+    res.status(200).send({
+      error: "Erreur lors de l'envoi de l'email de vérification",
+    });
+  }
+  try {
+    const user = new User(userDto);
+    user.pictures = ["", "", "", "", "", ""];
+    user.fameRating = 0;
+    await user.hash();
+    await user.create();
+    const newUser = await User.select({ username: { equal: user.username } });
+    if (newUser.length > 0 && newUser[0].id !== undefined) {
       const userPreference = new Preference({
         user_id: newUser[0].id,
         age_gap_min: 18,
@@ -116,14 +121,16 @@ router.post("/", async (req: Request, res: Response) => {
         distance: 0,
         interests: [],
       });
-      await userPreference.create()
-      const Preferenceid = await Preference.select({user_id: {equal: newUser[0].id}})
+      await userPreference.create();
+      const Preferenceid = await Preference.select({
+        user_id: { equal: newUser[0].id },
+      });
       const session = new Session({
         user_id: newUser[0].id,
         token: req.sessionID,
       } as SessionDto);
       await session.create();
-    };
+    }
     const usersWithId = await User.select({
       email: { equal: userDto.email },
     });
@@ -138,10 +145,9 @@ router.post("/", async (req: Request, res: Response) => {
       user_id: userWithId.id!,
       token,
     });
-    ;
     // Send verification email
-   
-    await verificationToken.create()
+
+    await verificationToken.create();
     return res.status(200).send(user.dto);
   } catch (error) {
     return res.status(200).send({
@@ -149,6 +155,5 @@ router.post("/", async (req: Request, res: Response) => {
     });
   }
 });
-
 
 export default router;
