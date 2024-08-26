@@ -39,7 +39,7 @@ export function MatchCard({ user, nextUser }: MatchCardProps) {
               <span className="text-md">{nextUser.age}</span>
             </div>
             <span>{nextUser.biography.substring(0, 25) + "..."}</span>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex max-h-14 flex-wrap gap-1 overflow-auto">
               {nextUser.interests.map((interest) => {
                 return <Badge key={nextUser.id + interest}>{interest}</Badge>;
               })}
@@ -65,7 +65,7 @@ export function MatchCard({ user, nextUser }: MatchCardProps) {
             <span className="text-md">{user.age}</span>
           </div>
           <span>{user.biography.substring(0, 25) + "..."}</span>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex max-h-14 flex-wrap gap-1 overflow-auto">
             {user.interests.map((interest) => {
               return <Badge key={user.id + interest}>{interest}</Badge>;
             })}

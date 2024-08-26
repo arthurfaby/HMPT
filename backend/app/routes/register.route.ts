@@ -3,6 +3,7 @@ import { User } from "../models/user_model";
 import nodemailer from "nodemailer";
 import { mailerConfig } from "../app";
 import { VerificationToken } from "../models/verification_token_model";
+import { Preference } from "../models/preference_model";
 
 const router = Router();
 
@@ -69,6 +70,26 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
     const userWithId = usersWithId[0];
+
+    const preference = new Preference({
+      user_id: userWithId.id!,
+      age_gap_min: 18,
+      age_gap_max: 100,
+      fame_rating_min: 0,
+      fame_rating_max: 5,
+      distance: 1000000000,
+      sexual_preference: "bisexual",
+    });
+    await preference.create();
+    const preferenceWithId = await Preference.select({
+      user_id: { equal: userWithId.id! },
+    });
+    if (!preferenceWithId || !preferenceWithId[0] || !preferenceWithId[0].id) {
+      await user.delete();
+      return res.status(200).send({
+        error: "Erreur lors de la création des préférences",
+      });
+    }
 
     // Generate random token
     const token =

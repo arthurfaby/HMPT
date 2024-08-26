@@ -85,7 +85,7 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
         existingMatchAsLiked[0].chatId = createdChat.id;
         match.chatId = createdChat.id;
       } else {
-        return res.status(500).send({
+        return res.status(404).send({
           error: "Error while creating chat.",
         });
       }
@@ -93,15 +93,17 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
     existingMatchAsLiked[0].update();
   }
   await match.create();
-  const likedUser = await User.select({ id: { equal: parseInt(userToLikeId) } });
+  const likedUser = await User.select({
+    id: { equal: parseInt(userToLikeId) },
+  });
   if (likedUser.length > 0) {
-    likedUser[0].fameRating = likedUser[0].fameRating * 1.1
+    likedUser[0].fameRating = likedUser[0].fameRating * 1.1;
     if (likedUser[0].fameRating > 5) {
       likedUser[0].fameRating = 5;
     }
     await likedUser[0].update();
   }
-  
+
   return res.json(match.dto);
 });
 
