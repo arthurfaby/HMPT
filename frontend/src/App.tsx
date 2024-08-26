@@ -22,14 +22,14 @@ import { History } from "./pages/history/history";
 import { Verify } from "./pages/verify_account/verify";
 
 type IPGeolocationApiResponse = {
-  IPv4: string;
+  query: string;
   city: string;
-  country_code: string;
-  country_name: string;
-  latitude: number;
-  longitude: number;
-  postal: string;
-  state: string;
+  countryCode: string;
+  country: string;
+  lat: number;
+  lon: number;
+  zip: string;
+  regionName: string;
 };
 
 const router = createBrowserRouter([
@@ -117,10 +117,10 @@ function App() {
           );
         },
         async () => {
-          const response = await fetch("https://geolocation-db.com/json/");
+          const response = await fetch("http://ip-api.com/json");
           const geolocation =
             (await response.json()) as IPGeolocationApiResponse;
-          const { latitude, longitude } = geolocation;
+          const { lat: latitude, lon: longitude } = geolocation;
           await kyPOST<{ geolocation: Location }, Location>(
             "users/geolocation",
             { latitude, longitude },
