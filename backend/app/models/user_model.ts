@@ -351,7 +351,7 @@ export class User extends AbstractModel<UserDto> {
         interests: JSON.parse(interestsAsArray),
         pictures: JSON.parse(picturesAsArray),
       };
-    });
+    }); 
     return dtos.map((dto) => new User(dto));
   }
 }

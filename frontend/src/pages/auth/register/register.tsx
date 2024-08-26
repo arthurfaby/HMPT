@@ -3,12 +3,12 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth"
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
 
 export default function Register() {
   const { register } = useAuth();
@@ -36,7 +36,7 @@ export default function Register() {
     const isUpperCaseValid = /[A-Z]/.test(password);
     const isLowerCaseValid = /[a-z]/.test(password);
     const isDigitValid = /[0-9]/.test(password);
-    const isSymbolValid = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(
+    const isSymbolValid = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(
       password,
     );
     if (

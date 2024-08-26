@@ -26,6 +26,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { account } = useAuth()
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -36,15 +37,16 @@ export default function Chat() {
 
   const handleMessage = useCallback(
     (messageDto: MessageDto) => {
-      if (chat && chat.id == messageDto.chat_id) {
-        const existingMessage = messages.find((m) => m.id == messageDto.id);
+      if (chat && chat.id === messageDto.chat_id) {
+        const existingMessage = messages.find((m) => m.id === messageDto.id);
         if (existingMessage) {
           return;
         }
         setMessages((prevMessages) => [...prevMessages, messageDto]);
-        if (messageDto.user_id == parseInt(userId!)) {
+        if (messageDto.user_id === parseInt(userId!)) {
           setTimeout(() => {
             socket.emit("seen", messageDto);
+            socket.emit("read", {id: account?.id, chat_id: messageDto.chat_id});
           }, 100);
         }
       }
@@ -54,10 +56,10 @@ export default function Chat() {
 
   const handleSeen = useCallback(
     (messageDto: MessageDto) => {
-      if (chat && chat.id == messageDto.chat_id) {
+      if (chat && chat.id === messageDto.chat_id) {
         setMessages((prevMessages) =>
           prevMessages.map((m) => {
-            if (m.id == messageDto.id) {
+            if (m.id === messageDto.id) {
               return { ...m, seen: true };
             }
             return m;
@@ -72,6 +74,8 @@ export default function Chat() {
     if (chat) {
       socket.on("message", handleMessage);
       socket.on("seen", handleSeen);
+      if (account)
+        socket.emit("read", {id: account.id, chat_id: chat.id})
     }
 
     return () => {
@@ -164,7 +168,7 @@ export default function Chat() {
                 <Message
                   seen={index === messages.length - 1 && message.seen}
                   key={message.id}
-                  isMe={message.user_id != parseInt(userId!)}
+                  isMe={message.user_id !== parseInt(userId!)}
                 >
                   {message.content}
                 </Message>

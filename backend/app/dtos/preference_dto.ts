@@ -10,4 +10,5 @@ export interface PreferenceDto extends AbstractDto {
   fame_rating_max?: number;
   sexual_preference: SexualPreference;
   distance: number;
+  interests: string[];
 }

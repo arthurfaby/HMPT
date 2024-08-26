@@ -19,65 +19,57 @@ interface props {
 }
 
 export default function Login({ openDialog, setOpenDialog }: props) {
-  const { login, status } = useAuth();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (username: string, password: string) => {
-    if (await login(username, password)) setOpenDialog(false);
+    if (await login(username, password)) 
+      setOpenDialog(false);
+    else
+      toast.error('le nom d\'utilisateur et/ou le mot de passe sont incorrects')
   };
 
   const forget_password = async (username: string) => {
-    console.log(username);
     if (username !== "") {
-      const response = await postForgetPassword(username);
-      if (response.ok) {
-        toast.success("Email envoyé");
-        setOpenDialog(false);
-      } else {
-        toast.error("Problème de serveur, veuillez réessayer");
+      try {
+        const response = await postForgetPassword(username);
+        console.log(response)
+        if ("error" in response) {
+          toast.error(response.error as string);
+        } else {
+          toast.success("Email envoyé");
+          setOpenDialog(false);
+        }
       }
+      catch (e){
+        console.log(e)
+      }
+      
     } else {
       toast.error("Login vide");
     }
-  };
-  return (
-    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Se connecter</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <Input
-          type="text"
-          placeholder="login"
-          name="username"
-          value={username}
-          onChange={(event) => setUsername(event.currentTarget.value)}
-          className=""
-        />
-        <Input
-          type="password"
-          placeholder="password"
-          name="password"
-          value={password}
-          onChange={(event) => setPassword(event.currentTarget.value)}
-        />
-        <Button type="button" onClick={() => forget_password(username)}>
-          mot de passe oublié
-        </Button>
-        <Button type="button" onClick={() => handleSubmit(username, password)}>
-          login
-        </Button>
-        <p>
-          {" "}
-          tu n'as pas de compte frero ?{" "}
-          <DialogClose asChild>
-            <Link type="button" to="/register">
-              register
-            </Link>
-          </DialogClose>
-        </p>
-      </DialogContent>
-    </Dialog>
-  );
-}
+  }
+    return (
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger asChild>
+                <Button variant="outline">Sign in</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <Input type="text" placeholder="login" name="username" value={username} onChange={(event) => setUsername(event.currentTarget.value)} className=""/> 
+                <Input type="password" placeholder="password" name="password" value={password} onChange={(event) => setPassword(event.currentTarget.value)}/>
+                <Button type="button" onClick={() => forget_password(username)}>mot de passe oublié</Button>
+                <Button type="button" onClick={() => handleSubmit(username, password)}>
+                    login 
+                </Button>
+            <p> tu n'as pas de compte frero ?{" "}
+                <DialogClose asChild>
+                    <Link type="button" to="/register">
+                        register
+                    </Link>
+                </DialogClose>
+            </p>
+            </DialogContent>
+        </Dialog>
+    )
+  }

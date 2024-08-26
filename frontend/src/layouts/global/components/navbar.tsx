@@ -5,7 +5,7 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
 import { Ban, History, MessageCircleHeart, ThumbsDown } from "lucide-react";
@@ -22,6 +22,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import Notifications from "@/pages/notifications/notifications";
 
 export function Navbar() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -63,10 +64,21 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
+      <header className="fixed z-40 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
         <Link className="text-xl font-semibold" to="/">
           Matcha.
         </Link>
+        {status === AuthStatus.Authenticated && (
+          <>
+            <Link className="text-xl font-semibold" to="/profile">
+              Profile
+            </Link>
+            <Link className="text-xl font-semibold" to="/preference">
+              Préférence
+            </Link>
+          </>
+        )}
+
         <div className="flex items-center space-x-4">
           {status !== AuthStatus.Authenticated && (
             <>
@@ -77,6 +89,7 @@ export function Navbar() {
           <ToggleTheme />
           {status === AuthStatus.Authenticated && (
             <>
+              <Notifications />
               <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                 <SheetTrigger asChild>
                   <Button size="icon" variant="ghost">
@@ -185,12 +198,15 @@ export function Navbar() {
                   <History />
                 </Button>
               </Link>
-              <Link
+              <Button
                 className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-                to="/logout"
+                onClick={() => {
+                  navigate("/logout");
+                  navigate(0);
+                }}
               >
                 Se déconnecter
-              </Link>
+              </Button>
             </>
           )}
         </div>

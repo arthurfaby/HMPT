@@ -23,9 +23,10 @@ CREATE TABLE IF NOT EXISTS "users" (
 CREATE TABLE IF NOT EXISTS "notifications" (
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
-    "content" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
     "seen" BOOLEAN NOT NULL,
-    "date" DATE NOT NULL
+    "date" TIMESTAMP NOT NULL,
+    "chat_id" BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS "histories" (
@@ -83,7 +84,8 @@ CREATE TABLE IF NOT EXISTS "preferences" (
             'bisexual'
         )
     ) NOT NULL DEFAULT 'bisexual',
-    "distance" BIGINT NOT NULL
+    "distance" BIGINT NOT NULL,
+    "interests" TEXT
 );
 
 CREATE TABLE IF NOT EXISTS "chats" (

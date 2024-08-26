@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Ban, Flag, Heart, X } from "lucide-react";
 import { UserDto } from "@/dtos/user_dto";
@@ -188,7 +188,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
         <MatchCard
           user={users[activeUser]}
           nextUser={
-            activeUser != users.length - 1 ? users[activeUser + 1] : users[0]
+            activeUser !== users.length - 1 ? users[activeUser + 1] : users[0]
           }
         />
       </div>

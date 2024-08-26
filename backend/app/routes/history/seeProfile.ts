@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { History } from "../../models/history_model";
+import createNotifications from "../notifications/create-notifications";
 
 const router = Router();
 
@@ -18,6 +19,8 @@ router.post("/seeProfile/:userId", async (req: Request, res: Response) => {
       error: "Invalid user id",
     });
   }
+
+  await createNotifications(authenticatedUser.firstName + ' a visité votre profil', parseInt(userId), undefined)
 
   const existingHistory = await History.select({
     visitor_id: {

@@ -1,9 +1,11 @@
 import { Router, Request, Response } from "express";
 import { User } from "../models/user_model";
+import { Preference } from "../models/preference_model";
+import { Session } from "../models/session_model";
+import { SessionDto } from "../dtos/session_dto";
 import nodemailer from "nodemailer";
 import { mailerConfig } from "../app";
 import { VerificationToken } from "../models/verification_token_model";
-import { Preference } from "../models/preference_model";
 
 const router = Router();
 
@@ -23,7 +25,6 @@ function verifyPassword(password: string): boolean {
 }
 
 router.post("/", async (req: Request, res: Response) => {
-  //const result = await db.query('SELECT username FROM users')
   const userDto = {
     username: req.body.username,
     password: req.body.password,
@@ -57,10 +58,79 @@ router.post("/", async (req: Request, res: Response) => {
     });
   }
 
+  // Generate random token
+  const token =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
+
+  try {
+    const url = "http://localhost:3000/verify/" + token;
+    const transporter = nodemailer.createTransport(mailerConfig);
+    const message = {
+      from: {
+        name: "Matcha",
+        address: "rabaudp@gmail.com",
+      },
+      to: req.body.email,
+      subject: "Vérification de votre compte Matcha",
+      html: "\
+          <p>Bonjour,</p>\
+          <p>\
+            Pour finaliser votre inscription et accéder à toutes nos fonctionnalités,\
+            nous avons besoin de vérifier votre adresse email.<br>\
+            Cliquez sur le lien ci-dessous pour vérifier votre compte :\
+          </p>\
+          <a href={{url}} class='button'>\
+            Vérifier mon compte\
+          </a>",
+    };
+
+    message.html = message.html.replace("{{url}}", url);
+    const testMail = await transporter
+      .sendMail(message)
+      .then((_) => {
+        return true;
+      })
+      .catch((error) => {
+        return false;
+      });
+    if (!testMail)
+      return res.status(200).send({
+        error: "Email invalide",
+      });
+  } catch {
+    res.status(200).send({
+      error: "Erreur lors de l'envoi de l'email de vérification",
+    });
+  }
   try {
     const user = new User(userDto);
+    user.pictures = ["", "", "", "", "", ""];
+    user.fameRating = 0;
     await user.hash();
     await user.create();
+    const newUser = await User.select({ username: { equal: user.username } });
+    if (newUser.length > 0 && newUser[0].id !== undefined) {
+      const userPreference = new Preference({
+        user_id: newUser[0].id,
+        age_gap_min: 18,
+        age_gap_max: 150,
+        fame_rating_min: 0,
+        fame_rating_max: 1000,
+        sexual_preference: "bisexual",
+        distance: 0,
+        interests: [],
+      });
+      await userPreference.create();
+      const Preferenceid = await Preference.select({
+        user_id: { equal: newUser[0].id },
+      });
+      const session = new Session({
+        user_id: newUser[0].id,
+        token: req.sessionID,
+      } as SessionDto);
+      await session.create();
+    }
     const usersWithId = await User.select({
       email: { equal: userDto.email },
     });
@@ -71,72 +141,13 @@ router.post("/", async (req: Request, res: Response) => {
     }
     const userWithId = usersWithId[0];
 
-    const preference = new Preference({
-      user_id: userWithId.id!,
-      age_gap_min: 18,
-      age_gap_max: 100,
-      fame_rating_min: 0,
-      fame_rating_max: 5,
-      distance: 1000000000,
-      sexual_preference: "bisexual",
-    });
-    await preference.create();
-    const preferenceWithId = await Preference.select({
-      user_id: { equal: userWithId.id! },
-    });
-    if (!preferenceWithId || !preferenceWithId[0] || !preferenceWithId[0].id) {
-      await user.delete();
-      return res.status(200).send({
-        error: "Erreur lors de la création des préférences",
-      });
-    }
-
-    // Generate random token
-    const token =
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
-
     const verificationToken = new VerificationToken({
       user_id: userWithId.id!,
       token,
     });
-    await verificationToken.create();
     // Send verification email
-    try {
-      const url = "http://localhost:3000/verify/" + token;
-      const transporter = nodemailer.createTransport(mailerConfig);
-      const message = {
-        from: {
-          name: "Matcha",
-          address: "rabaudp@gmail.com",
-        },
-        to: user.email,
-        subject: "Vérification de votre compte Matcha",
-        html: "\
-          <p>Bonjour,</p>\
-          <p>\
-            Pour finaliser votre inscription et accéder à toutes nos fonctionnalités,\
-            nous avons besoin de vérifier votre adresse email.<br>\
-            Cliquez sur le lien ci-dessous pour vérifier votre compte :\
-          </p>\
-          <a href={{url}} class='button'>\
-            Vérifier mon compte\
-          </a>",
-      };
 
-      message.html = message.html.replace("{{url}}", url);
-      transporter.sendMail(message).then((_) => {
-        return;
-      });
-      return res.status(200).send({
-        message: "Email envoyé avec succès",
-      });
-    } catch {
-      res.status(200).send({
-        error: "Erreur lors de l'envoi de l'email de vérification",
-      });
-    }
-
+    await verificationToken.create();
     return res.status(200).send(user.dto);
   } catch (error) {
     return res.status(200).send({

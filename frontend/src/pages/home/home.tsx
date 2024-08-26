@@ -1,8 +1,6 @@
 import heart from "../../assets/heart.webp";
 import "./home.css";
 import { FullHeightContainer } from "@/components/utils/full-height-container";
-import { AuthStatus, useAuth } from "@/hooks/useAuth";
-import { Matches } from "@/pages/matches/matches";
 
 const Home = () => {
   return (

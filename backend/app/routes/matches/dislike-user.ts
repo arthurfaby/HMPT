@@ -13,7 +13,6 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
       error: "Unauthorized",
     });
   }
-
   const userToLikeId = req.params.id;
 
   if (userToLikeId.match(/^[0-9]+$/) === null) {

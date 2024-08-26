@@ -1,9 +1,46 @@
+import { FullHeightContainer } from "@/components/utils/full-height-container";
 import { useAuth } from "../../hooks/useAuth";
+import { ProfilePicture } from "./components/profilPicture";
+import { postUser } from "@/services/api/userApi";
+import { NameUser } from "./components/nameUser";
+import { Button } from "@/components/ui/button";
+import AgeUser from "./components/ageUser";
+import Gender from "./components/gender";
+import PreferenceSexual from "./components/preferenceSexual";
+import Biography from "./components/biography";
+import Interest from "./components/interest";
+import PicturesUser from "./components/pictures";
+import { toast } from "sonner";
 
 export default function Profile() {
+
+  const { account } = useAuth();
+  
+  const handleSubmit = async () => {
+    try {
+      if (account) {
+        await postUser(account)
+        toast.success("Votre profil a bien été enregistré")
+      }
+    }
+    catch {
+      console.log("error serveur")
+    }
+  }
+
+  
   return (
-    <div>
-      <h1>Profil</h1>
-    </div>
+    <FullHeightContainer className="flex flex-col h-full items-center justify-center gap-10" dontScroll={false}>
+        <ProfilePicture/>
+        <NameUser/>
+        <AgeUser/>
+        <Gender/>
+        <PreferenceSexual/>
+        <Biography/> 
+        <Interest/>
+        <PicturesUser/>
+        <Button type="submit" onClick={handleSubmit}> enregistrez </Button>
+    </FullHeightContainer>
   );
 }
+
