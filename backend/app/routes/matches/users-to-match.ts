@@ -95,17 +95,29 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
     return distance <= preference.distance;
   });
   const sortedUserDtos = matchesAlgorithm(authUser, userDtosInDistance);
-  if (req.params.sort === "distance") {
+  const sortOption: string | undefined = req.params.sort;
+  if (sortOption === "distance_asc" || sortOption === "distance_desc") {
     sortedUserDtos.sort((a, b) => {
       if (!authUser.geolocation || !a.geolocation || !b.geolocation) return 0;
       const distanceA = getGPSDistance(authUser.geolocation, a.geolocation);
       const distanceB = getGPSDistance(authUser.geolocation, b.geolocation);
-      return distanceA - distanceB;
+      return sortOption === "distance_desc"
+        ? distanceB - distanceA
+        : distanceA - distanceB;
     });
-  } else if (req.params.sort === "age") {
-    sortedUserDtos.sort((a, b) => a.age! - b.age!);
-  } else if (req.params.sort === "fame_rating") {
-    sortedUserDtos.sort((a, b) => b.fame_rating! - a.fame_rating!);
+  } else if (sortOption === "age_asc" || sortOption === "age_desc") {
+    sortedUserDtos.sort((a, b) =>
+      sortOption === "age_asc" ? a.age! - b.age! : b.age! - a.age!
+    );
+  } else if (
+    sortOption === "fame_rating_asc" ||
+    sortOption === "fame_rating_desc"
+  ) {
+    sortedUserDtos.sort((a, b) =>
+      sortOption === "fame_rating_asc"
+        ? b.fame_rating! - a.fame_rating!
+        : a.fame_rating! - b.fame_rating!
+    );
   }
 
   return res.json(sortedUserDtos);

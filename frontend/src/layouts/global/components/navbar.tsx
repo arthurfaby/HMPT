@@ -5,7 +5,7 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Link, useNavigate, useLocation} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
 import { Ban, History, MessageCircleHeart, ThumbsDown } from "lucide-react";
@@ -62,7 +62,6 @@ export function Navbar() {
     setTimeout(() => fetchChatUserIds(), 200);
   }, [status, changes]);
 
-
   return (
     <>
       <header className="fixed z-40 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
@@ -71,19 +70,17 @@ export function Navbar() {
         </Link>
         {status === AuthStatus.Authenticated && (
           <>
-          <Link className="text-xl font-semibold" to="/profile">
-            Profile
-          </Link>
-          <Link className="text-xl font-semibold" to="/preference">
-            Préférence
-          </Link>
+            <Link className="text-xl font-semibold" to="/profile">
+              Profile
+            </Link>
+            <Link className="text-xl font-semibold" to="/preference">
+              Préférence
+            </Link>
           </>
-        
-          )}
-       
+        )}
+
         <div className="flex items-center space-x-4">
-          {status !== AuthStatus.Authenticated && ( 
-            
+          {status !== AuthStatus.Authenticated && (
             <>
               <Register />
               <Login openDialog={openDialog} setOpenDialog={setOpenDialog} />
@@ -196,11 +193,11 @@ export function Navbar() {
                   </div>
                 </SheetContent>
               </Sheet>
-              <Button variant={"ghost"} size={"icon"}>
-                <Link to="/history">
+              <Link to="/history">
+                <Button variant={"ghost"} size={"icon"}>
                   <History />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               <Button
                 className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
                 onClick={() => {
