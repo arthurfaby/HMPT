@@ -21,6 +21,7 @@ import { Preference } from "../models/preference_model";
 class UserFactory {
   private async _generateUser(overrides?: Partial<UserDto>): Promise<UserDto> {
     const randomGender: Gender = faker.person.sex() as Gender;
+    const tags: string[] = ["#vegan", "#geek", "#piercing", "#tatto", "#travel", "#sushi", "#beach", "#football", "#tennis", "#42"]
 
     const n2 = faker.number.int({ min: 1, max: 5 });
     const pictures: string[] = [];
@@ -31,7 +32,7 @@ class UserFactory {
     const n3 = faker.number.int({ min: 2, max: 8 });
     const interests: string[] = [];
     for (let i = 0; i < n3; i++) {
-      interests.push(faker.lorem.words(1));
+      interests.push(tags[Math.floor(Math.random() * tags.length)]);
     }
 
     return {

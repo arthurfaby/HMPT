@@ -118,7 +118,7 @@ router.post("/", async (req: Request, res: Response) => {
         fame_rating_min: 0,
         fame_rating_max: 1000,
         sexual_preference: "bisexual",
-        distance: 0,
+        distance: 22000,
         interests: [],
       });
       await userPreference.create();
