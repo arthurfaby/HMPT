@@ -5,7 +5,7 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Link, useNavigate, useLocation} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { AuthStatus, useAuth } from "@/hooks/useAuth";
 import { Ban, History, MessageCircleHeart, ThumbsDown } from "lucide-react";
@@ -62,7 +62,6 @@ export function Navbar() {
     setTimeout(() => fetchChatUserIds(), 200);
   }, [status, changes]);
 
-
   return (
     <>
       <header className="fixed z-40 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
@@ -71,19 +70,20 @@ export function Navbar() {
         </Link>
         {status === AuthStatus.Authenticated && (
           <>
-          <Link className="text-xl font-semibold" to="/profile">
-            Profile
-          </Link>
-          <Link className="text-xl font-semibold" to="/preference">
-            Préférence
-          </Link>
+            <Link className="text-xl font-semibold" to="/profile">
+              Profile
+            </Link>
+            <Link className="text-xl font-semibold" to="/preference">
+              Préférence
+            </Link>
+            <Link className="text-xl font-semibold" to="/research">
+              Recherche
+            </Link>
           </>
-        
-          )}
-       
+        )}
+
         <div className="flex items-center space-x-4">
-          {status !== AuthStatus.Authenticated && ( 
-            
+          {status !== AuthStatus.Authenticated && (
             <>
               <Register />
               <Login openDialog={openDialog} setOpenDialog={setOpenDialog} />
