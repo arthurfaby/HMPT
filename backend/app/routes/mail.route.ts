@@ -28,8 +28,7 @@ router.post("/forget_password", async (req: Request, res: Response) => {
   }
   
   
-  //TODO put in .env
-  const token = jwt.sign({ username: req.body.username }, "prout", {
+  const token = jwt.sign({ username: req.body.username }, process.env.PASSJWT as string, {
     expiresIn: "300s",
   });
   const url = "http://localhost:3000/forget_password/" + token;
@@ -71,7 +70,7 @@ router.post("/change_password", async (req: Request, res: Response) => {
     });
   }
       //.env !!
-      const decoded = jwt.verify(req.body.token, "prout") as JwtPayload;
+      const decoded = jwt.verify(req.body.token, process.env.PASSJWT as string) as JwtPayload;
       const user = await User.select({ username: { equal: decoded.username } });
       user[0].password = req.body.newPassword;
       await user[0].hash();

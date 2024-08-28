@@ -8,7 +8,6 @@ import { User } from "./models/user_model";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { initIO } from "./sockets/init";
-import { createClient } from "redis";
 
 // Create Express server
 const app = express(); // New express instance
@@ -26,6 +25,9 @@ app.use(helmet()); // Enable Helmet
 app.use(morgan("dev")); // Enable Morgan
 app.use(express.json());
 app.disable("etag")
+const fs = require('fs');
+const path = require('path');
+
 
 const sessionMiddleware = Session({
   secret: "prout",
@@ -67,8 +69,7 @@ export const mailerConfig = {
   service: "gmail",
   auth: {
     user: "rabaudp@gmail.com",
-    //TODO put in .env
-    pass: "damz dsek jgfn vnjs",
+    pass: process.env.PASSMAIL,
   },
 };
 

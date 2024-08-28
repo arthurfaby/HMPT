@@ -45,7 +45,7 @@ export default function Profile() {
         <Biography/> 
         <Interest/>
         <PicturesUser/>
-        <Button type="submit" onClick={handleSubmit}> enregistrez </Button>
+        <Button type="submit" onClick={handleSubmit}> enregistrer </Button>
     </FullHeightContainer>
   );
 }
