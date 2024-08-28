@@ -40,15 +40,6 @@ router.post("/", async (req: Request, res: Response) => {
     });
   }
 
-  const existingUserByMail = await User.select({
-    email: { equal: userDto.email },
-  });
-  if (existingUserByMail.length > 0) {
-    return res.status(200).send({
-      error: "Adresse email déjà utilisée",
-    });
-  }
-
   const existingUserByUsername = await User.select({
     username: { equal: userDto.username },
   });

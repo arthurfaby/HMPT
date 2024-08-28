@@ -174,6 +174,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     }
   };
 
+  console.log(users)
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">

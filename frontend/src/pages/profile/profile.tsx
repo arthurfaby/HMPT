@@ -11,6 +11,9 @@ import Biography from "./components/biography";
 import Interest from "./components/interest";
 import PicturesUser from "./components/pictures";
 import { toast } from "sonner";
+import Username from "./components/username";
+import Email from "./components/email";
+import Password from "./components/password";
 
 export default function Profile() {
 
@@ -32,6 +35,9 @@ export default function Profile() {
   return (
     <FullHeightContainer className="flex flex-col h-full items-center justify-center gap-10" dontScroll={false}>
         <ProfilePicture/>
+        <Username/>
+        <Email/>
+        <Password/>
         <NameUser/>
         <AgeUser/>
         <Gender/>

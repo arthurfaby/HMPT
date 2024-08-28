@@ -25,6 +25,7 @@ app.use(cors(corsOptions)); // Enable CORS
 app.use(helmet()); // Enable Helmet
 app.use(morgan("dev")); // Enable Morgan
 app.use(express.json());
+app.disable("etag")
 
 const sessionMiddleware = Session({
   secret: "prout",

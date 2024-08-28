@@ -7,3 +7,7 @@ export async function postForgetPassword(username: string): Promise<{ error: str
 export async function changePassword(newPassord: string, token: string): Promise<{ error: string} | {message: string}>{ 
     return await ky.post("http://localhost:5000/mail/change_password", {json: {newPassword: newPassord, token: token}}).json()
 }
+
+export async function changePasswordProfil(newPassord: string): Promise<{ error: string} | {message: string}>{
+    return await ky.post("http://localhost:5000/me/changePassword", {json: {newPassword: newPassord}, credentials: "include"}).json()
+}

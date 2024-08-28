@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import Notifications from "@/pages/notifications/notifications";
+import { AccountCircle, Tune } from "@mui/icons-material";
 
 export function Navbar() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -71,10 +72,10 @@ export function Navbar() {
         {status === AuthStatus.Authenticated && (
           <>
             <Link className="text-xl font-semibold" to="/profile">
-              Profile
+              <AccountCircle/>
             </Link>
             <Link className="text-xl font-semibold" to="/preference">
-              Préférence
+              <Tune/>
             </Link>
           </>
         )}
