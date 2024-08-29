@@ -10,6 +10,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { formatDistance } from "@/utils/formatDistance";
 import { kyGET, kyPOST } from "@/utils/ky/handlers";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { SexualPreference } from "@/types/sexual_preference_type";
+import {
+  getSexualPreferences,
+  getSexualPreferencesById,
+} from "@/services/api/preferencesApi";
+import { toast } from "sonner";
 
 export type MatchProfileProps = {
   user: UserDto;
@@ -27,6 +33,27 @@ export function MatchProfile({
   const { account, logout } = useAuth();
   const [distanceMeters, setDistanceMeters] = useState(-1);
   const [distanceString, setDistanceString] = useState("Loading...");
+  const [sexualPreference, setSexualPreference] =
+    useState<SexualPreference>("bisexual");
+
+  const [userIsLiked, setUserIsLiked] = useState(false);
+  const [userIsMatched, setUserIsMatched] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setSexualPreference(await getSexualPreferencesById(user.id));
+      const data: { liked: boolean; matched: boolean } | null = await kyGET(
+        `matches/alreadyLiked/${user.id}`,
+        logout,
+      );
+      if (data) {
+        setUserIsLiked(data.liked);
+        setUserIsMatched(data.matched);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const getDistance = async () => {
     const response = await kyGET<{ distance: number }>(
@@ -71,10 +98,24 @@ export function MatchProfile({
     }
   }, [open]);
 
+  const cancelLike = async () => {
+    const response = await kyPOST(`matches/cancel/${user.id}`, {}, logout);
+    if (response) {
+      setUserIsLiked(false);
+      setUserIsMatched(false);
+      toast.success("Like annulé", {});
+    }
+  };
+
   const handleOpenChange = () => {
     handleOpenProfile();
     setFullImage(false);
     setImageIndex(0);
+  };
+
+  const modalStyle = {
+    maxHeight: "calc(100vh - 100px)",
+    overflow: "auto",
   };
 
   return (
@@ -82,6 +123,7 @@ export function MatchProfile({
       <DialogContent
         className="w-[400px]
          rounded-lg border-0 p-0"
+        style={modalStyle}
         onOpenAutoFocus={(e) => {
           e.preventDefault();
         }}
@@ -157,9 +199,23 @@ export function MatchProfile({
                 <span>{user.age}</span>
                 <span>({getGenderTaxo(user.gender)})</span>
               </div>
+              {(userIsMatched || userIsLiked) && (
+                <div>
+                  <Badge
+                    variant="destructive"
+                    className="cursor-pointer"
+                    onClick={cancelLike}
+                  >
+                    {userIsMatched ? "Match" : "Like"}
+                  </Badge>
+                </div>
+              )}
             </div>
             <div className="mb-2 flex">
               <span className="text-xs">{user.username}</span>
+            </div>
+            <div className="mb-2 flex">
+              <span className="text-xs">{sexualPreference}</span>
             </div>
             <div className="flex justify-between">
               <div className="flex gap-2">

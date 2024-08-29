@@ -49,4 +49,15 @@ router.post("/preferences", async (req: Request, res: Response) => {
   return res.status(200).send("ok");
 });
 
+router.get("/sexualPreference/:id", async (req: Request, res: Response) => {
+  const sexualPreference = await Preference.select({
+    user_id: { equal: req.params.id },
+  });
+  if (sexualPreference.length > 0)
+    return res
+      .status(200)
+      .send({ sexualPreference: sexualPreference[0].sexualPreference });
+  else return res.status(400).send({ error: "bad request" });
+});
+
 export default router;

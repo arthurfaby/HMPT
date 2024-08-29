@@ -174,7 +174,6 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     }
   };
 
-  console.log(users)
   if (users.length === 0) {
     return (
       <span className="text-xl font-bold text-primary">
@@ -225,7 +224,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
               <Button
                 variant={"destructive"}
                 onClick={blockUser}
-                className="flex gap-2"
+                className="flex w-full gap-2"
               >
                 <Ban size={18} />
                 Bloquer

@@ -13,9 +13,9 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
       error: "Unauthorized",
     });
   }
-  const userToLikeId = req.params.id;
+  const userToDislikeId = req.params.id;
 
-  if (userToLikeId.match(/^[0-9]+$/) === null) {
+  if (userToDislikeId.match(/^[0-9]+$/) === null) {
     return res.status(400).send({
       error: "Invalid user ID",
     });
@@ -26,7 +26,7 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
       equal: authUser.id,
     },
     disliked_id: {
-      equal: parseInt(userToLikeId),
+      equal: parseInt(userToDislikeId),
     },
   });
 
@@ -36,13 +36,13 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
 
   const dislike = new Dislike({
     disliker_id: authUser.id,
-    disliked_id: parseInt(userToLikeId),
+    disliked_id: parseInt(userToDislikeId),
   });
 
   await dislike.create();
 
   const dislikedUser = await User.select({
-    id: { equal: parseInt(userToLikeId) },
+    id: { equal: parseInt(userToDislikeId) },
   });
   if (dislikedUser.length > 0) {
     dislikedUser[0].fameRating = dislikedUser[0].fameRating * 0.95;

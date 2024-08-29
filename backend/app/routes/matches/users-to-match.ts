@@ -95,7 +95,12 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
 
     return distance / 1000 <= preference.distance;
   });
-  const sortedUserDtos = matchesAlgorithm(authUser, userDtosInDistance);
+  const userWithInterests = userDtosInDistance.filter((userDto) => {
+    return preference.interests.every((interest) =>
+      userDto.interests?.includes(interest)
+    );
+  });
+  const sortedUserDtos = matchesAlgorithm(authUser, userWithInterests);
   const sortOption: string | undefined = req.params.sort;
   if (sortOption === "distance_asc" || sortOption === "distance_desc") {
     sortedUserDtos.sort((a, b) => {

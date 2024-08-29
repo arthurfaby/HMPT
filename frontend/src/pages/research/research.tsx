@@ -412,7 +412,7 @@ export function Research() {
                       <Button
                         variant={"destructive"}
                         onClick={() => blockUser(user)}
-                        className="flex gap-2"
+                        className="flex w-full gap-2"
                       >
                         <Ban size={18} />
                         Bloquer

@@ -35,14 +35,11 @@ export default function InterestPreference({
   preferences,
   setPreferences,
 }: Preferences) {
-  const [badgeTotal, setBadgeTotal] = useState<NewBadge[]>([]);
-  const interestRef = useRef<HTMLInputElement>(null);
-
   const [checkedTags, setCheckedTags] = useState<string[]>([]);
 
   useEffect(() => {
     setCheckedTags(preferences.interests);
-  }, []);
+  }, [preferences]);
 
   useEffect(() => {
     preferences.interests = checkedTags;

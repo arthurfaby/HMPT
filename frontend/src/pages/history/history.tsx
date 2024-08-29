@@ -82,7 +82,7 @@ export function History() {
   }, []);
 
   return (
-    <FullHeightContainer className="flex gap-24 p-4">
+    <FullHeightContainer className="flex flex-wrap gap-24 p-4">
       <div className=" flex-grow basis-80 gap-2">
         <h1 className="mb-4 text-2xl font-bold">Vues de votre profil</h1>
         {historyError && <span>{historyError}</span>}

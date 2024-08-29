@@ -26,7 +26,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { account } = useAuth()
+  const { account } = useAuth();
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -46,7 +46,10 @@ export default function Chat() {
         if (messageDto.user_id === parseInt(userId!)) {
           setTimeout(() => {
             socket.emit("seen", messageDto);
-            socket.emit("read", {id: account?.id, chat_id: messageDto.chat_id});
+            socket.emit("read", {
+              id: account?.id,
+              chat_id: messageDto.chat_id,
+            });
           }, 100);
         }
       }
@@ -74,8 +77,7 @@ export default function Chat() {
     if (chat) {
       socket.on("message", handleMessage);
       socket.on("seen", handleSeen);
-      if (account)
-        socket.emit("read", {id: account.id, chat_id: chat.id})
+      if (account) socket.emit("read", { id: account.id, chat_id: chat.id });
     }
 
     return () => {
@@ -143,6 +145,10 @@ export default function Chat() {
     setMessages([...messages, messageData]);
   };
 
+  const style = {
+    height: "calc(100% - 120px)",
+  };
+
   return (
     <FullHeightContainer
       dontScroll
@@ -161,7 +167,8 @@ export default function Chat() {
           </div>
           <div
             ref={containerRef}
-            className="scroll mx-auto flex h-[80%] w-full max-w-3xl flex-col gap-1 overflow-y-auto  p-4"
+            style={style}
+            className="scroll mx-auto flex w-full max-w-3xl flex-col gap-1 overflow-y-auto  p-4"
           >
             {messages.map((message, index) => {
               return (
@@ -175,16 +182,16 @@ export default function Chat() {
               );
             })}
           </div>
-          <div className="mx-auto flex w-full max-w-3xl items-center gap-2  p-4">
+          <div className="absolute bottom-12 mx-auto flex w-full justify-center  gap-2 self-center p-4">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 sendMessage();
               }}
-              className="flex w-full gap-2"
+              className="flex items-center justify-center gap-2"
             >
               <input
-                className="flex-grow  rounded-md border-2 border-primary p-2"
+                className=" rounded-md border-2 border-primary p-2"
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}

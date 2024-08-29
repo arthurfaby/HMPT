@@ -85,6 +85,11 @@ export function Navbar() {
     setTimeout(() => fetchChatUserIds(), 200);
   }, [status, changes]);
 
+  const navbarStyle = {
+    maxHeight: "calc(100vh)",
+    overflow: "auto",
+  };
+
   return (
     <>
       <header className="fixed z-40 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm dark:bg-gray-950 dark:text-gray-50 sm:px-6 md:px-8">
@@ -92,17 +97,19 @@ export function Navbar() {
           Matcha.
         </Link>
         <div className="flex items-center justify-center gap-8">
-          <Notifications />
           {status === AuthStatus.Authenticated && (
-            <Button
-              className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
-              onClick={() => {
-                navigate("/logout");
-                navigate(0);
-              }}
-            >
-              Se déconnecter
-            </Button>
+            <>
+              <Notifications />
+              <Button
+                className="items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-center text-sm font-medium text-gray-50 shadow-sm transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300 sm:inline-flex"
+                onClick={() => {
+                  navigate("/logout");
+                  navigate(0);
+                }}
+              >
+                Se déconnecter
+              </Button>
+            </>
           )}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -112,7 +119,10 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent>
-              <div className="flex flex-col items-center justify-center gap-4 ">
+              <div
+                className="flex h-full flex-col items-center gap-4"
+                style={navbarStyle}
+              >
                 {status === AuthStatus.Authenticated && (
                   <>
                     <Link className="text-xl font-semibold" to="/profile">
