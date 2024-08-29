@@ -8,7 +8,6 @@ import { User } from "./models/user_model";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { initIO } from "./sockets/init";
-import { createClient } from "redis";
 
 // Create Express server
 const app = express(); // New express instance
@@ -44,14 +43,7 @@ declare module "express-session" {
 }
 
 app.use("/", router);
-
-// Start Express server
-httpServer.listen(port, () => {
-  // Callback function when server is successfully started
-  console.log(`Server started at http://localhost:${port}`);
-});
-
-
+httpServer.listen(port, () => {});
 
 // Export Socket.io server
 export const io = new Server(httpServer, {

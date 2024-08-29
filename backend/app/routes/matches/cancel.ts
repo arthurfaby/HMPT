@@ -3,6 +3,7 @@ import getAuthenticatedUser from "../../utils/auth/getAuthenticatedUser";
 import { User } from "../../models/user_model";
 import { Match } from "../../models/match_model";
 import createNotifications from "../notifications/create-notifications";
+import { io } from "../../app";
 
 const router = Router();
 
@@ -54,7 +55,12 @@ router.post("/cancel/:id", async (req: Request, res: Response) => {
 
   const match = matches[0];
   await match.delete();
-  await createNotifications(authUser.firstName + ' ne vous aime plus', userId, undefined)
+  await createNotifications(
+    authUser.firstName + " ne vous aime plus",
+    userId,
+    undefined
+  );
+  setTimeout(() => io.to("chat-" + match.chatId).emit("match_change", {}), 200);
   user.fameRating = user.fameRating / 1.1;
   if (user.fameRating < 0) {
     user.fameRating = 0;

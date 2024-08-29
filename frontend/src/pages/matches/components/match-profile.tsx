@@ -9,6 +9,7 @@ import { getGenderTaxo } from "@/utils/taxonomy";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistance } from "@/utils/formatDistance";
 import { kyGET, kyPOST } from "@/utils/ky/handlers";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export type MatchProfileProps = {
   user: UserDto;
@@ -85,6 +86,7 @@ export function MatchProfile({
           e.preventDefault();
         }}
       >
+        <DialogTitle>Profile</DialogTitle>
         <div
           className={
             "absolute w-full rounded-lg p-4 transition-all" +
@@ -149,10 +151,15 @@ export function MatchProfile({
           <div className="flex flex-col">
             <div className="flex justify-between">
               <div className="flex items-baseline gap-2.5">
-                <span className="text-2xl font-bold">{user.first_name}</span>
+                <span className="text-2xl font-bold">
+                  {user.first_name} {user.last_name}
+                </span>
                 <span>{user.age}</span>
                 <span>({getGenderTaxo(user.gender)})</span>
               </div>
+            </div>
+            <div className="mb-2 flex">
+              <span className="text-xs">{user.username}</span>
             </div>
             <div className="flex justify-between">
               <div className="flex gap-2">

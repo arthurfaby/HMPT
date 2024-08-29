@@ -4,6 +4,7 @@ import { Match } from "../../models/match_model";
 import { Chat } from "../../models/chat_model";
 import { User } from "../../models/user_model";
 import createNotifications from "../notifications/create-notifications";
+import { io } from "../../app";
 
 const router = Router();
 
@@ -95,6 +96,10 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
       authUser.username + " a aussi aimé votre profil, un chat a été créé",
       parseInt(userToLikeId),
       undefined
+    );
+    setTimeout(
+      () => io.to("chat-" + match.chatId).emit("match_change", {}),
+      200
     );
     existingMatchAsLiked[0].update();
   }

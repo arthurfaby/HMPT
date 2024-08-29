@@ -1,34 +1,28 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { FullHeightContainer } from "@/components/utils/full-height-container";
 import { RangeSelector } from "@/components/utils/range-selector";
-import { Check, PlusCircle } from "lucide-react";
-import { CrossCircledIcon } from "@radix-ui/react-icons";
-import {
-  Popover,
-  PopoverClose,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
-import { useEffect, useRef, useState } from "react";
+import { Ban, Flag, Heart, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { UserDto } from "@/dtos/user_dto";
-import { kyGET } from "@/utils/ky/handlers";
+import { kyGET, kyPOST } from "@/utils/ky/handlers";
 import { useAuth } from "@/hooks/useAuth";
-import { MatchProfile } from "../matches/components/match-profile";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { TAGS } from "@/types/tags_type";
-import { MatchSwiper } from "../matches/components/match-swiper";
 import { MatchCard } from "../matches/components/match-card";
 import { getGPSDistance } from "@/utils/getGPSDistance";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { BlockDto } from "@/dtos/block_dto";
+import { ReportDto } from "@/dtos/report_dto";
+import { MatchDto } from "@/dtos/match_dto";
+import { useChatChangesStore } from "@/stores/chat-changes-store";
 
 type BadgeType = {
   key: number;
@@ -37,6 +31,7 @@ type BadgeType = {
 
 export function Research() {
   const { account, logout } = useAuth();
+  const { makeChanges } = useChatChangesStore();
 
   const [ageMin, setAgeMin] = useState(18);
   const [ageMax, setAgeMax] = useState(150);
@@ -52,7 +47,7 @@ export function Research() {
   const [interests, setInterests] = useState<string[]>([]);
 
   useEffect(() => {
-    kyGET<UserDto[]>("matches/usersToMatch", logout).then((users) => {
+    kyGET<UserDto[]>("matches/usersResearch", logout).then((users) => {
       setUsers(users ?? []);
     });
   }, []);
@@ -143,6 +138,92 @@ export function Research() {
     setFilterUsers(filteredUsers);
   }, [ageMin, ageMax, fameMin, fameMax, interests, users, distance]);
 
+  const blockUser = async (user: UserDto) => {
+    const block = await kyPOST<BlockDto, {}>(`block/${user.id}`, {}, logout);
+    if (!block) {
+      toast.error("Erreur lors du bloquage de l'utilisateur", {
+        position: "top-center",
+      });
+    } else {
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
+      toast.success("Utilisateur bloqué", {
+        position: "top-center",
+      });
+    }
+  };
+
+  const reportUser = async (user: UserDto) => {
+    const report = await kyPOST<ReportDto, {}>(`report/${user.id}`, {}, logout);
+    if (!report) {
+      toast.error("Erreur lors du signalement de l'utilisateur", {
+        position: "top-center",
+      });
+    } else {
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
+      toast.success("Utilisateur signalé", {
+        position: "top-center",
+      });
+    }
+  };
+
+  const fetchMatch = async (
+    swipeState: "like" | "dislike",
+    user: UserDto,
+  ): Promise<MatchDto | { error: string }> => {
+    if (swipeState === "like") {
+      // Like
+      const match = await kyPOST<MatchDto, {}>(
+        `matches/likeUser/${user.id}`,
+        {},
+        logout,
+      );
+      if (!match) {
+        return { error: "Erreur lors du like de l'utilisateur" };
+      }
+      return match;
+    } else {
+      // Dislike
+      const match = await kyPOST<MatchDto, {}>(
+        `matches/dislikeUser/${user.id}`,
+        {},
+        logout,
+      );
+      if (!match) {
+        return { error: "Erreur lors du dislike de l'utilisateur" };
+      }
+      return match;
+    }
+  };
+
+  const handleSwipe = async (type: "like" | "dislike", user: UserDto) => {
+    const data = await fetchMatch(type, user);
+    if ("error" in data) {
+      toast.error(data.error, {
+        position: "top-center",
+      });
+      return;
+    } else {
+      // If chat_id is present, it means a chat has been created
+      // So the user has been matched
+      if (data.chat_id) {
+        toast.success("ITS A MATCH !", {
+          position: "top-center",
+        });
+        makeChanges();
+      } else if (type === "like") {
+        toast.success("Utilisateur liké", {
+          position: "top-center",
+        });
+      } else {
+        toast.success("Utilisateur disliké", {
+          position: "top-center",
+        });
+      }
+      // Remove the user from the list
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
+    }
+  };
+
   return (
     <FullHeightContainer>
       <div className="w-full p-10">
@@ -193,7 +274,7 @@ export function Research() {
               <DropdownMenuContent>
                 {TAGS.map((tag, index) => (
                   <DropdownMenuCheckboxItem
-                    key={index}
+                    key={"tags" + index}
                     textValue={tag}
                     checked={interests.includes(tag)}
                     onCheckedChange={() => handleCheckboxChange(tag)}
@@ -254,7 +335,7 @@ export function Research() {
             <div className="flex w-full gap-1">
               <ToggleGroupItem
                 variant={"outline"}
-                value="fame_rating_desc"
+                value="fame_rating_asc"
                 className="flex-grow"
                 aria-label="Toggle bold"
               >
@@ -262,7 +343,7 @@ export function Research() {
               </ToggleGroupItem>
               <ToggleGroupItem
                 variant={"outline"}
-                value="fame_rating_asc"
+                value="fame_rating_desc"
                 className="flex-grow"
                 aria-label="Toggle italic"
               >
@@ -272,7 +353,7 @@ export function Research() {
             <div className="flex w-full gap-1">
               <ToggleGroupItem
                 variant={"outline"}
-                value="common_tags_desc"
+                value="common_tags_asc"
                 className="flex-grow"
                 aria-label="Toggle bold"
               >
@@ -280,7 +361,7 @@ export function Research() {
               </ToggleGroupItem>
               <ToggleGroupItem
                 variant={"outline"}
-                value="common_tags_asc"
+                value="common_tags_desc"
                 className="flex-grow"
                 aria-label="Toggle italic"
               >
@@ -290,14 +371,68 @@ export function Research() {
           </ToggleGroup>
         </div>
       )}
-      <div className="flex flex-wrap justify-center gap-4 p-10">
+      <div className="flex flex-wrap justify-center gap-8 p-10">
         {filterUsers.length === 0 && (
           <div className="flex flex-col items-center gap-4">
             <strong>No users found</strong>
           </div>
         )}
         {filterUsers.map((user) => {
-          return <MatchCard user={user} key={user.id} />;
+          return (
+            <div className="flex flex-col gap-2" key={"filterUser" + user.id}>
+              <MatchCard user={user} keyWord="research" />
+              <div className="flex items-center justify-around">
+                <Button
+                  size="icon"
+                  onClick={() => {
+                    handleSwipe("dislike", user);
+                  }}
+                  variant="destructive"
+                >
+                  <X />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="icon" variant="outline">
+                      <Flag className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem className="p-1">
+                      <Button
+                        variant={"ghost"}
+                        onClick={() => reportUser(user)}
+                        className="flex gap-2"
+                      >
+                        <Flag size={18} />
+                        Signaler comme faux compte
+                      </Button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="p-1">
+                      <Button
+                        variant={"destructive"}
+                        onClick={() => blockUser(user)}
+                        className="flex gap-2"
+                      >
+                        <Ban size={18} />
+                        Bloquer
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Button
+                  size="icon"
+                  onClick={() => {
+                    handleSwipe("like", user);
+                  }}
+                  variant="success"
+                >
+                  <Heart />
+                </Button>
+              </div>
+            </div>
+          );
         })}
       </div>
     </FullHeightContainer>

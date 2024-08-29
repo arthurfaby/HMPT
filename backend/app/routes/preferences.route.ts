@@ -44,14 +44,9 @@ router.get("/preferences", async (req: Request, res: Response) => {
 });
 
 router.post("/preferences", async (req: Request, res: Response) => {
-  try {
-    const preferenceUser = new Preference(req.body);
-    await preferenceUser.update();
-    return res.status(200).send("ok");
-  } catch (error) {
-    console.log(error);
-    return res.status(501).send("error server");
-  }
+  const preferenceUser = new Preference(req.body);
+  await preferenceUser.update();
+  return res.status(200).send("ok");
 });
 
 export default router;

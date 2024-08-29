@@ -186,6 +186,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
     <div className="flex flex-col items-center gap-4">
       <div className="relative">
         <MatchCard
+          keyWord="matchswiper"
           user={users[activeUser]}
           nextUser={
             activeUser !== users.length - 1 ? users[activeUser + 1] : users[0]
@@ -216,7 +217,7 @@ export function MatchSwiper({ users }: MatchSwiperProps) {
                 className="flex gap-2"
               >
                 <Flag size={18} />
-                Signaler
+                Signaler comme faux compte
               </Button>
             </DropdownMenuItem>
             <DropdownMenuItem className="p-1">

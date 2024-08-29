@@ -36,15 +36,18 @@ class UserFactory {
 
     const pictures: string[] = [];
     for (let i = 0; i < 5; i++) {
-      const imageUrl = faker.image.url();
-      if (pictures.includes(imageUrl)) continue;
       pictures.push(faker.image.url());
     }
 
     const n3 = faker.number.int({ min: 2, max: 8 });
     const interests: string[] = [];
     for (let i = 0; i < n3; i++) {
-      interests.push(tags[Math.floor(Math.random() * tags.length)]);
+      const tag = tags[Math.floor(Math.random() * tags.length)];
+      if (interests.includes(tag)) {
+        i--;
+        continue;
+      }
+      interests.push(tag);
     }
 
     return {
@@ -126,9 +129,7 @@ class UserFactory {
     const user = new User(userToCreate);
     await user.hash();
     await user.create();
-    console.log("[FACTORY] User created");
     await this.generatePreferences(user);
-    console.log("[FACTORY] Preferences created");
     return user;
   }
 

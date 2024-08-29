@@ -26,8 +26,7 @@ router.post("/forget_password", async (req: Request, res: Response) => {
   if (!(user && user[0])) {
     return res.status(200).send({ error: "nom d'utilisateur incorrect" });
   }
-  
-  
+
   //TODO put in .env
   const token = jwt.sign({ username: req.body.username }, "prout", {
     expiresIn: "300s",
@@ -48,11 +47,16 @@ router.post("/forget_password", async (req: Request, res: Response) => {
     };
 
     message.html = message.html.replace("url", url);
-    const sendMail = await transporter.sendMail(message).then((_) => {
-      return true;
-    }).catch(() => { return false});
-    if (!sendMail){
-      return res.status(200).send({error: "email invalide"})
+    const sendMail = await transporter
+      .sendMail(message)
+      .then((_) => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+    if (!sendMail) {
+      return res.status(200).send({ error: "email invalide" });
     }
     return res.status(200).send({ message: "send email" });
   } catch {
@@ -63,13 +67,12 @@ router.post("/forget_password", async (req: Request, res: Response) => {
 router.post("/change_password", async (req: Request, res: Response) => {
   if (req.body.token) {
     try {
-      
       if (!verifyPassword(req.body.newPassword)) {
         return res.status(200).send({
-      error:
-        "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
-    });
-  }
+          error:
+            "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+        });
+      }
       //.env !!
       const decoded = jwt.verify(req.body.token, "prout") as JwtPayload;
       const user = await User.select({ username: { equal: decoded.username } });
@@ -77,8 +80,7 @@ router.post("/change_password", async (req: Request, res: Response) => {
       await user[0].hash();
       await user[0].update();
       return res.status(200).send({ message: "change password" });
-    } catch(e) {
-      console.log(e)
+    } catch (e) {
       res.status(200).send({ error: "token invalide" });
     }
   } else return res.status(200).send({ error: "pas de token" });

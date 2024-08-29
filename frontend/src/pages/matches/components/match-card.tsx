@@ -8,9 +8,15 @@ export type MatchCardProps = {
   user: UserDto;
   nextUser?: UserDto;
   className?: string;
+  keyWord?: string;
 };
 
-export function MatchCard({ user, nextUser, className }: MatchCardProps) {
+export function MatchCard({
+  user,
+  nextUser,
+  className,
+  keyWord,
+}: MatchCardProps) {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleOpenProfile = () => {
@@ -42,7 +48,9 @@ export function MatchCard({ user, nextUser, className }: MatchCardProps) {
             <span>{nextUser.biography.substring(0, 25) + "..."}</span>
             <div className="flex max-h-14 flex-wrap gap-1 overflow-auto">
               {nextUser.interests.map((interest) => {
-                return <Badge key={nextUser.id + interest}>{interest}</Badge>;
+                return (
+                  <Badge key={user.id + interest + keyWord}>{interest}</Badge>
+                );
               })}
             </div>
           </AspectRatio>
@@ -68,7 +76,9 @@ export function MatchCard({ user, nextUser, className }: MatchCardProps) {
           <span>{user.biography.substring(0, 25) + "..."}</span>
           <div className="flex max-h-14 flex-wrap gap-1 overflow-auto">
             {user.interests.map((interest) => {
-              return <Badge key={user.id + interest}>{interest}</Badge>;
+              return (
+                <Badge key={user.id + interest + keyWord}>{interest}</Badge>
+              );
             })}
           </div>
         </AspectRatio>

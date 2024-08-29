@@ -27,6 +27,9 @@ router.post("/", async (req: Request, res: Response) => {
       token: req.sessionID,
     } as SessionDto);
     await session.create();
+    users[0].online = true;
+    users[0].lastOnlineDate = new Date();
+    await users[0].update();
     res.status(200).send(users[0].dto);
   } else {
     res.status(401).send("Unauthorized");
