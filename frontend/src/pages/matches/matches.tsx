@@ -23,7 +23,9 @@ export function Matches() {
       value !== "fame_rating_asc" &&
       value !== "distance_desc" &&
       value !== "age_desc" &&
-      value !== "fame_rating_desc"
+      value !== "fame_rating_desc" &&
+      value !== "common_tags_desc" &&
+      value !== "common_tags_asc"
     ) {
       kyGET<UserDto[]>("matches/usersToMatch", logout).then((users) => {
         setUsers(users ?? []);
@@ -86,7 +88,7 @@ export function Matches() {
             <div className="flex w-full gap-1">
               <ToggleGroupItem
                 variant={"outline"}
-                value="fame_rating_asc"
+                value="fame_rating_desc"
                 className="flex-grow"
                 aria-label="Toggle bold"
               >
@@ -94,11 +96,29 @@ export function Matches() {
               </ToggleGroupItem>
               <ToggleGroupItem
                 variant={"outline"}
-                value="fame_rating_desc"
+                value="fame_rating_asc"
                 className="flex-grow"
                 aria-label="Toggle italic"
               >
                 + fame rating
+              </ToggleGroupItem>
+            </div>
+            <div className="flex w-full gap-1">
+              <ToggleGroupItem
+                variant={"outline"}
+                value="common_tags_desc"
+                className="flex-grow"
+                aria-label="Toggle bold"
+              >
+                - common tags
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                variant={"outline"}
+                value="common_tags_asc"
+                className="flex-grow"
+                aria-label="Toggle italic"
+              >
+                + common tags
               </ToggleGroupItem>
             </div>
           </ToggleGroup>

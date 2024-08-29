@@ -47,14 +47,7 @@ declare module "express-session" {
 }
 
 app.use("/", router);
-
-// Start Express server
-httpServer.listen(port, () => {
-  // Callback function when server is successfully started
-  console.log(`Server started at http://localhost:${port}`);
-});
-
-
+httpServer.listen(port, () => {});
 
 // Export Socket.io server
 export const io = new Server(httpServer, {

@@ -9,7 +9,7 @@ import { getGPSDistance } from "../../utils/getGPSDistance";
 
 const router = Router();
 
-router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
+router.get("/usersResearch/:sort?", async (req: Request, res: Response) => {
   const authUser = await getAuthenticatedUser(req.sessionID);
   if (!authUser || !authUser.id) {
     return res.status(401).send({
@@ -70,10 +70,6 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
       )
       AND u.verified = true
       AND u.gender != $6
-      AND u.age >= $7
-      AND u.age <= $8
-      AND u.fame_rating >= $9
-      AND u.fame_rating <= $10
   `,
     [
       authUser.id,
@@ -82,23 +78,12 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
       authUser.id,
       authUser.id,
       filterGender,
-      preference.ageGapMin,
-      preference.ageGapMax,
-      preference.fameRatingMin,
-      preference.fameRatingMax,
     ]
   );
   const userDtos = parseUserQueryResponse(queryResponse);
-  const userDtosInDistance = userDtos.filter((userDto) => {
-    if (!authUser.geolocation || !userDto.geolocation) return false;
-    const distance = getGPSDistance(authUser.geolocation, userDto.geolocation);
-
-    return distance / 1000 <= preference.distance;
-  });
-  const sortedUserDtos = matchesAlgorithm(authUser, userDtosInDistance);
   const sortOption: string | undefined = req.params.sort;
   if (sortOption === "distance_asc" || sortOption === "distance_desc") {
-    sortedUserDtos.sort((a, b) => {
+    userDtos.sort((a, b) => {
       if (!authUser.geolocation || !a.geolocation || !b.geolocation) return 0;
       const distanceA = getGPSDistance(authUser.geolocation, a.geolocation);
       const distanceB = getGPSDistance(authUser.geolocation, b.geolocation);
@@ -107,14 +92,14 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
         : distanceA - distanceB;
     });
   } else if (sortOption === "age_asc" || sortOption === "age_desc") {
-    sortedUserDtos.sort((a, b) =>
+    userDtos.sort((a, b) =>
       sortOption === "age_asc" ? a.age! - b.age! : b.age! - a.age!
     );
   } else if (
     sortOption === "fame_rating_asc" ||
     sortOption === "fame_rating_desc"
   ) {
-    sortedUserDtos.sort((a, b) =>
+    userDtos.sort((a, b) =>
       sortOption === "fame_rating_asc"
         ? b.fame_rating! - a.fame_rating!
         : a.fame_rating! - b.fame_rating!
@@ -123,7 +108,7 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
     sortOption === "common_tags_asc" ||
     sortOption === "common_tags_desc"
   ) {
-    sortedUserDtos.sort((a, b) => {
+    userDtos.sort((a, b) => {
       const commonTagsA = authUser.interests.filter((interest) =>
         a.interests?.includes(interest)
       ).length;
@@ -136,7 +121,7 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
     });
   }
 
-  return res.json(sortedUserDtos);
+  return res.json(userDtos);
 });
 
 export default router;

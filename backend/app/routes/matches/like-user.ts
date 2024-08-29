@@ -4,6 +4,7 @@ import { Match } from "../../models/match_model";
 import { Chat } from "../../models/chat_model";
 import { User } from "../../models/user_model";
 import createNotifications from "../notifications/create-notifications";
+import { io } from "../../app";
 
 const router = Router();
 
@@ -97,9 +98,16 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
       parseInt(userToLikeId),
       undefined
     );
+
   }, 200)
     
     await existingMatchAsLiked[0].update();
+
+    setTimeout(
+      () => io.to("chat-" + match.chatId).emit("match_change", {}),
+      200
+    );
+    existingMatchAsLiked[0].update();
   }
   await match.create();
   await createNotifications(

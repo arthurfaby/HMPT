@@ -1,4 +1,6 @@
 run:
+	cd frontend && npm i
+	cd backend && npm i
 	docker compose up
 
 re: clean run

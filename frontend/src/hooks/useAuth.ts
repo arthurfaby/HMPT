@@ -32,7 +32,7 @@ export function useAuth() {
     const user = await getUser()
       .then(setAccount)
       .catch(() => setAccount(null));
-      return user
+    return user;
   }, []);
 
   const logout = useCallback(async () => {
@@ -87,9 +87,6 @@ export function useAuth() {
           return true;
         }
       } catch (error) {
-        if (error instanceof HTTPError) {
-          console.log(error.request);
-        }
         toast.error("Une erreur est survenue lors de l'inscription.");
         setAccount(null);
         return false;

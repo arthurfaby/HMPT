@@ -1,1 +1,12 @@
-export const TAGS = ["#vegan", "#geek", "#piercing", "#tatto", "#travel", "#sushi", "#beach", "#football", "#tennis", "#42"]
+export const TAGS = [
+  "#vegan",
+  "#geek",
+  "#piercing",
+  "#tattoo",
+  "#travel",
+  "#sushi",
+  "#beach",
+  "#football",
+  "#tennis",
+  "#42",
+];

@@ -20,8 +20,9 @@ import { AuthStatus, useAuth } from "./hooks/useAuth";
 import { Location } from "./types/geolocation_type";
 import { History } from "./pages/history/history";
 import { Verify } from "./pages/verify_account/verify";
-import  Notifications  from "./pages/notifications/notifications"
+import Notifications from "./pages/notifications/notifications";
 import Preference from "./pages/preference/preference";
+import { Research } from "@/pages/research/research";
 
 type IPGeolocationApiResponse = {
   query: string;
@@ -46,42 +47,46 @@ const router = createBrowserRouter([
             element: <Profile />,
           },
           {
-            element: <ProfilGuard/>,
+            element: <ProfilGuard />,
             children: [
-            {
-            path: "/matches",
-            element: <Matches />,
-            },
-            {
-              path: "/chat/:userId",
-              element: <Chat />,
-            },
-            {
-              path: "*",
-              element: <Navigate to={"/matches"} />,
-            },
-            {
-              path: "/notification",
-              element: <Notifications/>
-            },
-          {
-            path: "/chat/:userId",
-            element: <Chat />,
+              {
+                path: "/matches",
+                element: <Matches />,
+              },
+              {
+                path: "/chat/:userId",
+                element: <Chat />,
+              },
+              {
+                path: "*",
+                element: <Navigate to={"/matches"} />,
+              },
+              {
+                path: "/notification",
+                element: <Notifications />,
+              },
+              {
+                path: "/chat/:userId",
+                element: <Chat />,
+              },
+              {
+                path: "/history",
+                element: <History />,
+              },
+              {
+                path: "*",
+                element: <Navigate to={"/matches"} />,
+              },
+              {
+                path: "/preference",
+                element: <Preference />,
+              },
+              {
+                path: "/research",
+                element: <Research />,
+              },
+            ],
           },
-          {
-            path: "/history",
-            element: <History />,
-          },
-          {
-            path: "*",
-            element: <Navigate to={"/matches"} />,
-          },
-          {
-            path: "/preference",
-            element: <Preference/>,
-          },
-         ],
-        },
         ],
       },
       {
