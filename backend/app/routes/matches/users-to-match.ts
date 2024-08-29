@@ -92,6 +92,7 @@ router.get("/usersToMatch/:sort?", async (req: Request, res: Response) => {
   const userDtosInDistance = userDtos.filter((userDto) => {
     if (!authUser.geolocation || !userDto.geolocation) return false;
     const distance = getGPSDistance(authUser.geolocation, userDto.geolocation);
+
     return distance / 1000 <= preference.distance;
   });
   const sortedUserDtos = matchesAlgorithm(authUser, userDtosInDistance);

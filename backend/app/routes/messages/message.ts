@@ -10,6 +10,7 @@ import { Socket } from "socket.io";
 import redisClient from "../../sockets/init";
 import socketClient from "../../sockets/init";
 import createNotifications from "../notifications/create-notifications";
+import { Match } from "../../models/match_model";
 
 const router = Router();
 
@@ -93,11 +94,22 @@ router.post("/:chatId", async (req: Request, res: Response) => {
       userReceiverId = chat.userId1;
   }
 
-  await createNotifications(
+  const checkMatch = await Match.select({
+    liked_id: {
+      equal: authUser.id
+    },
+    liker_id: {
+      equal: userReceiverId
+    }
+  })
+
+  if (checkMatch.length > 0){
+       await createNotifications(
       'vous avez reçu un message de ' + authUser.firstName,
       userReceiverId,
       chat.id
-  )
+    )
+  }
 
   return res.status(200).send(messageWithId.dto);
 });

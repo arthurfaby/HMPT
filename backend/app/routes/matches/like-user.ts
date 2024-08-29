@@ -92,11 +92,17 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
         });
       }
     }
-    await createNotifications(
-      authUser.username + " a aussi aimé votre profil, un chat a été créé",
+    setTimeout(async () => {
+      await createNotifications(
+      authUser.firstName + " a aussi aimé votre profil, un chat a été créé",
       parseInt(userToLikeId),
       undefined
     );
+
+  }, 200)
+    
+    await existingMatchAsLiked[0].update();
+
     setTimeout(
       () => io.to("chat-" + match.chatId).emit("match_change", {}),
       200
@@ -105,7 +111,7 @@ router.post("/likeUser/:id", async (req: Request, res: Response) => {
   }
   await match.create();
   await createNotifications(
-    authUser.username + " a aimé votre profil",
+    authUser.firstName + " a aimé votre profil",
     parseInt(userToLikeId),
     undefined
   );

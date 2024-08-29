@@ -22,7 +22,7 @@ router.post("/geolocation", async (req: Request, res: Response) => {
     });
   }
 
-  if (authUser.geolocation.latitude && authUser.geolocation.longitude)
+  if (authUser.geolocation && authUser.geolocation.latitude && authUser.geolocation.longitude)
     return res.status(200).send({
     geolocation: authUser.geolocation,
   })

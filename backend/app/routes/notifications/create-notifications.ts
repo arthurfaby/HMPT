@@ -1,32 +1,8 @@
 import { Notification } from "../../models/notification_model";
-import { User } from "../../models/user_model";
 import socketClient from "../../sockets/init";
 
-async function checkChatExisting(userReceiverId: number, chat_id: number | undefined) {
-  if(chat_id){
-    const notification = await Notification.select({
-       user_id: {
-          equal: userReceiverId,
-        },
-        chat_id: {
-          equal: chat_id
-        },
-        seen: {
-          equal: false
-        }
-    })
-    if(notification.length > 0)
-      return true
-    return false
-  }
-  return false
-}
-
 export default async function createNotifications(message: string, userReceiverId: number, chat_id: number | undefined) {
-    if(await checkChatExisting(userReceiverId, chat_id))
-      return
-
-    const notification = new Notification({
+       const notification = new Notification({
     user_id: userReceiverId,
     message: message,
     seen: false,
@@ -34,8 +10,22 @@ export default async function createNotifications(message: string, userReceiverI
     chat_id: chat_id
   })
   await notification.create();
-  const socketReceiver = socketClient[userReceiverId];
-  if(socketReceiver) {
-    socketReceiver.emit("notification", notification.dto);
+  setTimeout(async () => {
+    const sendNotification = await Notification.select({
+      user_id: {
+        equal: userReceiverId
+      },
+      message: {
+        equal: message
+      }
+    })
+    console.log(sendNotification[0], sendNotification.at(-1))
+    if (sendNotification.length > 0 && sendNotification.at(-1)) {
+      const socketReceiver = socketClient[userReceiverId];
+      if(socketReceiver) {
+        socketReceiver.emit("notification", sendNotification.sort((a, b) => b.date.getTime() - a.date.getTime())[0].dto);
+      }
   }
+  }, 200)
+  
 }
