@@ -26,11 +26,13 @@ router.post("/forget_password", async (req: Request, res: Response) => {
   if (!(user && user[0])) {
     return res.status(200).send({ error: "nom d'utilisateur incorrect" });
   }
-
-  //TODO put in .env
-  const token = jwt.sign({ username: req.body.username }, "prout", {
-    expiresIn: "300s",
-  });
+  const token = jwt.sign(
+    { username: req.body.username },
+    process.env.PASSJWT as string,
+    {
+      expiresIn: "300s",
+    }
+  );
   const url = "http://localhost:3000/forget_password/" + token;
 
   try {
@@ -74,7 +76,10 @@ router.post("/change_password", async (req: Request, res: Response) => {
         });
       }
       //.env !!
-      const decoded = jwt.verify(req.body.token, "prout") as JwtPayload;
+      const decoded = jwt.verify(
+        req.body.token,
+        process.env.PASSJWT as string
+      ) as JwtPayload;
       const user = await User.select({ username: { equal: decoded.username } });
       user[0].password = req.body.newPassword;
       await user[0].hash();

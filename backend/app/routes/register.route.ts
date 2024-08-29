@@ -40,15 +40,6 @@ router.post("/", async (req: Request, res: Response) => {
     });
   }
 
-  const existingUserByMail = await User.select({
-    email: { equal: userDto.email },
-  });
-  if (existingUserByMail.length > 0) {
-    return res.status(200).send({
-      error: "Adresse email déjà utilisée",
-    });
-  }
-
   const existingUserByUsername = await User.select({
     username: { equal: userDto.username },
   });
@@ -118,7 +109,7 @@ router.post("/", async (req: Request, res: Response) => {
         fame_rating_min: 0,
         fame_rating_max: 1000,
         sexual_preference: "bisexual",
-        distance: 0,
+        distance: 22000,
         interests: [],
       });
       await userPreference.create();

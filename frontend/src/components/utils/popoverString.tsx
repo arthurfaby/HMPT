@@ -7,9 +7,10 @@ interface newPicture {
     onSubmit: () => void
     placeHolder: string
     Icon: React.ElementType
+    inputType?: string;
 }
 
-export default function PopoverString({pictureRef, onSubmit, placeHolder, Icon}: newPicture) {
+export default function PopoverString({pictureRef, onSubmit, placeHolder, Icon, inputType ="text"}: newPicture) {
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -19,7 +20,7 @@ export default function PopoverString({pictureRef, onSubmit, placeHolder, Icon}:
             </PopoverTrigger>
             <PopoverContent side="bottom" sideOffset={5} >
                 <form className="flex flex-row w-full">
-                    <Input ref={pictureRef} placeholder={placeHolder}></Input>
+                    <Input type={inputType} ref={pictureRef} placeholder={placeHolder}></Input>
                     <PopoverClose>
                             <Check type="submit" className="absolute bottom-2 right-0 " onClick={onSubmit}/>
                     </PopoverClose>

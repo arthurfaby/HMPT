@@ -24,6 +24,10 @@ app.use(cors(corsOptions)); // Enable CORS
 app.use(helmet()); // Enable Helmet
 app.use(morgan("dev")); // Enable Morgan
 app.use(express.json());
+app.disable("etag")
+const fs = require('fs');
+const path = require('path');
+
 
 const sessionMiddleware = Session({
   secret: "prout",
@@ -58,8 +62,7 @@ export const mailerConfig = {
   service: "gmail",
   auth: {
     user: "rabaudp@gmail.com",
-    //TODO put in .env
-    pass: "damz dsek jgfn vnjs",
+    pass: process.env.PASSMAIL,
   },
 };
 

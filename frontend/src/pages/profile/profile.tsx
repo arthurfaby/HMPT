@@ -12,6 +12,9 @@ import Interest from "./components/interest";
 import PicturesUser from "./components/pictures";
 import { toast } from "sonner";
 import { GPSPosition } from "./components/gpsPosition";
+import Username from "./components/username";
+import Email from "./components/email";
+import Password from "./components/password";
 
 export default function Profile() {
   const { account } = useAuth();
@@ -31,6 +34,9 @@ export default function Profile() {
       dontScroll={false}
     >
       <ProfilePicture />
+      <Username />
+      <Email />
+      <Password />
       <NameUser />
       <AgeUser />
       <GPSPosition />

@@ -30,6 +30,7 @@ import {
 import { toast } from "sonner";
 import Notifications from "@/pages/notifications/notifications";
 import { useSocket } from "@/stores/socket-store";
+import { AccountCircle, Tune } from "@mui/icons-material";
 
 export function Navbar() {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -90,7 +91,6 @@ export function Navbar() {
         <Link className="text-xl font-semibold" to="/">
           Matcha.
         </Link>
-
         <div className="flex items-center justify-center gap-8">
           <Notifications />
           {status === AuthStatus.Authenticated && (

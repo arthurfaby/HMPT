@@ -16,5 +16,12 @@ export async function postUser(newUser: User): Promise<boolean> {
   catch {
       return false
   }
+
  
-}
+ 
+} export async function usernameValid(newUsername: string): Promise<Response> {
+    return await ky.post("http://localhost:5000/me/usernameValid", {
+         credentials: "include",
+         json: {username: newUsername} 
+      }).json() 
+  }

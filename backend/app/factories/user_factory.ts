@@ -25,7 +25,7 @@ class UserFactory {
       "#vegan",
       "#geek",
       "#piercing",
-      "#tatto",
+      "#tattoo",
       "#travel",
       "#sushi",
       "#beach",
