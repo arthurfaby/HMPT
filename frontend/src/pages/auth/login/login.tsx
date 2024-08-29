@@ -6,7 +6,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import "./styles/loginForm.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,13 +21,17 @@ interface props {
 
 export default function Login({ openDialog, setOpenDialog }: props) {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (username: string, password: string) => {
-    if (await login(username, password)) setOpenDialog(false);
-    else
+    if (await login(username, password)) {
+      setOpenDialog(false);
+      navigate(0);
+    } else {
       toast.error("le nom d'utilisateur et/ou le mot de passe sont incorrects");
+    }
   };
 
   const forget_password = async (username: string) => {
