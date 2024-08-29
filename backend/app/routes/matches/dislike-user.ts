@@ -41,9 +41,11 @@ router.post("/dislikeUser/:id", async (req: Request, res: Response) => {
 
   await dislike.create();
 
-  const dislikedUser = await User.select({ id: { equal: parseInt(userToLikeId) } });
+  const dislikedUser = await User.select({
+    id: { equal: parseInt(userToLikeId) },
+  });
   if (dislikedUser.length > 0) {
-    dislikedUser[0].fameRating = dislikedUser[0].fameRating * 0.95
+    dislikedUser[0].fameRating = dislikedUser[0].fameRating * 0.95;
     if (dislikedUser[0].fameRating < 0) {
       dislikedUser[0].fameRating = 0;
     }

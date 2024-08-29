@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "gender" VARCHAR(255) CHECK (
         "gender" IN ('male', 'female')
     ),
-    "biography" VARCHAR(512),
+    "biography" TEXT,
     "interests" TEXT,
     "pictures" TEXT,
     "verified" BOOLEAN DEFAULT FALSE,

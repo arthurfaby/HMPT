@@ -21,18 +21,33 @@ import { Preference } from "../models/preference_model";
 class UserFactory {
   private async _generateUser(overrides?: Partial<UserDto>): Promise<UserDto> {
     const randomGender: Gender = faker.person.sex() as Gender;
-    const tags: string[] = ["#vegan", "#geek", "#piercing", "#tatto", "#travel", "#sushi", "#beach", "#football", "#tennis", "#42"]
+    const tags: string[] = [
+      "#vegan",
+      "#geek",
+      "#piercing",
+      "#tattoo",
+      "#travel",
+      "#sushi",
+      "#beach",
+      "#football",
+      "#tennis",
+      "#42",
+    ];
 
-    const n2 = faker.number.int({ min: 1, max: 5 });
     const pictures: string[] = [];
-    for (let i = 0; i < n2; i++) {
+    for (let i = 0; i < 5; i++) {
       pictures.push(faker.image.url());
     }
 
     const n3 = faker.number.int({ min: 2, max: 8 });
     const interests: string[] = [];
     for (let i = 0; i < n3; i++) {
-      interests.push(tags[Math.floor(Math.random() * tags.length)]);
+      const tag = tags[Math.floor(Math.random() * tags.length)];
+      if (interests.includes(tag)) {
+        i--;
+        continue;
+      }
+      interests.push(tag);
     }
 
     return {
@@ -114,9 +129,7 @@ class UserFactory {
     const user = new User(userToCreate);
     await user.hash();
     await user.create();
-    console.log("[FACTORY] User created");
     await this.generatePreferences(user);
-    console.log("[FACTORY] Preferences created");
     return user;
   }
 
