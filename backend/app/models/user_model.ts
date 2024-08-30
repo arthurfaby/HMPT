@@ -312,7 +312,7 @@ export class User extends AbstractModel<UserDto> {
     this._fameRating = dto.fame_rating ?? 0;
     if (
       dto.geolocation &&
-      !(dto.geolocation.latitude && dto.geolocation.longitude)
+      !(dto.geolocation.latitude != null && dto.geolocation.longitude != null)
     ) {
       throw new Error("Invalid geolocation");
     }

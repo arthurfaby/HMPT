@@ -19,7 +19,6 @@ export default async function createNotifications(message: string, userReceiverI
         equal: message
       }
     })
-    console.log(sendNotification[0], sendNotification.at(-1))
     if (sendNotification.length > 0 && sendNotification.at(-1)) {
       const socketReceiver = socketClient[userReceiverId];
       if(socketReceiver) {

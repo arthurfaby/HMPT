@@ -74,7 +74,6 @@ router.post("/changePassword", async (req: Request, res: Response) => {
     await user.update();
     return res.status(200).send({ message: "change password" });
   } catch(e) {
-    console.log(e)
     res.status(200).send({ error: "token invalide" });
     }
 })
