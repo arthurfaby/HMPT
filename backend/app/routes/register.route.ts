@@ -97,7 +97,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const user = new User(userDto);
     user.pictures = ["", "", "", "", "", ""];
-    user.fameRating = 0;
+    user.fameRating = 2.5;
     await user.hash();
     await user.create();
     const newUser = await User.select({ username: { equal: user.username } });
