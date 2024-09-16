@@ -236,7 +236,7 @@ export function MatchProfile({
           <Separator className="my-4" />
           <div className="flex flex-col gap-2.5">
             <span className="text-xl font-bold">À propos</span>
-            <span>{user.biography}</span>
+            <span className="max-w-80 break-words">{user.biography}</span>
           </div>
           <Separator className="my-4" />
           <div className="flex flex-col gap-2.5">

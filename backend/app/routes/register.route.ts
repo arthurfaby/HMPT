@@ -113,17 +113,9 @@ router.post("/", async (req: Request, res: Response) => {
         interests: [],
       });
       await userPreference.create();
-      const Preferenceid = await Preference.select({
-        user_id: { equal: newUser[0].id },
-      });
-      const session = new Session({
-        user_id: newUser[0].id,
-        token: req.sessionID,
-      } as SessionDto);
-      await session.create();
     }
     const usersWithId = await User.select({
-      email: { equal: userDto.email },
+      username: { equal: userDto.username },
     });
     if (!usersWithId || !usersWithId[0] || !usersWithId[0].id) {
       return res.status(200).send({

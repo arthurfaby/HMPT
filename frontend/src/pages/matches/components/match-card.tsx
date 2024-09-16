@@ -17,6 +17,7 @@ export function MatchCard({
   className,
   keyWord,
 }: MatchCardProps) {
+  user.pictures = user.pictures.filter((picture) => picture !== "");
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleOpenProfile = () => {
