@@ -7,12 +7,12 @@ function deg2rad(deg: number): number {
 /**
  * Return the distance in meters between two gps points
  */
-export function getGPSDistance(coord1: Location, coord2: Location): number {
+export function getGPSDistance(coord1?: Location, coord2?: Location): number {
   const R = 6371e3; // Rayon moyen de la Terre en mètres
-  const lat1 = coord1.latitude;
-  const lat2 = coord2.latitude;
-  const lon1 = coord1.longitude;
-  const lon2 = coord2.longitude;
+  const lat1 = coord1?.latitude ?? 0;
+  const lat2 = coord2?.latitude ?? 0;
+  const lon1 = coord1?.longitude ?? 0;
+  const lon2 = coord2?.longitude ?? 0;
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1);
   const a =

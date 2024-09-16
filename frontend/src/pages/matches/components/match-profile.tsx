@@ -118,6 +118,8 @@ export function MatchProfile({
     overflow: "auto",
   };
 
+  console.log(user);
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
@@ -135,18 +137,20 @@ export function MatchProfile({
             (fullImage ? " h-full" : " h-[400px]")
           }
         >
-          <img
-            className="center absolute left-0 top-0 h-full w-full rounded-lg object-cover"
-            src={user.pictures[imageIndex]}
-            alt="Profile picture"
-          />
+          {user.pictures != null && (
+            <img
+              className="center absolute left-0 top-0 h-full w-full rounded-lg object-cover"
+              src={user.pictures[imageIndex]}
+              alt="Profile picture"
+            />
+          )}
           {user.online ? (
             <Badge variant="success" className="absolute">
               En ligne
             </Badge>
           ) : (
             <Badge variant="destructive" className="absolute">
-              Hors ligne depuis le : {user.last_online_date.split("T")[0]}
+              Hors ligne depuis le : {user.last_online_date?.split("T")[0]}
             </Badge>
           )}
           {fullImage ? (
@@ -161,7 +165,7 @@ export function MatchProfile({
                   <ChevronLeft />
                 </Button>
               ) : null}
-              {imageIndex !== user.pictures.length - 1 ? (
+              {imageIndex !== (user.pictures?.length ?? 0) - 1 ? (
                 <Button
                   size="icon"
                   variant="outline"
@@ -223,9 +227,9 @@ export function MatchProfile({
                 <span>{distanceString}</span>
               </div>
               <div>
-                {user.fame_rating > 4 ? (
+                {(user.fame_rating ?? 0 > 4) ? (
                   <Badge variant="success">{user.fame_rating} / 5</Badge>
-                ) : user.fame_rating > 2.5 ? (
+                ) : (user.fame_rating ?? 0 > 2.5) ? (
                   <Badge variant="warning">{user.fame_rating} / 5</Badge>
                 ) : (
                   <Badge variant="destructive">{user.fame_rating} / 5</Badge>
@@ -242,7 +246,7 @@ export function MatchProfile({
           <div className="flex flex-col gap-2.5">
             <span className="text-xl font-bold">Centre d'intérêts</span>
             <div className="flex max-h-28 flex-wrap gap-2 overflow-auto">
-              {user.interests.map((interest) => {
+              {user.interests?.map((interest) => {
                 return (
                   <Badge key={user.id + interest} variant="outline">
                     {interest}

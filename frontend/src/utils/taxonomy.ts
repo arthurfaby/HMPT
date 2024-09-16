@@ -1,6 +1,6 @@
 import { Gender } from "@/types/gender_type";
 
-export function getGenderTaxo(gender: Gender) {
+export function getGenderTaxo(gender: Gender | undefined) {
   if (gender === "male") return "Homme";
   if (gender === "female") return "Femme";
   return "Autre";

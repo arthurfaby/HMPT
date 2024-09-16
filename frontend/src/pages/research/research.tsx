@@ -98,16 +98,16 @@ export function Research() {
       setFilterUsers([
         ...filterUsers.sort(
           (a, b) =>
-            interests.filter((i) => a.interests.includes(i)).length -
-            interests.filter((i) => b.interests.includes(i)).length,
+            interests.filter((i) => a.interests?.includes(i)).length -
+            interests.filter((i) => b.interests?.includes(i)).length,
         ),
       ]);
     } else if (value === "common_tags_desc") {
       setFilterUsers([
         ...filterUsers.sort(
           (a, b) =>
-            interests.filter((i) => b.interests.includes(i)).length -
-            interests.filter((i) => a.interests.includes(i)).length,
+            interests.filter((i) => b.interests?.includes(i)).length -
+            interests.filter((i) => a.interests?.includes(i)).length,
         ),
       ]);
     }
@@ -124,7 +124,7 @@ export function Research() {
     });
     if (interests.length > 0) {
       filteredUsers = filteredUsers.filter((user) =>
-        interests.some((interest) => user.interests.includes(interest)),
+        interests.some((interest) => user.interests?.includes(interest)),
       );
     }
     if (account?.geolocation !== null) {
