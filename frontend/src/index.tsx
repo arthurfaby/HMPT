@@ -1,5 +1,5 @@
 import React from "react";
-// console.log = console.warn = console.error = () => {};
+console.log = console.warn = console.error = () => {};
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";

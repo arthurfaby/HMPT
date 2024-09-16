@@ -118,8 +118,6 @@ export function MatchProfile({
     overflow: "auto",
   };
 
-  console.log(user);
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
