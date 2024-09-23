@@ -18,16 +18,16 @@ const corsOptions = {
   origin: "http://localhost:3000", // Access-Control-Allow-Origin spécifique à votre domaine
   methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes autorisées
 };
-
-// Express configuration
+var bodyParser = require("body-parser");
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true })); // Express configuration
 app.use(cors(corsOptions)); // Enable CORS
 app.use(helmet()); // Enable Helmet
 app.use(morgan("dev")); // Enable Morgan
 app.use(express.json());
-app.disable("etag")
-const fs = require('fs');
-const path = require('path');
-
+app.disable("etag");
+const fs = require("fs");
+const path = require("path");
 
 const sessionMiddleware = Session({
   secret: "prout",

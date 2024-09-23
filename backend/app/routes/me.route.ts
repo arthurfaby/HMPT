@@ -35,49 +35,43 @@ router.post("/update", async (req: Request, res: Response) => {
 });
 
 router.post("/usernameValid", async (req: Request, res: Response) => {
-  try{
+  try {
     const existingUserByUsername = await User.select({
-    username: { equal: req.body.username },
-  });
-  if (existingUserByUsername.length > 0) {
+      username: { equal: req.body.username },
+    });
+    if (existingUserByUsername.length > 0) {
+      return res.status(200).send({
+        error: "Username déjà utilisé",
+      });
+    } else
+      return res.status(200).send({
+        msg: "username pas utilise",
+      });
+  } catch {
     return res.status(200).send({
-      error: "Username déjà utilisé",
+      error: "erreur serveur",
     });
   }
-  else
-    return res.status(200).send({
-      msg: "username pas utilise"
-    })
-  }
-  catch{
-    return res.status(200).send({
-      error: "erreur serveur"
-    })
-  }
-})
+});
 
 router.post("/changePassword", async (req: Request, res: Response) => {
-  
- try {
-      
-      if (!verifyPassword(req.body.newPassword)) {
-        return res.status(200).send({
-      error:
-        "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
-    });
+  try {
+    if (!verifyPassword(req.body.newPassword)) {
+      return res.status(200).send({
+        error:
+          "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+      });
     }
-    const user = await getAuthenticatedUser(req.sessionID)
-    if(!user)
+    const user = await getAuthenticatedUser(req.sessionID);
+    if (!user)
       return res.status(200).send({ error: "erreur d'authentification" });
     user.password = req.body.newPassword;
     await user.hash();
     await user.update();
     return res.status(200).send({ message: "change password" });
-  } catch(e) {
-    console.log(e)
+  } catch (e) {
     res.status(200).send({ error: "token invalide" });
-    }
-})
-
+  }
+});
 
 export default router;
