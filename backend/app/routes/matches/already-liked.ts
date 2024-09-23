@@ -42,8 +42,6 @@ router.get("/alreadyLiked/:id", async (req: Request, res: Response) => {
     })
   )[0];
 
-  console.log("like", like);
-  console.log("match", match);
 
   return res.status(200).send({
     liked: like ? true : false,

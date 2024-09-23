@@ -17,6 +17,9 @@ export function MatchCard({
   className,
   keyWord,
 }: MatchCardProps) {
+  user.pictures = user.pictures?.filter(
+    (picture) => !!picture && picture !== "",
+  );
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleOpenProfile = () => {
@@ -28,7 +31,7 @@ export function MatchCard({
       {nextUser ? (
         <div
           style={{
-            backgroundImage: `url(${nextUser.pictures[0]})`,
+            backgroundImage: `url(${nextUser.pictures ? nextUser.pictures[0] : ""})`,
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
@@ -45,9 +48,9 @@ export function MatchCard({
               <span className="text-2xl font-bold">{nextUser.first_name}</span>
               <span className="text-md">{nextUser.age}</span>
             </div>
-            <span>{nextUser.biography.substring(0, 25) + "..."}</span>
+            <span>{nextUser.biography?.substring(0, 25) + "..."}</span>
             <div className="flex max-h-14 flex-wrap gap-1 overflow-auto">
-              {nextUser.interests.map((interest) => {
+              {nextUser.interests?.map((interest) => {
                 return (
                   <Badge key={user.id + interest + keyWord}>{interest}</Badge>
                 );
@@ -58,7 +61,7 @@ export function MatchCard({
       ) : null}
       <div
         style={{
-          backgroundImage: `url(${user.pictures[0]})`,
+          backgroundImage: `url(${user.pictures ? user.pictures[0] : ""})`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -73,9 +76,9 @@ export function MatchCard({
             <span className="text-2xl font-bold">{user.first_name}</span>
             <span className="text-md">{user.age}</span>
           </div>
-          <span>{user.biography.substring(0, 25) + "..."}</span>
+          <span>{user.biography?.substring(0, 25) + "..."}</span>
           <div className="flex max-h-14 flex-wrap gap-1 overflow-auto">
-            {user.interests.map((interest) => {
+            {user.interests?.map((interest) => {
               return (
                 <Badge key={user.id + interest + keyWord}>{interest}</Badge>
               );

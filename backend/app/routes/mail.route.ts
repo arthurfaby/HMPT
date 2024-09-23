@@ -31,7 +31,7 @@ router.post("/forget_password", async (req: Request, res: Response) => {
     process.env.PASSJWT as string,
     {
       expiresIn: "300s",
-    }
+    },
   );
   const url = "http://localhost:3000/forget_password/" + token;
 
@@ -75,10 +75,9 @@ router.post("/change_password", async (req: Request, res: Response) => {
             "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
         });
       }
-      //.env !!
       const decoded = jwt.verify(
         req.body.token,
-        process.env.PASSJWT as string
+        process.env.PASSJWT as string,
       ) as JwtPayload;
       const user = await User.select({ username: { equal: decoded.username } });
       user[0].password = req.body.newPassword;
